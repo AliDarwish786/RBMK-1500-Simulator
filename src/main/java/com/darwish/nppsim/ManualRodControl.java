@@ -1,0 +1,6275 @@
+package com.darwish.nppsim;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.HashMap;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.plaf.metal.MetalToggleButtonUI;
+
+public class ManualRodControl extends javax.swing.JPanel {
+    private HashMap<ControlRodChannel, JToggleButton> rodButtonBinding;
+    static final Color FASR_ON = new FASRChannel().uiData.UISelsynColor.brighter().brighter().brighter();
+    static final Color FASR_OFF = new FASRChannel().uiData.UISelsynColor.darker();
+    ArrayList<FASRChannel> fasrChannels;
+    /**
+     * Creates new form ManualRodControl
+     */
+    public ManualRodControl() {
+        initComponents();
+        if (NPPSim.mcc == null) { //return when the IDE tries to create this object as the mcc will not be initialized 
+            return;
+        }
+        ArrayList<ArrayList<Channel>> core = NPPSim.core.coreArray;
+        rodButtonBinding = new HashMap<>();
+        fasrChannels = new ArrayList<>();
+        core.forEach(row -> {
+            for (int i = 0; i < row.size(); i++) {
+                if (row.get(i) instanceof FASRChannel) {
+                    fasrChannels.add((FASRChannel)row.get(i));
+                }
+            }
+        }); 
+        boolean found;
+        for (Component i: this.getComponents()) {
+            for (Component b: ((JPanel)i).getComponents()) {
+                if (b instanceof JToggleButton) {
+                    found = false;
+                    var button = (JToggleButton)b;
+                    for (int x = 55; x > 0; x--) {
+                        for (int y = 55; y > 0; y--) {
+                            var channel = core.get(y).get(x);
+                            if (channel instanceof ControlRodChannel && !rodButtonBinding.containsKey((ControlRodChannel)channel)) {
+                                rodButtonBinding.put((ControlRodChannel)channel, button);
+                                button.setText(channel.uiData.positionString);
+                                button.setForeground(Color.BLACK);
+                                button.setBackground(channel.uiData.UISelsynColor.darker());
+                                button.setUI(new MetalToggleButtonUI() {
+                                    @Override
+                                    protected Color getSelectColor() {
+                                        if (channel instanceof LACChannel) {
+                                            return new MCRChannel().uiData.UISelectedColor;
+                                        }
+                                        return channel.uiData.UISelsynColor.brighter().brighter().brighter();
+                                    }
+                                });
+                                button.addActionListener((java.awt.event.ActionEvent evt) -> {
+                                    if (button.isSelected()) {
+                                        UI.selectedControlRods.add((ControlRodChannel)channel);
+                                    } else {
+                                        UI.selectedControlRods.remove((ControlRodChannel)channel);
+                                        button.setBackground(channel.uiData.UISelsynColor.darker());
+                                        ((ControlRodChannel)channel).setState(1);
+                                    }
+                                });
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            break;
+                        }
+                    }
+                    button.setFont(new java.awt.Font("Ubuntu", 0, 7));
+                    button.setMargin(new java.awt.Insets(0, 0, 0, 0));
+                }
+            }
+        }
+    }
+    
+    public void resetSelection() {
+        rodButtonBinding.forEach((channel, button) -> {
+            button.setSelected(false);
+            button.setBackground(channel.uiData.UISelsynColor.darker());
+        });
+        UI.selectedControlRods.clear();
+    }
+    
+    public void update() { //updated every 50 ms
+        boolean blinker = Annunciator.annunciatorBlinker; //save in variable because value might flip during method exection
+        fasrChannels.forEach(channel -> {
+            if (channel.getPosition() > 0 && !rodButtonBinding.get(channel).isSelected()) {
+                if (blinker) {
+                    rodButtonBinding.get(channel).setBackground(FASR_ON);
+                } else {
+                    rodButtonBinding.get(channel).setBackground(FASR_OFF);
+                }
+            } 
+        });
+    }
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel4 = new javax.swing.JPanel();
+        jPanel25 = new javax.swing.JPanel();
+        jPanel26 = new javax.swing.JPanel();
+        jPanel27 = new javax.swing.JPanel();
+        jPanel28 = new javax.swing.JPanel();
+        jPanel29 = new javax.swing.JPanel();
+        jPanel30 = new javax.swing.JPanel();
+        jPanel31 = new javax.swing.JPanel();
+        jPanel32 = new javax.swing.JPanel();
+        jToggleButton3 = new javax.swing.JToggleButton();
+        jPanel33 = new javax.swing.JPanel();
+        jToggleButton4 = new javax.swing.JToggleButton();
+        jPanel34 = new javax.swing.JPanel();
+        jToggleButton2 = new javax.swing.JToggleButton();
+        jPanel35 = new javax.swing.JPanel();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jPanel36 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel37 = new javax.swing.JPanel();
+        jPanel38 = new javax.swing.JPanel();
+        jPanel39 = new javax.swing.JPanel();
+        jPanel40 = new javax.swing.JPanel();
+        jPanel41 = new javax.swing.JPanel();
+        jToggleButton5 = new javax.swing.JToggleButton();
+        jPanel42 = new javax.swing.JPanel();
+        jToggleButton6 = new javax.swing.JToggleButton();
+        jPanel43 = new javax.swing.JPanel();
+        jToggleButton7 = new javax.swing.JToggleButton();
+        jPanel44 = new javax.swing.JPanel();
+        jToggleButton8 = new javax.swing.JToggleButton();
+        jPanel45 = new javax.swing.JPanel();
+        jToggleButton9 = new javax.swing.JToggleButton();
+        jPanel46 = new javax.swing.JPanel();
+        jToggleButton10 = new javax.swing.JToggleButton();
+        jPanel59 = new javax.swing.JPanel();
+        jToggleButton19 = new javax.swing.JToggleButton();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel47 = new javax.swing.JPanel();
+        jPanel48 = new javax.swing.JPanel();
+        jPanel49 = new javax.swing.JPanel();
+        jPanel50 = new javax.swing.JPanel();
+        jToggleButton11 = new javax.swing.JToggleButton();
+        jPanel51 = new javax.swing.JPanel();
+        jToggleButton12 = new javax.swing.JToggleButton();
+        jPanel52 = new javax.swing.JPanel();
+        jToggleButton13 = new javax.swing.JToggleButton();
+        jPanel53 = new javax.swing.JPanel();
+        jToggleButton14 = new javax.swing.JToggleButton();
+        jPanel54 = new javax.swing.JPanel();
+        jToggleButton15 = new javax.swing.JToggleButton();
+        jPanel55 = new javax.swing.JPanel();
+        jToggleButton16 = new javax.swing.JToggleButton();
+        jPanel56 = new javax.swing.JPanel();
+        jToggleButton17 = new javax.swing.JToggleButton();
+        jPanel57 = new javax.swing.JPanel();
+        jToggleButton18 = new javax.swing.JToggleButton();
+        jPanel58 = new javax.swing.JPanel();
+        jPanel60 = new javax.swing.JPanel();
+        jPanel61 = new javax.swing.JPanel();
+        jPanel62 = new javax.swing.JPanel();
+        jPanel64 = new javax.swing.JPanel();
+        jToggleButton20 = new javax.swing.JToggleButton();
+        jPanel65 = new javax.swing.JPanel();
+        jToggleButton21 = new javax.swing.JToggleButton();
+        jPanel66 = new javax.swing.JPanel();
+        jPanel74 = new javax.swing.JPanel();
+        jPanel77 = new javax.swing.JPanel();
+        jToggleButton22 = new javax.swing.JToggleButton();
+        jPanel67 = new javax.swing.JPanel();
+        jToggleButton23 = new javax.swing.JToggleButton();
+        jPanel68 = new javax.swing.JPanel();
+        jToggleButton24 = new javax.swing.JToggleButton();
+        jPanel69 = new javax.swing.JPanel();
+        jPanel73 = new javax.swing.JPanel();
+        jPanel70 = new javax.swing.JPanel();
+        jToggleButton26 = new javax.swing.JToggleButton();
+        jPanel71 = new javax.swing.JPanel();
+        jToggleButton27 = new javax.swing.JToggleButton();
+        jPanel72 = new javax.swing.JPanel();
+        jPanel76 = new javax.swing.JPanel();
+        jPanel63 = new javax.swing.JPanel();
+        jPanel75 = new javax.swing.JPanel();
+        jPanel78 = new javax.swing.JPanel();
+        jToggleButton25 = new javax.swing.JToggleButton();
+        jPanel79 = new javax.swing.JPanel();
+        jToggleButton28 = new javax.swing.JToggleButton();
+        jPanel80 = new javax.swing.JPanel();
+        jToggleButton29 = new javax.swing.JToggleButton();
+        jPanel81 = new javax.swing.JPanel();
+        jToggleButton30 = new javax.swing.JToggleButton();
+        jPanel82 = new javax.swing.JPanel();
+        jToggleButton31 = new javax.swing.JToggleButton();
+        jPanel83 = new javax.swing.JPanel();
+        jToggleButton32 = new javax.swing.JToggleButton();
+        jPanel84 = new javax.swing.JPanel();
+        jToggleButton33 = new javax.swing.JToggleButton();
+        jPanel85 = new javax.swing.JPanel();
+        jToggleButton34 = new javax.swing.JToggleButton();
+        jPanel86 = new javax.swing.JPanel();
+        jToggleButton35 = new javax.swing.JToggleButton();
+        jPanel87 = new javax.swing.JPanel();
+        jToggleButton36 = new javax.swing.JToggleButton();
+        jPanel88 = new javax.swing.JPanel();
+        jPanel89 = new javax.swing.JPanel();
+        jToggleButton37 = new javax.swing.JToggleButton();
+        jPanel91 = new javax.swing.JPanel();
+        jToggleButton38 = new javax.swing.JToggleButton();
+        jPanel92 = new javax.swing.JPanel();
+        jToggleButton39 = new javax.swing.JToggleButton();
+        jPanel93 = new javax.swing.JPanel();
+        jToggleButton40 = new javax.swing.JToggleButton();
+        jPanel94 = new javax.swing.JPanel();
+        jToggleButton41 = new javax.swing.JToggleButton();
+        jPanel95 = new javax.swing.JPanel();
+        jToggleButton42 = new javax.swing.JToggleButton();
+        jPanel96 = new javax.swing.JPanel();
+        jToggleButton43 = new javax.swing.JToggleButton();
+        jPanel97 = new javax.swing.JPanel();
+        jToggleButton44 = new javax.swing.JToggleButton();
+        jPanel98 = new javax.swing.JPanel();
+        jToggleButton45 = new javax.swing.JToggleButton();
+        jPanel99 = new javax.swing.JPanel();
+        jToggleButton46 = new javax.swing.JToggleButton();
+        jPanel100 = new javax.swing.JPanel();
+        jToggleButton47 = new javax.swing.JToggleButton();
+        jPanel101 = new javax.swing.JPanel();
+        jPanel90 = new javax.swing.JPanel();
+        jPanel102 = new javax.swing.JPanel();
+        jPanel103 = new javax.swing.JPanel();
+        jToggleButton48 = new javax.swing.JToggleButton();
+        jPanel104 = new javax.swing.JPanel();
+        jToggleButton49 = new javax.swing.JToggleButton();
+        jPanel105 = new javax.swing.JPanel();
+        jToggleButton50 = new javax.swing.JToggleButton();
+        jPanel106 = new javax.swing.JPanel();
+        jToggleButton51 = new javax.swing.JToggleButton();
+        jPanel107 = new javax.swing.JPanel();
+        jToggleButton52 = new javax.swing.JToggleButton();
+        jPanel108 = new javax.swing.JPanel();
+        jToggleButton53 = new javax.swing.JToggleButton();
+        jPanel109 = new javax.swing.JPanel();
+        jToggleButton54 = new javax.swing.JToggleButton();
+        jPanel110 = new javax.swing.JPanel();
+        jToggleButton55 = new javax.swing.JToggleButton();
+        jPanel111 = new javax.swing.JPanel();
+        jToggleButton56 = new javax.swing.JToggleButton();
+        jPanel112 = new javax.swing.JPanel();
+        jToggleButton57 = new javax.swing.JToggleButton();
+        jPanel113 = new javax.swing.JPanel();
+        jPanel114 = new javax.swing.JPanel();
+        jToggleButton58 = new javax.swing.JToggleButton();
+        jPanel115 = new javax.swing.JPanel();
+        jPanel116 = new javax.swing.JPanel();
+        jPanel117 = new javax.swing.JPanel();
+        jToggleButton59 = new javax.swing.JToggleButton();
+        jPanel118 = new javax.swing.JPanel();
+        jToggleButton60 = new javax.swing.JToggleButton();
+        jPanel119 = new javax.swing.JPanel();
+        jToggleButton61 = new javax.swing.JToggleButton();
+        jPanel120 = new javax.swing.JPanel();
+        jPanel121 = new javax.swing.JPanel();
+        jPanel122 = new javax.swing.JPanel();
+        jToggleButton62 = new javax.swing.JToggleButton();
+        jPanel123 = new javax.swing.JPanel();
+        jToggleButton63 = new javax.swing.JToggleButton();
+        jPanel124 = new javax.swing.JPanel();
+        jToggleButton64 = new javax.swing.JToggleButton();
+        jPanel125 = new javax.swing.JPanel();
+        jPanel126 = new javax.swing.JPanel();
+        jPanel128 = new javax.swing.JPanel();
+        jToggleButton65 = new javax.swing.JToggleButton();
+        jPanel127 = new javax.swing.JPanel();
+        jPanel129 = new javax.swing.JPanel();
+        jToggleButton66 = new javax.swing.JToggleButton();
+        jPanel131 = new javax.swing.JPanel();
+        jToggleButton67 = new javax.swing.JToggleButton();
+        jPanel132 = new javax.swing.JPanel();
+        jToggleButton68 = new javax.swing.JToggleButton();
+        jPanel133 = new javax.swing.JPanel();
+        jToggleButton69 = new javax.swing.JToggleButton();
+        jPanel134 = new javax.swing.JPanel();
+        jToggleButton70 = new javax.swing.JToggleButton();
+        jPanel135 = new javax.swing.JPanel();
+        jToggleButton71 = new javax.swing.JToggleButton();
+        jPanel136 = new javax.swing.JPanel();
+        jToggleButton72 = new javax.swing.JToggleButton();
+        jPanel137 = new javax.swing.JPanel();
+        jToggleButton73 = new javax.swing.JToggleButton();
+        jPanel138 = new javax.swing.JPanel();
+        jToggleButton74 = new javax.swing.JToggleButton();
+        jPanel139 = new javax.swing.JPanel();
+        jToggleButton75 = new javax.swing.JToggleButton();
+        jPanel140 = new javax.swing.JPanel();
+        jToggleButton76 = new javax.swing.JToggleButton();
+        jPanel141 = new javax.swing.JPanel();
+        jToggleButton77 = new javax.swing.JToggleButton();
+        jPanel130 = new javax.swing.JPanel();
+        jPanel142 = new javax.swing.JPanel();
+        jToggleButton79 = new javax.swing.JToggleButton();
+        jPanel143 = new javax.swing.JPanel();
+        jToggleButton80 = new javax.swing.JToggleButton();
+        jPanel144 = new javax.swing.JPanel();
+        jToggleButton81 = new javax.swing.JToggleButton();
+        jPanel145 = new javax.swing.JPanel();
+        jToggleButton82 = new javax.swing.JToggleButton();
+        jPanel146 = new javax.swing.JPanel();
+        jToggleButton83 = new javax.swing.JToggleButton();
+        jPanel147 = new javax.swing.JPanel();
+        jToggleButton84 = new javax.swing.JToggleButton();
+        jPanel148 = new javax.swing.JPanel();
+        jToggleButton85 = new javax.swing.JToggleButton();
+        jPanel149 = new javax.swing.JPanel();
+        jToggleButton86 = new javax.swing.JToggleButton();
+        jPanel150 = new javax.swing.JPanel();
+        jToggleButton87 = new javax.swing.JToggleButton();
+        jPanel151 = new javax.swing.JPanel();
+        jToggleButton88 = new javax.swing.JToggleButton();
+        jPanel152 = new javax.swing.JPanel();
+        jToggleButton89 = new javax.swing.JToggleButton();
+        jPanel153 = new javax.swing.JPanel();
+        jToggleButton78 = new javax.swing.JToggleButton();
+        jPanel154 = new javax.swing.JPanel();
+        jToggleButton90 = new javax.swing.JToggleButton();
+        jPanel155 = new javax.swing.JPanel();
+        jToggleButton91 = new javax.swing.JToggleButton();
+        jPanel156 = new javax.swing.JPanel();
+        jToggleButton92 = new javax.swing.JToggleButton();
+        jPanel157 = new javax.swing.JPanel();
+        jToggleButton93 = new javax.swing.JToggleButton();
+        jPanel158 = new javax.swing.JPanel();
+        jToggleButton94 = new javax.swing.JToggleButton();
+        jPanel159 = new javax.swing.JPanel();
+        jToggleButton95 = new javax.swing.JToggleButton();
+        jPanel160 = new javax.swing.JPanel();
+        jToggleButton96 = new javax.swing.JToggleButton();
+        jPanel161 = new javax.swing.JPanel();
+        jToggleButton97 = new javax.swing.JToggleButton();
+        jPanel162 = new javax.swing.JPanel();
+        jToggleButton98 = new javax.swing.JToggleButton();
+        jPanel163 = new javax.swing.JPanel();
+        jToggleButton99 = new javax.swing.JToggleButton();
+        jPanel164 = new javax.swing.JPanel();
+        jToggleButton100 = new javax.swing.JToggleButton();
+        jPanel165 = new javax.swing.JPanel();
+        jPanel174 = new javax.swing.JPanel();
+        jToggleButton101 = new javax.swing.JToggleButton();
+        jPanel166 = new javax.swing.JPanel();
+        jToggleButton102 = new javax.swing.JToggleButton();
+        jPanel167 = new javax.swing.JPanel();
+        jToggleButton103 = new javax.swing.JToggleButton();
+        jPanel168 = new javax.swing.JPanel();
+        jPanel169 = new javax.swing.JPanel();
+        jPanel170 = new javax.swing.JPanel();
+        jToggleButton104 = new javax.swing.JToggleButton();
+        jPanel171 = new javax.swing.JPanel();
+        jToggleButton106 = new javax.swing.JToggleButton();
+        jPanel172 = new javax.swing.JPanel();
+        jToggleButton107 = new javax.swing.JToggleButton();
+        jPanel173 = new javax.swing.JPanel();
+        jPanel175 = new javax.swing.JPanel();
+        jPanel176 = new javax.swing.JPanel();
+        jToggleButton110 = new javax.swing.JToggleButton();
+        jPanel177 = new javax.swing.JPanel();
+        jToggleButton111 = new javax.swing.JToggleButton();
+        jPanel178 = new javax.swing.JPanel();
+        jToggleButton112 = new javax.swing.JToggleButton();
+        jPanel179 = new javax.swing.JPanel();
+        jPanel180 = new javax.swing.JPanel();
+        jToggleButton105 = new javax.swing.JToggleButton();
+        jPanel181 = new javax.swing.JPanel();
+        jToggleButton108 = new javax.swing.JToggleButton();
+        jPanel182 = new javax.swing.JPanel();
+        jToggleButton109 = new javax.swing.JToggleButton();
+        jPanel183 = new javax.swing.JPanel();
+        jToggleButton113 = new javax.swing.JToggleButton();
+        jPanel184 = new javax.swing.JPanel();
+        jToggleButton114 = new javax.swing.JToggleButton();
+        jPanel185 = new javax.swing.JPanel();
+        jToggleButton115 = new javax.swing.JToggleButton();
+        jPanel186 = new javax.swing.JPanel();
+        jToggleButton116 = new javax.swing.JToggleButton();
+        jPanel187 = new javax.swing.JPanel();
+        jToggleButton117 = new javax.swing.JToggleButton();
+        jPanel188 = new javax.swing.JPanel();
+        jToggleButton118 = new javax.swing.JToggleButton();
+        jPanel189 = new javax.swing.JPanel();
+        jToggleButton119 = new javax.swing.JToggleButton();
+        jPanel190 = new javax.swing.JPanel();
+        jToggleButton120 = new javax.swing.JToggleButton();
+        jPanel191 = new javax.swing.JPanel();
+        jToggleButton121 = new javax.swing.JToggleButton();
+        jPanel192 = new javax.swing.JPanel();
+        jPanel193 = new javax.swing.JPanel();
+        jToggleButton122 = new javax.swing.JToggleButton();
+        jPanel194 = new javax.swing.JPanel();
+        jToggleButton123 = new javax.swing.JToggleButton();
+        jPanel195 = new javax.swing.JPanel();
+        jToggleButton124 = new javax.swing.JToggleButton();
+        jPanel196 = new javax.swing.JPanel();
+        jToggleButton125 = new javax.swing.JToggleButton();
+        jPanel197 = new javax.swing.JPanel();
+        jToggleButton126 = new javax.swing.JToggleButton();
+        jPanel198 = new javax.swing.JPanel();
+        jToggleButton127 = new javax.swing.JToggleButton();
+        jPanel199 = new javax.swing.JPanel();
+        jToggleButton128 = new javax.swing.JToggleButton();
+        jPanel200 = new javax.swing.JPanel();
+        jToggleButton129 = new javax.swing.JToggleButton();
+        jPanel201 = new javax.swing.JPanel();
+        jToggleButton130 = new javax.swing.JToggleButton();
+        jPanel202 = new javax.swing.JPanel();
+        jToggleButton131 = new javax.swing.JToggleButton();
+        jPanel203 = new javax.swing.JPanel();
+        jToggleButton132 = new javax.swing.JToggleButton();
+        jPanel204 = new javax.swing.JPanel();
+        jToggleButton133 = new javax.swing.JToggleButton();
+        jPanel205 = new javax.swing.JPanel();
+        jToggleButton134 = new javax.swing.JToggleButton();
+        jPanel206 = new javax.swing.JPanel();
+        jToggleButton135 = new javax.swing.JToggleButton();
+        jPanel207 = new javax.swing.JPanel();
+        jToggleButton136 = new javax.swing.JToggleButton();
+        jPanel208 = new javax.swing.JPanel();
+        jToggleButton137 = new javax.swing.JToggleButton();
+        jPanel209 = new javax.swing.JPanel();
+        jToggleButton138 = new javax.swing.JToggleButton();
+        jPanel210 = new javax.swing.JPanel();
+        jToggleButton139 = new javax.swing.JToggleButton();
+        jPanel211 = new javax.swing.JPanel();
+        jToggleButton140 = new javax.swing.JToggleButton();
+        jPanel212 = new javax.swing.JPanel();
+        jToggleButton141 = new javax.swing.JToggleButton();
+        jPanel213 = new javax.swing.JPanel();
+        jToggleButton142 = new javax.swing.JToggleButton();
+        jPanel214 = new javax.swing.JPanel();
+        jToggleButton143 = new javax.swing.JToggleButton();
+        jPanel215 = new javax.swing.JPanel();
+        jToggleButton144 = new javax.swing.JToggleButton();
+        jPanel216 = new javax.swing.JPanel();
+        jPanel217 = new javax.swing.JPanel();
+        jToggleButton145 = new javax.swing.JToggleButton();
+        jPanel218 = new javax.swing.JPanel();
+        jPanel219 = new javax.swing.JPanel();
+        jPanel220 = new javax.swing.JPanel();
+        jToggleButton146 = new javax.swing.JToggleButton();
+        jPanel221 = new javax.swing.JPanel();
+        jToggleButton147 = new javax.swing.JToggleButton();
+        jPanel222 = new javax.swing.JPanel();
+        jToggleButton148 = new javax.swing.JToggleButton();
+        jPanel223 = new javax.swing.JPanel();
+        jPanel224 = new javax.swing.JPanel();
+        jPanel225 = new javax.swing.JPanel();
+        jToggleButton149 = new javax.swing.JToggleButton();
+        jPanel226 = new javax.swing.JPanel();
+        jToggleButton150 = new javax.swing.JToggleButton();
+        jPanel227 = new javax.swing.JPanel();
+        jToggleButton151 = new javax.swing.JToggleButton();
+        jPanel228 = new javax.swing.JPanel();
+        jPanel229 = new javax.swing.JPanel();
+        jPanel230 = new javax.swing.JPanel();
+        jToggleButton152 = new javax.swing.JToggleButton();
+        jPanel231 = new javax.swing.JPanel();
+        jPanel232 = new javax.swing.JPanel();
+        jPanel233 = new javax.swing.JPanel();
+        jPanel234 = new javax.swing.JPanel();
+        jToggleButton153 = new javax.swing.JToggleButton();
+        jPanel235 = new javax.swing.JPanel();
+        jToggleButton154 = new javax.swing.JToggleButton();
+        jPanel236 = new javax.swing.JPanel();
+        jToggleButton155 = new javax.swing.JToggleButton();
+        jPanel237 = new javax.swing.JPanel();
+        jToggleButton156 = new javax.swing.JToggleButton();
+        jPanel238 = new javax.swing.JPanel();
+        jToggleButton157 = new javax.swing.JToggleButton();
+        jPanel239 = new javax.swing.JPanel();
+        jToggleButton158 = new javax.swing.JToggleButton();
+        jPanel240 = new javax.swing.JPanel();
+        jToggleButton159 = new javax.swing.JToggleButton();
+        jPanel241 = new javax.swing.JPanel();
+        jToggleButton160 = new javax.swing.JToggleButton();
+        jPanel242 = new javax.swing.JPanel();
+        jToggleButton161 = new javax.swing.JToggleButton();
+        jPanel243 = new javax.swing.JPanel();
+        jToggleButton162 = new javax.swing.JToggleButton();
+        jPanel308 = new javax.swing.JPanel();
+        jToggleButton206 = new javax.swing.JToggleButton();
+        jPanel244 = new javax.swing.JPanel();
+        jPanel245 = new javax.swing.JPanel();
+        jToggleButton163 = new javax.swing.JToggleButton();
+        jPanel246 = new javax.swing.JPanel();
+        jToggleButton164 = new javax.swing.JToggleButton();
+        jPanel247 = new javax.swing.JPanel();
+        jToggleButton165 = new javax.swing.JToggleButton();
+        jPanel248 = new javax.swing.JPanel();
+        jToggleButton166 = new javax.swing.JToggleButton();
+        jPanel249 = new javax.swing.JPanel();
+        jToggleButton167 = new javax.swing.JToggleButton();
+        jPanel250 = new javax.swing.JPanel();
+        jToggleButton168 = new javax.swing.JToggleButton();
+        jPanel251 = new javax.swing.JPanel();
+        jToggleButton169 = new javax.swing.JToggleButton();
+        jPanel252 = new javax.swing.JPanel();
+        jToggleButton170 = new javax.swing.JToggleButton();
+        jPanel253 = new javax.swing.JPanel();
+        jToggleButton171 = new javax.swing.JToggleButton();
+        jPanel254 = new javax.swing.JPanel();
+        jToggleButton172 = new javax.swing.JToggleButton();
+        jPanel255 = new javax.swing.JPanel();
+        jToggleButton173 = new javax.swing.JToggleButton();
+        jPanel256 = new javax.swing.JPanel();
+        jPanel257 = new javax.swing.JPanel();
+        jPanel258 = new javax.swing.JPanel();
+        jPanel259 = new javax.swing.JPanel();
+        jToggleButton174 = new javax.swing.JToggleButton();
+        jPanel260 = new javax.swing.JPanel();
+        jToggleButton175 = new javax.swing.JToggleButton();
+        jPanel261 = new javax.swing.JPanel();
+        jToggleButton176 = new javax.swing.JToggleButton();
+        jPanel262 = new javax.swing.JPanel();
+        jToggleButton177 = new javax.swing.JToggleButton();
+        jPanel263 = new javax.swing.JPanel();
+        jToggleButton178 = new javax.swing.JToggleButton();
+        jPanel264 = new javax.swing.JPanel();
+        jToggleButton179 = new javax.swing.JToggleButton();
+        jPanel265 = new javax.swing.JPanel();
+        jToggleButton180 = new javax.swing.JToggleButton();
+        jPanel266 = new javax.swing.JPanel();
+        jToggleButton181 = new javax.swing.JToggleButton();
+        jPanel267 = new javax.swing.JPanel();
+        jToggleButton182 = new javax.swing.JToggleButton();
+        jPanel268 = new javax.swing.JPanel();
+        jToggleButton183 = new javax.swing.JToggleButton();
+        jPanel269 = new javax.swing.JPanel();
+        jPanel270 = new javax.swing.JPanel();
+        jPanel271 = new javax.swing.JPanel();
+        jPanel272 = new javax.swing.JPanel();
+        jToggleButton184 = new javax.swing.JToggleButton();
+        jPanel273 = new javax.swing.JPanel();
+        jToggleButton185 = new javax.swing.JToggleButton();
+        jPanel274 = new javax.swing.JPanel();
+        jPanel275 = new javax.swing.JPanel();
+        jPanel276 = new javax.swing.JPanel();
+        jToggleButton186 = new javax.swing.JToggleButton();
+        jPanel277 = new javax.swing.JPanel();
+        jToggleButton187 = new javax.swing.JToggleButton();
+        jPanel278 = new javax.swing.JPanel();
+        jToggleButton188 = new javax.swing.JToggleButton();
+        jPanel279 = new javax.swing.JPanel();
+        jPanel280 = new javax.swing.JPanel();
+        jPanel281 = new javax.swing.JPanel();
+        jToggleButton189 = new javax.swing.JToggleButton();
+        jPanel282 = new javax.swing.JPanel();
+        jToggleButton190 = new javax.swing.JToggleButton();
+        jPanel283 = new javax.swing.JPanel();
+        jPanel284 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jPanel285 = new javax.swing.JPanel();
+        jPanel286 = new javax.swing.JPanel();
+        jPanel287 = new javax.swing.JPanel();
+        jPanel288 = new javax.swing.JPanel();
+        jToggleButton191 = new javax.swing.JToggleButton();
+        jPanel289 = new javax.swing.JPanel();
+        jToggleButton192 = new javax.swing.JToggleButton();
+        jPanel290 = new javax.swing.JPanel();
+        jToggleButton193 = new javax.swing.JToggleButton();
+        jPanel291 = new javax.swing.JPanel();
+        jToggleButton194 = new javax.swing.JToggleButton();
+        jPanel292 = new javax.swing.JPanel();
+        jToggleButton195 = new javax.swing.JToggleButton();
+        jPanel293 = new javax.swing.JPanel();
+        jToggleButton196 = new javax.swing.JToggleButton();
+        jPanel294 = new javax.swing.JPanel();
+        jToggleButton197 = new javax.swing.JToggleButton();
+        jPanel295 = new javax.swing.JPanel();
+        jToggleButton198 = new javax.swing.JToggleButton();
+        jPanel296 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel297 = new javax.swing.JPanel();
+        jPanel298 = new javax.swing.JPanel();
+        jPanel299 = new javax.swing.JPanel();
+        jPanel300 = new javax.swing.JPanel();
+        jPanel301 = new javax.swing.JPanel();
+        jToggleButton199 = new javax.swing.JToggleButton();
+        jPanel302 = new javax.swing.JPanel();
+        jToggleButton200 = new javax.swing.JToggleButton();
+        jPanel303 = new javax.swing.JPanel();
+        jToggleButton201 = new javax.swing.JToggleButton();
+        jPanel304 = new javax.swing.JPanel();
+        jToggleButton202 = new javax.swing.JToggleButton();
+        jPanel305 = new javax.swing.JPanel();
+        jToggleButton203 = new javax.swing.JToggleButton();
+        jPanel306 = new javax.swing.JPanel();
+        jToggleButton204 = new javax.swing.JToggleButton();
+        jPanel307 = new javax.swing.JPanel();
+        jToggleButton205 = new javax.swing.JToggleButton();
+        jPanel7 = new javax.swing.JPanel();
+        jPanel309 = new javax.swing.JPanel();
+        jPanel310 = new javax.swing.JPanel();
+        jPanel311 = new javax.swing.JPanel();
+        jPanel312 = new javax.swing.JPanel();
+        jPanel313 = new javax.swing.JPanel();
+        jPanel314 = new javax.swing.JPanel();
+        jPanel315 = new javax.swing.JPanel();
+        jPanel316 = new javax.swing.JPanel();
+        jToggleButton207 = new javax.swing.JToggleButton();
+        jPanel317 = new javax.swing.JPanel();
+        jToggleButton208 = new javax.swing.JToggleButton();
+        jPanel318 = new javax.swing.JPanel();
+        jToggleButton209 = new javax.swing.JToggleButton();
+        jPanel319 = new javax.swing.JPanel();
+        jToggleButton210 = new javax.swing.JToggleButton();
+        jPanel320 = new javax.swing.JPanel();
+        jToggleButton211 = new javax.swing.JToggleButton();
+        jPanel321 = new javax.swing.JPanel();
+
+        setMaximumSize(new java.awt.Dimension(600, 450));
+        setMinimumSize(new java.awt.Dimension(600, 450));
+        setPreferredSize(new java.awt.Dimension(600, 450));
+        setLayout(new java.awt.GridLayout(1, 24));
+
+        jPanel4.setMinimumSize(new java.awt.Dimension(20, 500));
+        jPanel4.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel4.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel25.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel25Layout = new javax.swing.GroupLayout(jPanel25);
+        jPanel25.setLayout(jPanel25Layout);
+        jPanel25Layout.setHorizontalGroup(
+            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel25Layout.setVerticalGroup(
+            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel25);
+
+        jPanel26.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel26Layout = new javax.swing.GroupLayout(jPanel26);
+        jPanel26.setLayout(jPanel26Layout);
+        jPanel26Layout.setHorizontalGroup(
+            jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel26Layout.setVerticalGroup(
+            jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel26);
+
+        jPanel27.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel27Layout = new javax.swing.GroupLayout(jPanel27);
+        jPanel27.setLayout(jPanel27Layout);
+        jPanel27Layout.setHorizontalGroup(
+            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel27Layout.setVerticalGroup(
+            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel27);
+
+        jPanel28.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel28Layout = new javax.swing.GroupLayout(jPanel28);
+        jPanel28.setLayout(jPanel28Layout);
+        jPanel28Layout.setHorizontalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel28Layout.setVerticalGroup(
+            jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel28);
+
+        jPanel29.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel29Layout = new javax.swing.GroupLayout(jPanel29);
+        jPanel29.setLayout(jPanel29Layout);
+        jPanel29Layout.setHorizontalGroup(
+            jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel29Layout.setVerticalGroup(
+            jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel29);
+
+        jPanel30.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel30Layout = new javax.swing.GroupLayout(jPanel30);
+        jPanel30.setLayout(jPanel30Layout);
+        jPanel30Layout.setHorizontalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel30Layout.setVerticalGroup(
+            jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel30);
+
+        jPanel31.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel31Layout = new javax.swing.GroupLayout(jPanel31);
+        jPanel31.setLayout(jPanel31Layout);
+        jPanel31Layout.setHorizontalGroup(
+            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel31Layout.setVerticalGroup(
+            jPanel31Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel31);
+
+        jPanel32.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel32Layout = new javax.swing.GroupLayout(jPanel32);
+        jPanel32.setLayout(jPanel32Layout);
+        jPanel32Layout.setHorizontalGroup(
+            jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel32Layout.setVerticalGroup(
+            jPanel32Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel32);
+
+        jToggleButton3.setMargin(null);
+        jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton3ActionPerformed(evt);
+            }
+        });
+        jPanel4.add(jToggleButton3);
+
+        jPanel33.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel33Layout = new javax.swing.GroupLayout(jPanel33);
+        jPanel33.setLayout(jPanel33Layout);
+        jPanel33Layout.setHorizontalGroup(
+            jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel33Layout.setVerticalGroup(
+            jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel33);
+
+        jToggleButton4.setMargin(null);
+        jPanel4.add(jToggleButton4);
+
+        jPanel34.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel34Layout = new javax.swing.GroupLayout(jPanel34);
+        jPanel34.setLayout(jPanel34Layout);
+        jPanel34Layout.setHorizontalGroup(
+            jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel34Layout.setVerticalGroup(
+            jPanel34Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel34);
+
+        jToggleButton2.setMargin(null);
+        jPanel4.add(jToggleButton2);
+
+        jPanel35.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel35Layout = new javax.swing.GroupLayout(jPanel35);
+        jPanel35.setLayout(jPanel35Layout);
+        jPanel35Layout.setHorizontalGroup(
+            jPanel35Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel35Layout.setVerticalGroup(
+            jPanel35Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel35);
+
+        jToggleButton1.setText("jToggleButton1");
+        jToggleButton1.setMargin(null);
+        jPanel4.add(jToggleButton1);
+
+        jPanel36.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel36Layout = new javax.swing.GroupLayout(jPanel36);
+        jPanel36.setLayout(jPanel36Layout);
+        jPanel36Layout.setHorizontalGroup(
+            jPanel36Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel36Layout.setVerticalGroup(
+            jPanel36Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel4.add(jPanel36);
+
+        add(jPanel4);
+
+        jPanel3.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel3.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel37.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel37Layout = new javax.swing.GroupLayout(jPanel37);
+        jPanel37.setLayout(jPanel37Layout);
+        jPanel37Layout.setHorizontalGroup(
+            jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel37Layout.setVerticalGroup(
+            jPanel37Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel37);
+
+        jPanel38.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel38Layout = new javax.swing.GroupLayout(jPanel38);
+        jPanel38.setLayout(jPanel38Layout);
+        jPanel38Layout.setHorizontalGroup(
+            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel38Layout.setVerticalGroup(
+            jPanel38Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel38);
+
+        jPanel39.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel39Layout = new javax.swing.GroupLayout(jPanel39);
+        jPanel39.setLayout(jPanel39Layout);
+        jPanel39Layout.setHorizontalGroup(
+            jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel39Layout.setVerticalGroup(
+            jPanel39Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel39);
+
+        jPanel40.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel40Layout = new javax.swing.GroupLayout(jPanel40);
+        jPanel40.setLayout(jPanel40Layout);
+        jPanel40Layout.setHorizontalGroup(
+            jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel40Layout.setVerticalGroup(
+            jPanel40Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel40);
+
+        jPanel41.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel41Layout = new javax.swing.GroupLayout(jPanel41);
+        jPanel41.setLayout(jPanel41Layout);
+        jPanel41Layout.setHorizontalGroup(
+            jPanel41Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel41Layout.setVerticalGroup(
+            jPanel41Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel41);
+
+        jToggleButton5.setMargin(null);
+        jPanel3.add(jToggleButton5);
+
+        jPanel42.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel42Layout = new javax.swing.GroupLayout(jPanel42);
+        jPanel42.setLayout(jPanel42Layout);
+        jPanel42Layout.setHorizontalGroup(
+            jPanel42Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel42Layout.setVerticalGroup(
+            jPanel42Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel42);
+
+        jToggleButton6.setMargin(null);
+        jPanel3.add(jToggleButton6);
+
+        jPanel43.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel43Layout = new javax.swing.GroupLayout(jPanel43);
+        jPanel43.setLayout(jPanel43Layout);
+        jPanel43Layout.setHorizontalGroup(
+            jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel43Layout.setVerticalGroup(
+            jPanel43Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel43);
+
+        jToggleButton7.setMargin(null);
+        jPanel3.add(jToggleButton7);
+
+        jPanel44.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel44Layout = new javax.swing.GroupLayout(jPanel44);
+        jPanel44.setLayout(jPanel44Layout);
+        jPanel44Layout.setHorizontalGroup(
+            jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel44Layout.setVerticalGroup(
+            jPanel44Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel44);
+
+        jToggleButton8.setMargin(null);
+        jPanel3.add(jToggleButton8);
+
+        jPanel45.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel45Layout = new javax.swing.GroupLayout(jPanel45);
+        jPanel45.setLayout(jPanel45Layout);
+        jPanel45Layout.setHorizontalGroup(
+            jPanel45Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel45Layout.setVerticalGroup(
+            jPanel45Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel45);
+
+        jToggleButton9.setMargin(null);
+        jPanel3.add(jToggleButton9);
+
+        jPanel46.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel46Layout = new javax.swing.GroupLayout(jPanel46);
+        jPanel46.setLayout(jPanel46Layout);
+        jPanel46Layout.setHorizontalGroup(
+            jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel46Layout.setVerticalGroup(
+            jPanel46Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel46);
+
+        jToggleButton10.setText("jToggleButton1");
+        jToggleButton10.setMargin(null);
+        jPanel3.add(jToggleButton10);
+
+        jPanel59.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel59Layout = new javax.swing.GroupLayout(jPanel59);
+        jPanel59.setLayout(jPanel59Layout);
+        jPanel59Layout.setHorizontalGroup(
+            jPanel59Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel59Layout.setVerticalGroup(
+            jPanel59Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel3.add(jPanel59);
+
+        jToggleButton19.setText("jToggleButton1");
+        jToggleButton19.setMargin(null);
+        jPanel3.add(jToggleButton19);
+
+        add(jPanel3);
+
+        jPanel2.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel2.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel47.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel47Layout = new javax.swing.GroupLayout(jPanel47);
+        jPanel47.setLayout(jPanel47Layout);
+        jPanel47Layout.setHorizontalGroup(
+            jPanel47Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel47Layout.setVerticalGroup(
+            jPanel47Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel47);
+
+        jPanel48.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel48Layout = new javax.swing.GroupLayout(jPanel48);
+        jPanel48.setLayout(jPanel48Layout);
+        jPanel48Layout.setHorizontalGroup(
+            jPanel48Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel48Layout.setVerticalGroup(
+            jPanel48Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel48);
+
+        jPanel49.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel49Layout = new javax.swing.GroupLayout(jPanel49);
+        jPanel49.setLayout(jPanel49Layout);
+        jPanel49Layout.setHorizontalGroup(
+            jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel49Layout.setVerticalGroup(
+            jPanel49Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel49);
+
+        jPanel50.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel50Layout = new javax.swing.GroupLayout(jPanel50);
+        jPanel50.setLayout(jPanel50Layout);
+        jPanel50Layout.setHorizontalGroup(
+            jPanel50Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel50Layout.setVerticalGroup(
+            jPanel50Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel50);
+
+        jToggleButton11.setMargin(null);
+        jPanel2.add(jToggleButton11);
+
+        jPanel51.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel51Layout = new javax.swing.GroupLayout(jPanel51);
+        jPanel51.setLayout(jPanel51Layout);
+        jPanel51Layout.setHorizontalGroup(
+            jPanel51Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel51Layout.setVerticalGroup(
+            jPanel51Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel51);
+
+        jToggleButton12.setMargin(null);
+        jPanel2.add(jToggleButton12);
+
+        jPanel52.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel52Layout = new javax.swing.GroupLayout(jPanel52);
+        jPanel52.setLayout(jPanel52Layout);
+        jPanel52Layout.setHorizontalGroup(
+            jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel52Layout.setVerticalGroup(
+            jPanel52Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel52);
+
+        jToggleButton13.setMargin(null);
+        jPanel2.add(jToggleButton13);
+
+        jPanel53.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel53Layout = new javax.swing.GroupLayout(jPanel53);
+        jPanel53.setLayout(jPanel53Layout);
+        jPanel53Layout.setHorizontalGroup(
+            jPanel53Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel53Layout.setVerticalGroup(
+            jPanel53Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel53);
+
+        jToggleButton14.setMargin(null);
+        jPanel2.add(jToggleButton14);
+
+        jPanel54.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel54Layout = new javax.swing.GroupLayout(jPanel54);
+        jPanel54.setLayout(jPanel54Layout);
+        jPanel54Layout.setHorizontalGroup(
+            jPanel54Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel54Layout.setVerticalGroup(
+            jPanel54Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel54);
+
+        jToggleButton15.setMargin(null);
+        jPanel2.add(jToggleButton15);
+
+        jPanel55.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel55Layout = new javax.swing.GroupLayout(jPanel55);
+        jPanel55.setLayout(jPanel55Layout);
+        jPanel55Layout.setHorizontalGroup(
+            jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel55Layout.setVerticalGroup(
+            jPanel55Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel55);
+
+        jToggleButton16.setText("jToggleButton1");
+        jToggleButton16.setMargin(null);
+        jPanel2.add(jToggleButton16);
+
+        jPanel56.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel56Layout = new javax.swing.GroupLayout(jPanel56);
+        jPanel56.setLayout(jPanel56Layout);
+        jPanel56Layout.setHorizontalGroup(
+            jPanel56Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel56Layout.setVerticalGroup(
+            jPanel56Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel56);
+
+        jToggleButton17.setText("jToggleButton1");
+        jToggleButton17.setMargin(null);
+        jPanel2.add(jToggleButton17);
+
+        jPanel57.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel57Layout = new javax.swing.GroupLayout(jPanel57);
+        jPanel57.setLayout(jPanel57Layout);
+        jPanel57Layout.setHorizontalGroup(
+            jPanel57Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel57Layout.setVerticalGroup(
+            jPanel57Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel57);
+
+        jToggleButton18.setText("jToggleButton1");
+        jToggleButton18.setMargin(null);
+        jPanel2.add(jToggleButton18);
+
+        jPanel58.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel58Layout = new javax.swing.GroupLayout(jPanel58);
+        jPanel58.setLayout(jPanel58Layout);
+        jPanel58Layout.setHorizontalGroup(
+            jPanel58Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel58Layout.setVerticalGroup(
+            jPanel58Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel2.add(jPanel58);
+
+        add(jPanel2);
+
+        jPanel60.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel60.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel61.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel61Layout = new javax.swing.GroupLayout(jPanel61);
+        jPanel61.setLayout(jPanel61Layout);
+        jPanel61Layout.setHorizontalGroup(
+            jPanel61Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel61Layout.setVerticalGroup(
+            jPanel61Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel61);
+
+        jPanel62.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel62Layout = new javax.swing.GroupLayout(jPanel62);
+        jPanel62.setLayout(jPanel62Layout);
+        jPanel62Layout.setHorizontalGroup(
+            jPanel62Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel62Layout.setVerticalGroup(
+            jPanel62Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel62);
+
+        jPanel64.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel64Layout = new javax.swing.GroupLayout(jPanel64);
+        jPanel64.setLayout(jPanel64Layout);
+        jPanel64Layout.setHorizontalGroup(
+            jPanel64Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel64Layout.setVerticalGroup(
+            jPanel64Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel64);
+
+        jToggleButton20.setMargin(null);
+        jPanel60.add(jToggleButton20);
+
+        jPanel65.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel65Layout = new javax.swing.GroupLayout(jPanel65);
+        jPanel65.setLayout(jPanel65Layout);
+        jPanel65Layout.setHorizontalGroup(
+            jPanel65Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel65Layout.setVerticalGroup(
+            jPanel65Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel65);
+
+        jToggleButton21.setMargin(null);
+        jPanel60.add(jToggleButton21);
+
+        jPanel66.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel66Layout = new javax.swing.GroupLayout(jPanel66);
+        jPanel66.setLayout(jPanel66Layout);
+        jPanel66Layout.setHorizontalGroup(
+            jPanel66Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel66Layout.setVerticalGroup(
+            jPanel66Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel66);
+
+        jPanel74.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel74Layout = new javax.swing.GroupLayout(jPanel74);
+        jPanel74.setLayout(jPanel74Layout);
+        jPanel74Layout.setHorizontalGroup(
+            jPanel74Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel74Layout.setVerticalGroup(
+            jPanel74Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel74);
+
+        jPanel77.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel77Layout = new javax.swing.GroupLayout(jPanel77);
+        jPanel77.setLayout(jPanel77Layout);
+        jPanel77Layout.setHorizontalGroup(
+            jPanel77Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel77Layout.setVerticalGroup(
+            jPanel77Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel77);
+
+        jToggleButton22.setMargin(null);
+        jPanel60.add(jToggleButton22);
+
+        jPanel67.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel67Layout = new javax.swing.GroupLayout(jPanel67);
+        jPanel67.setLayout(jPanel67Layout);
+        jPanel67Layout.setHorizontalGroup(
+            jPanel67Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel67Layout.setVerticalGroup(
+            jPanel67Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel67);
+
+        jToggleButton23.setMargin(null);
+        jPanel60.add(jToggleButton23);
+
+        jPanel68.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel68Layout = new javax.swing.GroupLayout(jPanel68);
+        jPanel68.setLayout(jPanel68Layout);
+        jPanel68Layout.setHorizontalGroup(
+            jPanel68Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel68Layout.setVerticalGroup(
+            jPanel68Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel68);
+
+        jToggleButton24.setText("jToggleButton1");
+        jToggleButton24.setMargin(null);
+        jPanel60.add(jToggleButton24);
+
+        jPanel69.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel69Layout = new javax.swing.GroupLayout(jPanel69);
+        jPanel69.setLayout(jPanel69Layout);
+        jPanel69Layout.setHorizontalGroup(
+            jPanel69Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel69Layout.setVerticalGroup(
+            jPanel69Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel69);
+
+        jPanel73.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel73Layout = new javax.swing.GroupLayout(jPanel73);
+        jPanel73.setLayout(jPanel73Layout);
+        jPanel73Layout.setHorizontalGroup(
+            jPanel73Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel73Layout.setVerticalGroup(
+            jPanel73Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel73);
+
+        jPanel70.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel70Layout = new javax.swing.GroupLayout(jPanel70);
+        jPanel70.setLayout(jPanel70Layout);
+        jPanel70Layout.setHorizontalGroup(
+            jPanel70Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel70Layout.setVerticalGroup(
+            jPanel70Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel70);
+
+        jToggleButton26.setText("jToggleButton1");
+        jToggleButton26.setMargin(null);
+        jPanel60.add(jToggleButton26);
+
+        jPanel71.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel71Layout = new javax.swing.GroupLayout(jPanel71);
+        jPanel71.setLayout(jPanel71Layout);
+        jPanel71Layout.setHorizontalGroup(
+            jPanel71Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel71Layout.setVerticalGroup(
+            jPanel71Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel71);
+
+        jToggleButton27.setText("jToggleButton1");
+        jToggleButton27.setMargin(null);
+        jPanel60.add(jToggleButton27);
+
+        jPanel72.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel72Layout = new javax.swing.GroupLayout(jPanel72);
+        jPanel72.setLayout(jPanel72Layout);
+        jPanel72Layout.setHorizontalGroup(
+            jPanel72Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel72Layout.setVerticalGroup(
+            jPanel72Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel72);
+
+        jPanel76.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel76Layout = new javax.swing.GroupLayout(jPanel76);
+        jPanel76.setLayout(jPanel76Layout);
+        jPanel76Layout.setHorizontalGroup(
+            jPanel76Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel76Layout.setVerticalGroup(
+            jPanel76Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel60.add(jPanel76);
+
+        add(jPanel60);
+
+        jPanel63.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel63.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel75.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel75Layout = new javax.swing.GroupLayout(jPanel75);
+        jPanel75.setLayout(jPanel75Layout);
+        jPanel75Layout.setHorizontalGroup(
+            jPanel75Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel75Layout.setVerticalGroup(
+            jPanel75Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel75);
+
+        jPanel78.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel78Layout = new javax.swing.GroupLayout(jPanel78);
+        jPanel78.setLayout(jPanel78Layout);
+        jPanel78Layout.setHorizontalGroup(
+            jPanel78Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel78Layout.setVerticalGroup(
+            jPanel78Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel78);
+
+        jToggleButton25.setMargin(null);
+        jPanel63.add(jToggleButton25);
+
+        jPanel79.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel79Layout = new javax.swing.GroupLayout(jPanel79);
+        jPanel79.setLayout(jPanel79Layout);
+        jPanel79Layout.setHorizontalGroup(
+            jPanel79Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel79Layout.setVerticalGroup(
+            jPanel79Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel79);
+
+        jToggleButton28.setMargin(null);
+        jPanel63.add(jToggleButton28);
+
+        jPanel80.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel80Layout = new javax.swing.GroupLayout(jPanel80);
+        jPanel80.setLayout(jPanel80Layout);
+        jPanel80Layout.setHorizontalGroup(
+            jPanel80Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel80Layout.setVerticalGroup(
+            jPanel80Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel80);
+
+        jToggleButton29.setMargin(null);
+        jPanel63.add(jToggleButton29);
+
+        jPanel81.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel81Layout = new javax.swing.GroupLayout(jPanel81);
+        jPanel81.setLayout(jPanel81Layout);
+        jPanel81Layout.setHorizontalGroup(
+            jPanel81Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel81Layout.setVerticalGroup(
+            jPanel81Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel81);
+
+        jToggleButton30.setMargin(null);
+        jPanel63.add(jToggleButton30);
+
+        jPanel82.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel82Layout = new javax.swing.GroupLayout(jPanel82);
+        jPanel82.setLayout(jPanel82Layout);
+        jPanel82Layout.setHorizontalGroup(
+            jPanel82Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel82Layout.setVerticalGroup(
+            jPanel82Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel82);
+
+        jToggleButton31.setMargin(null);
+        jPanel63.add(jToggleButton31);
+
+        jPanel83.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel83Layout = new javax.swing.GroupLayout(jPanel83);
+        jPanel83.setLayout(jPanel83Layout);
+        jPanel83Layout.setHorizontalGroup(
+            jPanel83Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel83Layout.setVerticalGroup(
+            jPanel83Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel83);
+
+        jToggleButton32.setText("jToggleButton1");
+        jToggleButton32.setMargin(null);
+        jPanel63.add(jToggleButton32);
+
+        jPanel84.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel84Layout = new javax.swing.GroupLayout(jPanel84);
+        jPanel84.setLayout(jPanel84Layout);
+        jPanel84Layout.setHorizontalGroup(
+            jPanel84Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel84Layout.setVerticalGroup(
+            jPanel84Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel84);
+
+        jToggleButton33.setText("jToggleButton1");
+        jToggleButton33.setMargin(null);
+        jPanel63.add(jToggleButton33);
+
+        jPanel85.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel85Layout = new javax.swing.GroupLayout(jPanel85);
+        jPanel85.setLayout(jPanel85Layout);
+        jPanel85Layout.setHorizontalGroup(
+            jPanel85Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel85Layout.setVerticalGroup(
+            jPanel85Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel85);
+
+        jToggleButton34.setText("jToggleButton1");
+        jToggleButton34.setMargin(null);
+        jPanel63.add(jToggleButton34);
+
+        jPanel86.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel86Layout = new javax.swing.GroupLayout(jPanel86);
+        jPanel86.setLayout(jPanel86Layout);
+        jPanel86Layout.setHorizontalGroup(
+            jPanel86Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel86Layout.setVerticalGroup(
+            jPanel86Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel86);
+
+        jToggleButton35.setText("jToggleButton1");
+        jToggleButton35.setMargin(null);
+        jPanel63.add(jToggleButton35);
+
+        jPanel87.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel87Layout = new javax.swing.GroupLayout(jPanel87);
+        jPanel87.setLayout(jPanel87Layout);
+        jPanel87Layout.setHorizontalGroup(
+            jPanel87Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel87Layout.setVerticalGroup(
+            jPanel87Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel63.add(jPanel87);
+
+        jToggleButton36.setText("jToggleButton1");
+        jToggleButton36.setMargin(null);
+        jPanel63.add(jToggleButton36);
+
+        add(jPanel63);
+
+        jPanel88.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel88.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel89.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel89Layout = new javax.swing.GroupLayout(jPanel89);
+        jPanel89.setLayout(jPanel89Layout);
+        jPanel89Layout.setHorizontalGroup(
+            jPanel89Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel89Layout.setVerticalGroup(
+            jPanel89Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel89);
+
+        jToggleButton37.setMargin(null);
+        jPanel88.add(jToggleButton37);
+
+        jPanel91.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel91Layout = new javax.swing.GroupLayout(jPanel91);
+        jPanel91.setLayout(jPanel91Layout);
+        jPanel91Layout.setHorizontalGroup(
+            jPanel91Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel91Layout.setVerticalGroup(
+            jPanel91Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel91);
+
+        jToggleButton38.setMargin(null);
+        jPanel88.add(jToggleButton38);
+
+        jPanel92.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel92Layout = new javax.swing.GroupLayout(jPanel92);
+        jPanel92.setLayout(jPanel92Layout);
+        jPanel92Layout.setHorizontalGroup(
+            jPanel92Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel92Layout.setVerticalGroup(
+            jPanel92Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel92);
+
+        jToggleButton39.setMargin(null);
+        jPanel88.add(jToggleButton39);
+
+        jPanel93.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel93Layout = new javax.swing.GroupLayout(jPanel93);
+        jPanel93.setLayout(jPanel93Layout);
+        jPanel93Layout.setHorizontalGroup(
+            jPanel93Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel93Layout.setVerticalGroup(
+            jPanel93Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel93);
+
+        jToggleButton40.setMargin(null);
+        jPanel88.add(jToggleButton40);
+
+        jPanel94.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel94Layout = new javax.swing.GroupLayout(jPanel94);
+        jPanel94.setLayout(jPanel94Layout);
+        jPanel94Layout.setHorizontalGroup(
+            jPanel94Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel94Layout.setVerticalGroup(
+            jPanel94Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel94);
+
+        jToggleButton41.setFont(new java.awt.Font("Ubuntu", 0, 7)); // NOI18N
+        jToggleButton41.setText("55-55");
+        jToggleButton41.setActionCommand("");
+        jToggleButton41.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jPanel88.add(jToggleButton41);
+
+        jPanel95.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel95Layout = new javax.swing.GroupLayout(jPanel95);
+        jPanel95.setLayout(jPanel95Layout);
+        jPanel95Layout.setHorizontalGroup(
+            jPanel95Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel95Layout.setVerticalGroup(
+            jPanel95Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel95);
+
+        jToggleButton42.setText("jToggleButton1");
+        jToggleButton42.setMargin(null);
+        jPanel88.add(jToggleButton42);
+
+        jPanel96.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel96Layout = new javax.swing.GroupLayout(jPanel96);
+        jPanel96.setLayout(jPanel96Layout);
+        jPanel96Layout.setHorizontalGroup(
+            jPanel96Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel96Layout.setVerticalGroup(
+            jPanel96Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel96);
+
+        jToggleButton43.setText("jToggleButton1");
+        jToggleButton43.setMargin(null);
+        jPanel88.add(jToggleButton43);
+
+        jPanel97.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel97Layout = new javax.swing.GroupLayout(jPanel97);
+        jPanel97.setLayout(jPanel97Layout);
+        jPanel97Layout.setHorizontalGroup(
+            jPanel97Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel97Layout.setVerticalGroup(
+            jPanel97Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel97);
+
+        jToggleButton44.setText("jToggleButton1");
+        jToggleButton44.setMargin(null);
+        jPanel88.add(jToggleButton44);
+
+        jPanel98.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel98Layout = new javax.swing.GroupLayout(jPanel98);
+        jPanel98.setLayout(jPanel98Layout);
+        jPanel98Layout.setHorizontalGroup(
+            jPanel98Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel98Layout.setVerticalGroup(
+            jPanel98Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel98);
+
+        jToggleButton45.setText("jToggleButton1");
+        jToggleButton45.setMargin(null);
+        jPanel88.add(jToggleButton45);
+
+        jPanel99.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel99Layout = new javax.swing.GroupLayout(jPanel99);
+        jPanel99.setLayout(jPanel99Layout);
+        jPanel99Layout.setHorizontalGroup(
+            jPanel99Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel99Layout.setVerticalGroup(
+            jPanel99Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel99);
+
+        jToggleButton46.setText("jToggleButton1");
+        jToggleButton46.setMargin(null);
+        jPanel88.add(jToggleButton46);
+
+        jPanel100.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel100Layout = new javax.swing.GroupLayout(jPanel100);
+        jPanel100.setLayout(jPanel100Layout);
+        jPanel100Layout.setHorizontalGroup(
+            jPanel100Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel100Layout.setVerticalGroup(
+            jPanel100Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel100);
+
+        jToggleButton47.setText("jToggleButton1");
+        jToggleButton47.setMargin(null);
+        jPanel88.add(jToggleButton47);
+
+        jPanel101.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel101Layout = new javax.swing.GroupLayout(jPanel101);
+        jPanel101.setLayout(jPanel101Layout);
+        jPanel101Layout.setHorizontalGroup(
+            jPanel101Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel101Layout.setVerticalGroup(
+            jPanel101Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel88.add(jPanel101);
+
+        add(jPanel88);
+
+        jPanel90.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel90.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel102.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel102Layout = new javax.swing.GroupLayout(jPanel102);
+        jPanel102.setLayout(jPanel102Layout);
+        jPanel102Layout.setHorizontalGroup(
+            jPanel102Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel102Layout.setVerticalGroup(
+            jPanel102Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel102);
+
+        jPanel103.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel103Layout = new javax.swing.GroupLayout(jPanel103);
+        jPanel103.setLayout(jPanel103Layout);
+        jPanel103Layout.setHorizontalGroup(
+            jPanel103Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel103Layout.setVerticalGroup(
+            jPanel103Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel103);
+
+        jToggleButton48.setMargin(null);
+        jPanel90.add(jToggleButton48);
+
+        jPanel104.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel104Layout = new javax.swing.GroupLayout(jPanel104);
+        jPanel104.setLayout(jPanel104Layout);
+        jPanel104Layout.setHorizontalGroup(
+            jPanel104Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel104Layout.setVerticalGroup(
+            jPanel104Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel104);
+
+        jToggleButton49.setMargin(null);
+        jPanel90.add(jToggleButton49);
+
+        jPanel105.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel105Layout = new javax.swing.GroupLayout(jPanel105);
+        jPanel105.setLayout(jPanel105Layout);
+        jPanel105Layout.setHorizontalGroup(
+            jPanel105Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel105Layout.setVerticalGroup(
+            jPanel105Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel105);
+
+        jToggleButton50.setMargin(null);
+        jPanel90.add(jToggleButton50);
+
+        jPanel106.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel106Layout = new javax.swing.GroupLayout(jPanel106);
+        jPanel106.setLayout(jPanel106Layout);
+        jPanel106Layout.setHorizontalGroup(
+            jPanel106Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel106Layout.setVerticalGroup(
+            jPanel106Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel106);
+
+        jToggleButton51.setMargin(null);
+        jPanel90.add(jToggleButton51);
+
+        jPanel107.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel107Layout = new javax.swing.GroupLayout(jPanel107);
+        jPanel107.setLayout(jPanel107Layout);
+        jPanel107Layout.setHorizontalGroup(
+            jPanel107Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel107Layout.setVerticalGroup(
+            jPanel107Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel107);
+
+        jToggleButton52.setText("jToggleButton1");
+        jToggleButton52.setMargin(null);
+        jPanel90.add(jToggleButton52);
+
+        jPanel108.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel108Layout = new javax.swing.GroupLayout(jPanel108);
+        jPanel108.setLayout(jPanel108Layout);
+        jPanel108Layout.setHorizontalGroup(
+            jPanel108Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel108Layout.setVerticalGroup(
+            jPanel108Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel108);
+
+        jToggleButton53.setText("jToggleButton1");
+        jToggleButton53.setMargin(null);
+        jPanel90.add(jToggleButton53);
+
+        jPanel109.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel109Layout = new javax.swing.GroupLayout(jPanel109);
+        jPanel109.setLayout(jPanel109Layout);
+        jPanel109Layout.setHorizontalGroup(
+            jPanel109Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel109Layout.setVerticalGroup(
+            jPanel109Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel109);
+
+        jToggleButton54.setText("jToggleButton1");
+        jToggleButton54.setMargin(null);
+        jPanel90.add(jToggleButton54);
+
+        jPanel110.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel110Layout = new javax.swing.GroupLayout(jPanel110);
+        jPanel110.setLayout(jPanel110Layout);
+        jPanel110Layout.setHorizontalGroup(
+            jPanel110Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel110Layout.setVerticalGroup(
+            jPanel110Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel110);
+
+        jToggleButton55.setText("jToggleButton1");
+        jToggleButton55.setMargin(null);
+        jPanel90.add(jToggleButton55);
+
+        jPanel111.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel111Layout = new javax.swing.GroupLayout(jPanel111);
+        jPanel111.setLayout(jPanel111Layout);
+        jPanel111Layout.setHorizontalGroup(
+            jPanel111Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel111Layout.setVerticalGroup(
+            jPanel111Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel111);
+
+        jToggleButton56.setText("jToggleButton1");
+        jToggleButton56.setMargin(null);
+        jPanel90.add(jToggleButton56);
+
+        jPanel112.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel112Layout = new javax.swing.GroupLayout(jPanel112);
+        jPanel112.setLayout(jPanel112Layout);
+        jPanel112Layout.setHorizontalGroup(
+            jPanel112Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel112Layout.setVerticalGroup(
+            jPanel112Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel90.add(jPanel112);
+
+        jToggleButton57.setText("jToggleButton1");
+        jToggleButton57.setMargin(null);
+        jPanel90.add(jToggleButton57);
+
+        add(jPanel90);
+
+        jPanel113.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel113.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel114.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel114Layout = new javax.swing.GroupLayout(jPanel114);
+        jPanel114.setLayout(jPanel114Layout);
+        jPanel114Layout.setHorizontalGroup(
+            jPanel114Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel114Layout.setVerticalGroup(
+            jPanel114Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel114);
+
+        jToggleButton58.setMargin(null);
+        jPanel113.add(jToggleButton58);
+
+        jPanel115.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel115Layout = new javax.swing.GroupLayout(jPanel115);
+        jPanel115.setLayout(jPanel115Layout);
+        jPanel115Layout.setHorizontalGroup(
+            jPanel115Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel115Layout.setVerticalGroup(
+            jPanel115Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel115);
+
+        jPanel116.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel116Layout = new javax.swing.GroupLayout(jPanel116);
+        jPanel116.setLayout(jPanel116Layout);
+        jPanel116Layout.setHorizontalGroup(
+            jPanel116Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel116Layout.setVerticalGroup(
+            jPanel116Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel116);
+
+        jPanel117.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel117Layout = new javax.swing.GroupLayout(jPanel117);
+        jPanel117.setLayout(jPanel117Layout);
+        jPanel117Layout.setHorizontalGroup(
+            jPanel117Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel117Layout.setVerticalGroup(
+            jPanel117Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel117);
+
+        jToggleButton59.setMargin(null);
+        jPanel113.add(jToggleButton59);
+
+        jPanel118.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel118Layout = new javax.swing.GroupLayout(jPanel118);
+        jPanel118.setLayout(jPanel118Layout);
+        jPanel118Layout.setHorizontalGroup(
+            jPanel118Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel118Layout.setVerticalGroup(
+            jPanel118Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel118);
+
+        jToggleButton60.setMargin(null);
+        jPanel113.add(jToggleButton60);
+
+        jPanel119.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel119Layout = new javax.swing.GroupLayout(jPanel119);
+        jPanel119.setLayout(jPanel119Layout);
+        jPanel119Layout.setHorizontalGroup(
+            jPanel119Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel119Layout.setVerticalGroup(
+            jPanel119Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel119);
+
+        jToggleButton61.setText("jToggleButton1");
+        jToggleButton61.setMargin(null);
+        jPanel113.add(jToggleButton61);
+
+        jPanel120.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel120Layout = new javax.swing.GroupLayout(jPanel120);
+        jPanel120.setLayout(jPanel120Layout);
+        jPanel120Layout.setHorizontalGroup(
+            jPanel120Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel120Layout.setVerticalGroup(
+            jPanel120Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel120);
+
+        jPanel121.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel121Layout = new javax.swing.GroupLayout(jPanel121);
+        jPanel121.setLayout(jPanel121Layout);
+        jPanel121Layout.setHorizontalGroup(
+            jPanel121Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel121Layout.setVerticalGroup(
+            jPanel121Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel121);
+
+        jPanel122.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel122Layout = new javax.swing.GroupLayout(jPanel122);
+        jPanel122.setLayout(jPanel122Layout);
+        jPanel122Layout.setHorizontalGroup(
+            jPanel122Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel122Layout.setVerticalGroup(
+            jPanel122Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel122);
+
+        jToggleButton62.setText("jToggleButton1");
+        jToggleButton62.setMargin(null);
+        jPanel113.add(jToggleButton62);
+
+        jPanel123.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel123Layout = new javax.swing.GroupLayout(jPanel123);
+        jPanel123.setLayout(jPanel123Layout);
+        jPanel123Layout.setHorizontalGroup(
+            jPanel123Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel123Layout.setVerticalGroup(
+            jPanel123Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel123);
+
+        jToggleButton63.setText("jToggleButton1");
+        jToggleButton63.setMargin(null);
+        jPanel113.add(jToggleButton63);
+
+        jPanel124.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel124Layout = new javax.swing.GroupLayout(jPanel124);
+        jPanel124.setLayout(jPanel124Layout);
+        jPanel124Layout.setHorizontalGroup(
+            jPanel124Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel124Layout.setVerticalGroup(
+            jPanel124Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel124);
+
+        jToggleButton64.setText("jToggleButton1");
+        jToggleButton64.setMargin(null);
+        jPanel113.add(jToggleButton64);
+
+        jPanel125.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel125Layout = new javax.swing.GroupLayout(jPanel125);
+        jPanel125.setLayout(jPanel125Layout);
+        jPanel125Layout.setHorizontalGroup(
+            jPanel125Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel125Layout.setVerticalGroup(
+            jPanel125Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel125);
+
+        jPanel126.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel126Layout = new javax.swing.GroupLayout(jPanel126);
+        jPanel126.setLayout(jPanel126Layout);
+        jPanel126Layout.setHorizontalGroup(
+            jPanel126Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel126Layout.setVerticalGroup(
+            jPanel126Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel126);
+
+        jPanel128.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel128Layout = new javax.swing.GroupLayout(jPanel128);
+        jPanel128.setLayout(jPanel128Layout);
+        jPanel128Layout.setHorizontalGroup(
+            jPanel128Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel128Layout.setVerticalGroup(
+            jPanel128Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel128);
+
+        jToggleButton65.setText("jToggleButton1");
+        jToggleButton65.setMargin(null);
+        jPanel113.add(jToggleButton65);
+
+        jPanel127.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel127Layout = new javax.swing.GroupLayout(jPanel127);
+        jPanel127.setLayout(jPanel127Layout);
+        jPanel127Layout.setHorizontalGroup(
+            jPanel127Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel127Layout.setVerticalGroup(
+            jPanel127Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel113.add(jPanel127);
+
+        add(jPanel113);
+
+        jPanel129.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel129.setLayout(new java.awt.GridLayout(23, 0));
+
+        jToggleButton66.setMargin(null);
+        jPanel129.add(jToggleButton66);
+
+        jPanel131.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel131Layout = new javax.swing.GroupLayout(jPanel131);
+        jPanel131.setLayout(jPanel131Layout);
+        jPanel131Layout.setHorizontalGroup(
+            jPanel131Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel131Layout.setVerticalGroup(
+            jPanel131Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel131);
+
+        jToggleButton67.setMargin(null);
+        jPanel129.add(jToggleButton67);
+
+        jPanel132.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel132Layout = new javax.swing.GroupLayout(jPanel132);
+        jPanel132.setLayout(jPanel132Layout);
+        jPanel132Layout.setHorizontalGroup(
+            jPanel132Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel132Layout.setVerticalGroup(
+            jPanel132Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel132);
+
+        jToggleButton68.setMargin(null);
+        jPanel129.add(jToggleButton68);
+
+        jPanel133.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel133Layout = new javax.swing.GroupLayout(jPanel133);
+        jPanel133.setLayout(jPanel133Layout);
+        jPanel133Layout.setHorizontalGroup(
+            jPanel133Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel133Layout.setVerticalGroup(
+            jPanel133Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel133);
+
+        jToggleButton69.setMargin(null);
+        jPanel129.add(jToggleButton69);
+
+        jPanel134.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel134Layout = new javax.swing.GroupLayout(jPanel134);
+        jPanel134.setLayout(jPanel134Layout);
+        jPanel134Layout.setHorizontalGroup(
+            jPanel134Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel134Layout.setVerticalGroup(
+            jPanel134Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel134);
+
+        jToggleButton70.setText("jToggleButton1");
+        jToggleButton70.setMargin(null);
+        jPanel129.add(jToggleButton70);
+
+        jPanel135.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel135Layout = new javax.swing.GroupLayout(jPanel135);
+        jPanel135.setLayout(jPanel135Layout);
+        jPanel135Layout.setHorizontalGroup(
+            jPanel135Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel135Layout.setVerticalGroup(
+            jPanel135Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel135);
+
+        jToggleButton71.setText("jToggleButton1");
+        jToggleButton71.setMargin(null);
+        jPanel129.add(jToggleButton71);
+
+        jPanel136.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel136Layout = new javax.swing.GroupLayout(jPanel136);
+        jPanel136.setLayout(jPanel136Layout);
+        jPanel136Layout.setHorizontalGroup(
+            jPanel136Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel136Layout.setVerticalGroup(
+            jPanel136Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel136);
+
+        jToggleButton72.setText("jToggleButton1");
+        jToggleButton72.setMargin(null);
+        jPanel129.add(jToggleButton72);
+
+        jPanel137.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel137Layout = new javax.swing.GroupLayout(jPanel137);
+        jPanel137.setLayout(jPanel137Layout);
+        jPanel137Layout.setHorizontalGroup(
+            jPanel137Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel137Layout.setVerticalGroup(
+            jPanel137Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel137);
+
+        jToggleButton73.setText("jToggleButton1");
+        jToggleButton73.setMargin(null);
+        jPanel129.add(jToggleButton73);
+
+        jPanel138.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel138Layout = new javax.swing.GroupLayout(jPanel138);
+        jPanel138.setLayout(jPanel138Layout);
+        jPanel138Layout.setHorizontalGroup(
+            jPanel138Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel138Layout.setVerticalGroup(
+            jPanel138Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel138);
+
+        jToggleButton74.setText("jToggleButton1");
+        jToggleButton74.setMargin(null);
+        jPanel129.add(jToggleButton74);
+
+        jPanel139.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel139Layout = new javax.swing.GroupLayout(jPanel139);
+        jPanel139.setLayout(jPanel139Layout);
+        jPanel139Layout.setHorizontalGroup(
+            jPanel139Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel139Layout.setVerticalGroup(
+            jPanel139Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel139);
+
+        jToggleButton75.setText("jToggleButton1");
+        jToggleButton75.setMargin(null);
+        jPanel129.add(jToggleButton75);
+
+        jPanel140.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel140Layout = new javax.swing.GroupLayout(jPanel140);
+        jPanel140.setLayout(jPanel140Layout);
+        jPanel140Layout.setHorizontalGroup(
+            jPanel140Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel140Layout.setVerticalGroup(
+            jPanel140Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel140);
+
+        jToggleButton76.setText("jToggleButton1");
+        jToggleButton76.setMargin(null);
+        jPanel129.add(jToggleButton76);
+
+        jPanel141.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel141Layout = new javax.swing.GroupLayout(jPanel141);
+        jPanel141.setLayout(jPanel141Layout);
+        jPanel141Layout.setHorizontalGroup(
+            jPanel141Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel141Layout.setVerticalGroup(
+            jPanel141Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel129.add(jPanel141);
+
+        jToggleButton77.setText("jToggleButton1");
+        jToggleButton77.setMargin(null);
+        jPanel129.add(jToggleButton77);
+
+        add(jPanel129);
+
+        jPanel130.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel130.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel142.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel142Layout = new javax.swing.GroupLayout(jPanel142);
+        jPanel142.setLayout(jPanel142Layout);
+        jPanel142Layout.setHorizontalGroup(
+            jPanel142Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel142Layout.setVerticalGroup(
+            jPanel142Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel142);
+
+        jToggleButton79.setMargin(null);
+        jPanel130.add(jToggleButton79);
+
+        jPanel143.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel143Layout = new javax.swing.GroupLayout(jPanel143);
+        jPanel143.setLayout(jPanel143Layout);
+        jPanel143Layout.setHorizontalGroup(
+            jPanel143Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel143Layout.setVerticalGroup(
+            jPanel143Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel143);
+
+        jToggleButton80.setMargin(null);
+        jPanel130.add(jToggleButton80);
+
+        jPanel144.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel144Layout = new javax.swing.GroupLayout(jPanel144);
+        jPanel144.setLayout(jPanel144Layout);
+        jPanel144Layout.setHorizontalGroup(
+            jPanel144Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel144Layout.setVerticalGroup(
+            jPanel144Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel144);
+
+        jToggleButton81.setMargin(null);
+        jPanel130.add(jToggleButton81);
+
+        jPanel145.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel145Layout = new javax.swing.GroupLayout(jPanel145);
+        jPanel145.setLayout(jPanel145Layout);
+        jPanel145Layout.setHorizontalGroup(
+            jPanel145Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel145Layout.setVerticalGroup(
+            jPanel145Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel145);
+
+        jToggleButton82.setText("jToggleButton1");
+        jToggleButton82.setMargin(null);
+        jPanel130.add(jToggleButton82);
+
+        jPanel146.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel146Layout = new javax.swing.GroupLayout(jPanel146);
+        jPanel146.setLayout(jPanel146Layout);
+        jPanel146Layout.setHorizontalGroup(
+            jPanel146Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel146Layout.setVerticalGroup(
+            jPanel146Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel146);
+
+        jToggleButton83.setFont(new java.awt.Font("Dialog", 0, 8)); // NOI18N
+        jToggleButton83.setText("F");
+        jToggleButton83.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jToggleButton83.setMargin(null);
+        jToggleButton83.setMinimumSize(new java.awt.Dimension(20, 20));
+        jToggleButton83.setPreferredSize(new java.awt.Dimension(20, 20));
+        jPanel130.add(jToggleButton83);
+
+        jPanel147.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel147Layout = new javax.swing.GroupLayout(jPanel147);
+        jPanel147.setLayout(jPanel147Layout);
+        jPanel147Layout.setHorizontalGroup(
+            jPanel147Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel147Layout.setVerticalGroup(
+            jPanel147Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel147);
+
+        jToggleButton84.setText("jToggleButton1");
+        jToggleButton84.setMargin(null);
+        jPanel130.add(jToggleButton84);
+
+        jPanel148.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel148Layout = new javax.swing.GroupLayout(jPanel148);
+        jPanel148.setLayout(jPanel148Layout);
+        jPanel148Layout.setHorizontalGroup(
+            jPanel148Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel148Layout.setVerticalGroup(
+            jPanel148Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel148);
+
+        jToggleButton85.setText("jToggleButton1");
+        jToggleButton85.setMargin(null);
+        jPanel130.add(jToggleButton85);
+
+        jPanel149.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel149Layout = new javax.swing.GroupLayout(jPanel149);
+        jPanel149.setLayout(jPanel149Layout);
+        jPanel149Layout.setHorizontalGroup(
+            jPanel149Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel149Layout.setVerticalGroup(
+            jPanel149Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel149);
+
+        jToggleButton86.setText("jToggleButton1");
+        jToggleButton86.setMargin(null);
+        jPanel130.add(jToggleButton86);
+
+        jPanel150.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel150Layout = new javax.swing.GroupLayout(jPanel150);
+        jPanel150.setLayout(jPanel150Layout);
+        jPanel150Layout.setHorizontalGroup(
+            jPanel150Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel150Layout.setVerticalGroup(
+            jPanel150Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel150);
+
+        jToggleButton87.setText("jToggleButton1");
+        jToggleButton87.setMargin(null);
+        jPanel130.add(jToggleButton87);
+
+        jPanel151.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel151Layout = new javax.swing.GroupLayout(jPanel151);
+        jPanel151.setLayout(jPanel151Layout);
+        jPanel151Layout.setHorizontalGroup(
+            jPanel151Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel151Layout.setVerticalGroup(
+            jPanel151Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel151);
+
+        jToggleButton88.setText("jToggleButton1");
+        jToggleButton88.setMargin(null);
+        jPanel130.add(jToggleButton88);
+
+        jPanel152.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel152Layout = new javax.swing.GroupLayout(jPanel152);
+        jPanel152.setLayout(jPanel152Layout);
+        jPanel152Layout.setHorizontalGroup(
+            jPanel152Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel152Layout.setVerticalGroup(
+            jPanel152Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel130.add(jPanel152);
+
+        jToggleButton89.setText("jToggleButton1");
+        jToggleButton89.setMargin(null);
+        jPanel130.add(jToggleButton89);
+
+        add(jPanel130);
+
+        jPanel153.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel153.setLayout(new java.awt.GridLayout(23, 0));
+
+        jToggleButton78.setMargin(null);
+        jPanel153.add(jToggleButton78);
+
+        jPanel154.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel154Layout = new javax.swing.GroupLayout(jPanel154);
+        jPanel154.setLayout(jPanel154Layout);
+        jPanel154Layout.setHorizontalGroup(
+            jPanel154Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel154Layout.setVerticalGroup(
+            jPanel154Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel154);
+
+        jToggleButton90.setMargin(null);
+        jPanel153.add(jToggleButton90);
+
+        jPanel155.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel155Layout = new javax.swing.GroupLayout(jPanel155);
+        jPanel155.setLayout(jPanel155Layout);
+        jPanel155Layout.setHorizontalGroup(
+            jPanel155Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel155Layout.setVerticalGroup(
+            jPanel155Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel155);
+
+        jToggleButton91.setMargin(null);
+        jPanel153.add(jToggleButton91);
+
+        jPanel156.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel156Layout = new javax.swing.GroupLayout(jPanel156);
+        jPanel156.setLayout(jPanel156Layout);
+        jPanel156Layout.setHorizontalGroup(
+            jPanel156Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel156Layout.setVerticalGroup(
+            jPanel156Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel156);
+
+        jToggleButton92.setText("jToggleButton1");
+        jToggleButton92.setMargin(null);
+        jPanel153.add(jToggleButton92);
+
+        jPanel157.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel157Layout = new javax.swing.GroupLayout(jPanel157);
+        jPanel157.setLayout(jPanel157Layout);
+        jPanel157Layout.setHorizontalGroup(
+            jPanel157Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel157Layout.setVerticalGroup(
+            jPanel157Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel157);
+
+        jToggleButton93.setText("jToggleButton1");
+        jToggleButton93.setMargin(null);
+        jPanel153.add(jToggleButton93);
+
+        jPanel158.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel158Layout = new javax.swing.GroupLayout(jPanel158);
+        jPanel158.setLayout(jPanel158Layout);
+        jPanel158Layout.setHorizontalGroup(
+            jPanel158Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel158Layout.setVerticalGroup(
+            jPanel158Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel158);
+
+        jToggleButton94.setText("jToggleButton1");
+        jToggleButton94.setMargin(null);
+        jPanel153.add(jToggleButton94);
+
+        jPanel159.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel159Layout = new javax.swing.GroupLayout(jPanel159);
+        jPanel159.setLayout(jPanel159Layout);
+        jPanel159Layout.setHorizontalGroup(
+            jPanel159Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel159Layout.setVerticalGroup(
+            jPanel159Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel159);
+
+        jToggleButton95.setText("jToggleButton1");
+        jToggleButton95.setMargin(null);
+        jPanel153.add(jToggleButton95);
+
+        jPanel160.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel160Layout = new javax.swing.GroupLayout(jPanel160);
+        jPanel160.setLayout(jPanel160Layout);
+        jPanel160Layout.setHorizontalGroup(
+            jPanel160Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel160Layout.setVerticalGroup(
+            jPanel160Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel160);
+
+        jToggleButton96.setText("jToggleButton1");
+        jToggleButton96.setMargin(null);
+        jPanel153.add(jToggleButton96);
+
+        jPanel161.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel161Layout = new javax.swing.GroupLayout(jPanel161);
+        jPanel161.setLayout(jPanel161Layout);
+        jPanel161Layout.setHorizontalGroup(
+            jPanel161Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel161Layout.setVerticalGroup(
+            jPanel161Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel161);
+
+        jToggleButton97.setText("jToggleButton1");
+        jToggleButton97.setMargin(null);
+        jPanel153.add(jToggleButton97);
+
+        jPanel162.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel162Layout = new javax.swing.GroupLayout(jPanel162);
+        jPanel162.setLayout(jPanel162Layout);
+        jPanel162Layout.setHorizontalGroup(
+            jPanel162Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel162Layout.setVerticalGroup(
+            jPanel162Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel162);
+
+        jToggleButton98.setText("jToggleButton1");
+        jToggleButton98.setMargin(null);
+        jPanel153.add(jToggleButton98);
+
+        jPanel163.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel163Layout = new javax.swing.GroupLayout(jPanel163);
+        jPanel163.setLayout(jPanel163Layout);
+        jPanel163Layout.setHorizontalGroup(
+            jPanel163Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel163Layout.setVerticalGroup(
+            jPanel163Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel163);
+
+        jToggleButton99.setText("jToggleButton1");
+        jToggleButton99.setMargin(null);
+        jPanel153.add(jToggleButton99);
+
+        jPanel164.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel164Layout = new javax.swing.GroupLayout(jPanel164);
+        jPanel164.setLayout(jPanel164Layout);
+        jPanel164Layout.setHorizontalGroup(
+            jPanel164Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel164Layout.setVerticalGroup(
+            jPanel164Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel153.add(jPanel164);
+
+        jToggleButton100.setText("jToggleButton1");
+        jToggleButton100.setMargin(null);
+        jPanel153.add(jToggleButton100);
+
+        add(jPanel153);
+
+        jPanel165.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel165.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel174.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel174Layout = new javax.swing.GroupLayout(jPanel174);
+        jPanel174.setLayout(jPanel174Layout);
+        jPanel174Layout.setHorizontalGroup(
+            jPanel174Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel174Layout.setVerticalGroup(
+            jPanel174Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel174);
+
+        jToggleButton101.setMargin(null);
+        jPanel165.add(jToggleButton101);
+
+        jPanel166.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel166Layout = new javax.swing.GroupLayout(jPanel166);
+        jPanel166.setLayout(jPanel166Layout);
+        jPanel166Layout.setHorizontalGroup(
+            jPanel166Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel166Layout.setVerticalGroup(
+            jPanel166Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel166);
+
+        jToggleButton102.setMargin(null);
+        jPanel165.add(jToggleButton102);
+
+        jPanel167.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel167Layout = new javax.swing.GroupLayout(jPanel167);
+        jPanel167.setLayout(jPanel167Layout);
+        jPanel167Layout.setHorizontalGroup(
+            jPanel167Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel167Layout.setVerticalGroup(
+            jPanel167Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel167);
+
+        jToggleButton103.setText("jToggleButton1");
+        jToggleButton103.setMargin(null);
+        jPanel165.add(jToggleButton103);
+
+        jPanel168.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel168Layout = new javax.swing.GroupLayout(jPanel168);
+        jPanel168.setLayout(jPanel168Layout);
+        jPanel168Layout.setHorizontalGroup(
+            jPanel168Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel168Layout.setVerticalGroup(
+            jPanel168Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel168);
+
+        jPanel169.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel169Layout = new javax.swing.GroupLayout(jPanel169);
+        jPanel169.setLayout(jPanel169Layout);
+        jPanel169Layout.setHorizontalGroup(
+            jPanel169Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel169Layout.setVerticalGroup(
+            jPanel169Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel169);
+
+        jPanel170.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel170Layout = new javax.swing.GroupLayout(jPanel170);
+        jPanel170.setLayout(jPanel170Layout);
+        jPanel170Layout.setHorizontalGroup(
+            jPanel170Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel170Layout.setVerticalGroup(
+            jPanel170Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel170);
+
+        jToggleButton104.setText("jToggleButton1");
+        jToggleButton104.setMargin(null);
+        jPanel165.add(jToggleButton104);
+
+        jPanel171.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel171Layout = new javax.swing.GroupLayout(jPanel171);
+        jPanel171.setLayout(jPanel171Layout);
+        jPanel171Layout.setHorizontalGroup(
+            jPanel171Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel171Layout.setVerticalGroup(
+            jPanel171Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel171);
+
+        jToggleButton106.setText("jToggleButton1");
+        jToggleButton106.setMargin(null);
+        jPanel165.add(jToggleButton106);
+
+        jPanel172.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel172Layout = new javax.swing.GroupLayout(jPanel172);
+        jPanel172.setLayout(jPanel172Layout);
+        jPanel172Layout.setHorizontalGroup(
+            jPanel172Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel172Layout.setVerticalGroup(
+            jPanel172Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel172);
+
+        jToggleButton107.setText("jToggleButton1");
+        jToggleButton107.setMargin(null);
+        jPanel165.add(jToggleButton107);
+
+        jPanel173.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel173Layout = new javax.swing.GroupLayout(jPanel173);
+        jPanel173.setLayout(jPanel173Layout);
+        jPanel173Layout.setHorizontalGroup(
+            jPanel173Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel173Layout.setVerticalGroup(
+            jPanel173Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel173);
+
+        jPanel175.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel175Layout = new javax.swing.GroupLayout(jPanel175);
+        jPanel175.setLayout(jPanel175Layout);
+        jPanel175Layout.setHorizontalGroup(
+            jPanel175Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel175Layout.setVerticalGroup(
+            jPanel175Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel175);
+
+        jPanel176.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel176Layout = new javax.swing.GroupLayout(jPanel176);
+        jPanel176.setLayout(jPanel176Layout);
+        jPanel176Layout.setHorizontalGroup(
+            jPanel176Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel176Layout.setVerticalGroup(
+            jPanel176Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel176);
+
+        jToggleButton110.setText("jToggleButton1");
+        jToggleButton110.setMargin(null);
+        jPanel165.add(jToggleButton110);
+
+        jPanel177.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel177Layout = new javax.swing.GroupLayout(jPanel177);
+        jPanel177.setLayout(jPanel177Layout);
+        jPanel177Layout.setHorizontalGroup(
+            jPanel177Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel177Layout.setVerticalGroup(
+            jPanel177Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel177);
+
+        jToggleButton111.setText("jToggleButton1");
+        jToggleButton111.setMargin(null);
+        jPanel165.add(jToggleButton111);
+
+        jPanel178.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel178Layout = new javax.swing.GroupLayout(jPanel178);
+        jPanel178.setLayout(jPanel178Layout);
+        jPanel178Layout.setHorizontalGroup(
+            jPanel178Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel178Layout.setVerticalGroup(
+            jPanel178Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel178);
+
+        jToggleButton112.setText("jToggleButton1");
+        jToggleButton112.setMargin(null);
+        jPanel165.add(jToggleButton112);
+
+        jPanel179.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel179Layout = new javax.swing.GroupLayout(jPanel179);
+        jPanel179.setLayout(jPanel179Layout);
+        jPanel179Layout.setHorizontalGroup(
+            jPanel179Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel179Layout.setVerticalGroup(
+            jPanel179Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel165.add(jPanel179);
+
+        add(jPanel165);
+
+        jPanel180.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel180.setLayout(new java.awt.GridLayout(23, 0));
+
+        jToggleButton105.setMargin(null);
+        jPanel180.add(jToggleButton105);
+
+        jPanel181.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel181Layout = new javax.swing.GroupLayout(jPanel181);
+        jPanel181.setLayout(jPanel181Layout);
+        jPanel181Layout.setHorizontalGroup(
+            jPanel181Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel181Layout.setVerticalGroup(
+            jPanel181Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel181);
+
+        jToggleButton108.setMargin(null);
+        jPanel180.add(jToggleButton108);
+
+        jPanel182.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel182Layout = new javax.swing.GroupLayout(jPanel182);
+        jPanel182.setLayout(jPanel182Layout);
+        jPanel182Layout.setHorizontalGroup(
+            jPanel182Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel182Layout.setVerticalGroup(
+            jPanel182Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel182);
+
+        jToggleButton109.setText("jToggleButton1");
+        jToggleButton109.setMargin(null);
+        jPanel180.add(jToggleButton109);
+
+        jPanel183.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel183Layout = new javax.swing.GroupLayout(jPanel183);
+        jPanel183.setLayout(jPanel183Layout);
+        jPanel183Layout.setHorizontalGroup(
+            jPanel183Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel183Layout.setVerticalGroup(
+            jPanel183Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel183);
+
+        jToggleButton113.setText("jToggleButton1");
+        jToggleButton113.setMargin(null);
+        jPanel180.add(jToggleButton113);
+
+        jPanel184.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel184Layout = new javax.swing.GroupLayout(jPanel184);
+        jPanel184.setLayout(jPanel184Layout);
+        jPanel184Layout.setHorizontalGroup(
+            jPanel184Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel184Layout.setVerticalGroup(
+            jPanel184Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel184);
+
+        jToggleButton114.setText("jToggleButton1");
+        jToggleButton114.setMargin(null);
+        jPanel180.add(jToggleButton114);
+
+        jPanel185.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel185Layout = new javax.swing.GroupLayout(jPanel185);
+        jPanel185.setLayout(jPanel185Layout);
+        jPanel185Layout.setHorizontalGroup(
+            jPanel185Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel185Layout.setVerticalGroup(
+            jPanel185Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel185);
+
+        jToggleButton115.setText("jToggleButton1");
+        jToggleButton115.setMargin(null);
+        jPanel180.add(jToggleButton115);
+
+        jPanel186.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel186Layout = new javax.swing.GroupLayout(jPanel186);
+        jPanel186.setLayout(jPanel186Layout);
+        jPanel186Layout.setHorizontalGroup(
+            jPanel186Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel186Layout.setVerticalGroup(
+            jPanel186Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel186);
+
+        jToggleButton116.setText("jToggleButton1");
+        jToggleButton116.setMargin(null);
+        jPanel180.add(jToggleButton116);
+
+        jPanel187.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel187Layout = new javax.swing.GroupLayout(jPanel187);
+        jPanel187.setLayout(jPanel187Layout);
+        jPanel187Layout.setHorizontalGroup(
+            jPanel187Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel187Layout.setVerticalGroup(
+            jPanel187Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel187);
+
+        jToggleButton117.setText("jToggleButton1");
+        jToggleButton117.setMargin(null);
+        jPanel180.add(jToggleButton117);
+
+        jPanel188.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel188Layout = new javax.swing.GroupLayout(jPanel188);
+        jPanel188.setLayout(jPanel188Layout);
+        jPanel188Layout.setHorizontalGroup(
+            jPanel188Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel188Layout.setVerticalGroup(
+            jPanel188Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel188);
+
+        jToggleButton118.setText("jToggleButton1");
+        jToggleButton118.setMargin(null);
+        jPanel180.add(jToggleButton118);
+
+        jPanel189.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel189Layout = new javax.swing.GroupLayout(jPanel189);
+        jPanel189.setLayout(jPanel189Layout);
+        jPanel189Layout.setHorizontalGroup(
+            jPanel189Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel189Layout.setVerticalGroup(
+            jPanel189Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel189);
+
+        jToggleButton119.setText("jToggleButton1");
+        jToggleButton119.setMargin(null);
+        jPanel180.add(jToggleButton119);
+
+        jPanel190.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel190Layout = new javax.swing.GroupLayout(jPanel190);
+        jPanel190.setLayout(jPanel190Layout);
+        jPanel190Layout.setHorizontalGroup(
+            jPanel190Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel190Layout.setVerticalGroup(
+            jPanel190Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel190);
+
+        jToggleButton120.setText("jToggleButton1");
+        jToggleButton120.setMargin(null);
+        jPanel180.add(jToggleButton120);
+
+        jPanel191.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel191Layout = new javax.swing.GroupLayout(jPanel191);
+        jPanel191.setLayout(jPanel191Layout);
+        jPanel191Layout.setHorizontalGroup(
+            jPanel191Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel191Layout.setVerticalGroup(
+            jPanel191Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel180.add(jPanel191);
+
+        jToggleButton121.setText("jToggleButton1");
+        jToggleButton121.setMargin(null);
+        jPanel180.add(jToggleButton121);
+
+        add(jPanel180);
+
+        jPanel192.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel192.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel193.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel193Layout = new javax.swing.GroupLayout(jPanel193);
+        jPanel193.setLayout(jPanel193Layout);
+        jPanel193Layout.setHorizontalGroup(
+            jPanel193Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel193Layout.setVerticalGroup(
+            jPanel193Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel193);
+
+        jToggleButton122.setMargin(null);
+        jPanel192.add(jToggleButton122);
+
+        jPanel194.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel194Layout = new javax.swing.GroupLayout(jPanel194);
+        jPanel194.setLayout(jPanel194Layout);
+        jPanel194Layout.setHorizontalGroup(
+            jPanel194Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel194Layout.setVerticalGroup(
+            jPanel194Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel194);
+
+        jToggleButton123.setText("jToggleButton1");
+        jToggleButton123.setMargin(null);
+        jPanel192.add(jToggleButton123);
+
+        jPanel195.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel195Layout = new javax.swing.GroupLayout(jPanel195);
+        jPanel195.setLayout(jPanel195Layout);
+        jPanel195Layout.setHorizontalGroup(
+            jPanel195Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel195Layout.setVerticalGroup(
+            jPanel195Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel195);
+
+        jToggleButton124.setText("jToggleButton1");
+        jToggleButton124.setMargin(null);
+        jPanel192.add(jToggleButton124);
+
+        jPanel196.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel196Layout = new javax.swing.GroupLayout(jPanel196);
+        jPanel196.setLayout(jPanel196Layout);
+        jPanel196Layout.setHorizontalGroup(
+            jPanel196Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel196Layout.setVerticalGroup(
+            jPanel196Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel196);
+
+        jToggleButton125.setText("jToggleButton1");
+        jToggleButton125.setMargin(null);
+        jPanel192.add(jToggleButton125);
+
+        jPanel197.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel197Layout = new javax.swing.GroupLayout(jPanel197);
+        jPanel197.setLayout(jPanel197Layout);
+        jPanel197Layout.setHorizontalGroup(
+            jPanel197Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel197Layout.setVerticalGroup(
+            jPanel197Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel197);
+
+        jToggleButton126.setText("jToggleButton1");
+        jToggleButton126.setMargin(null);
+        jPanel192.add(jToggleButton126);
+
+        jPanel198.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel198Layout = new javax.swing.GroupLayout(jPanel198);
+        jPanel198.setLayout(jPanel198Layout);
+        jPanel198Layout.setHorizontalGroup(
+            jPanel198Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel198Layout.setVerticalGroup(
+            jPanel198Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel198);
+
+        jToggleButton127.setText("jToggleButton1");
+        jToggleButton127.setMargin(null);
+        jPanel192.add(jToggleButton127);
+
+        jPanel199.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel199Layout = new javax.swing.GroupLayout(jPanel199);
+        jPanel199.setLayout(jPanel199Layout);
+        jPanel199Layout.setHorizontalGroup(
+            jPanel199Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel199Layout.setVerticalGroup(
+            jPanel199Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel199);
+
+        jToggleButton128.setText("jToggleButton1");
+        jToggleButton128.setMargin(null);
+        jPanel192.add(jToggleButton128);
+
+        jPanel200.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel200Layout = new javax.swing.GroupLayout(jPanel200);
+        jPanel200.setLayout(jPanel200Layout);
+        jPanel200Layout.setHorizontalGroup(
+            jPanel200Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel200Layout.setVerticalGroup(
+            jPanel200Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel200);
+
+        jToggleButton129.setText("jToggleButton1");
+        jToggleButton129.setMargin(null);
+        jPanel192.add(jToggleButton129);
+
+        jPanel201.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel201Layout = new javax.swing.GroupLayout(jPanel201);
+        jPanel201.setLayout(jPanel201Layout);
+        jPanel201Layout.setHorizontalGroup(
+            jPanel201Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel201Layout.setVerticalGroup(
+            jPanel201Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel201);
+
+        jToggleButton130.setText("jToggleButton1");
+        jToggleButton130.setMargin(null);
+        jPanel192.add(jToggleButton130);
+
+        jPanel202.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel202Layout = new javax.swing.GroupLayout(jPanel202);
+        jPanel202.setLayout(jPanel202Layout);
+        jPanel202Layout.setHorizontalGroup(
+            jPanel202Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel202Layout.setVerticalGroup(
+            jPanel202Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel202);
+
+        jToggleButton131.setText("jToggleButton1");
+        jToggleButton131.setMargin(null);
+        jPanel192.add(jToggleButton131);
+
+        jPanel203.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel203Layout = new javax.swing.GroupLayout(jPanel203);
+        jPanel203.setLayout(jPanel203Layout);
+        jPanel203Layout.setHorizontalGroup(
+            jPanel203Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel203Layout.setVerticalGroup(
+            jPanel203Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel192.add(jPanel203);
+
+        jToggleButton132.setText("jToggleButton1");
+        jToggleButton132.setMargin(null);
+        jPanel192.add(jToggleButton132);
+
+        add(jPanel192);
+
+        jPanel204.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel204.setLayout(new java.awt.GridLayout(23, 0));
+
+        jToggleButton133.setMargin(null);
+        jPanel204.add(jToggleButton133);
+
+        jPanel205.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel205Layout = new javax.swing.GroupLayout(jPanel205);
+        jPanel205.setLayout(jPanel205Layout);
+        jPanel205Layout.setHorizontalGroup(
+            jPanel205Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel205Layout.setVerticalGroup(
+            jPanel205Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel205);
+
+        jToggleButton134.setText("jToggleButton1");
+        jToggleButton134.setMargin(null);
+        jPanel204.add(jToggleButton134);
+
+        jPanel206.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel206Layout = new javax.swing.GroupLayout(jPanel206);
+        jPanel206.setLayout(jPanel206Layout);
+        jPanel206Layout.setHorizontalGroup(
+            jPanel206Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel206Layout.setVerticalGroup(
+            jPanel206Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel206);
+
+        jToggleButton135.setText("jToggleButton1");
+        jToggleButton135.setMargin(null);
+        jPanel204.add(jToggleButton135);
+
+        jPanel207.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel207Layout = new javax.swing.GroupLayout(jPanel207);
+        jPanel207.setLayout(jPanel207Layout);
+        jPanel207Layout.setHorizontalGroup(
+            jPanel207Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel207Layout.setVerticalGroup(
+            jPanel207Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel207);
+
+        jToggleButton136.setText("jToggleButton1");
+        jToggleButton136.setMargin(null);
+        jPanel204.add(jToggleButton136);
+
+        jPanel208.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel208Layout = new javax.swing.GroupLayout(jPanel208);
+        jPanel208.setLayout(jPanel208Layout);
+        jPanel208Layout.setHorizontalGroup(
+            jPanel208Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel208Layout.setVerticalGroup(
+            jPanel208Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel208);
+
+        jToggleButton137.setText("jToggleButton1");
+        jToggleButton137.setMargin(null);
+        jPanel204.add(jToggleButton137);
+
+        jPanel209.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel209Layout = new javax.swing.GroupLayout(jPanel209);
+        jPanel209.setLayout(jPanel209Layout);
+        jPanel209Layout.setHorizontalGroup(
+            jPanel209Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel209Layout.setVerticalGroup(
+            jPanel209Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel209);
+
+        jToggleButton138.setText("jToggleButton1");
+        jToggleButton138.setMargin(null);
+        jPanel204.add(jToggleButton138);
+
+        jPanel210.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel210Layout = new javax.swing.GroupLayout(jPanel210);
+        jPanel210.setLayout(jPanel210Layout);
+        jPanel210Layout.setHorizontalGroup(
+            jPanel210Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel210Layout.setVerticalGroup(
+            jPanel210Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel210);
+
+        jToggleButton139.setText("jToggleButton1");
+        jToggleButton139.setMargin(null);
+        jPanel204.add(jToggleButton139);
+
+        jPanel211.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel211Layout = new javax.swing.GroupLayout(jPanel211);
+        jPanel211.setLayout(jPanel211Layout);
+        jPanel211Layout.setHorizontalGroup(
+            jPanel211Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel211Layout.setVerticalGroup(
+            jPanel211Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel211);
+
+        jToggleButton140.setText("jToggleButton1");
+        jToggleButton140.setMargin(null);
+        jPanel204.add(jToggleButton140);
+
+        jPanel212.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel212Layout = new javax.swing.GroupLayout(jPanel212);
+        jPanel212.setLayout(jPanel212Layout);
+        jPanel212Layout.setHorizontalGroup(
+            jPanel212Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel212Layout.setVerticalGroup(
+            jPanel212Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel212);
+
+        jToggleButton141.setText("jToggleButton1");
+        jToggleButton141.setMargin(null);
+        jPanel204.add(jToggleButton141);
+
+        jPanel213.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel213Layout = new javax.swing.GroupLayout(jPanel213);
+        jPanel213.setLayout(jPanel213Layout);
+        jPanel213Layout.setHorizontalGroup(
+            jPanel213Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel213Layout.setVerticalGroup(
+            jPanel213Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel213);
+
+        jToggleButton142.setText("jToggleButton1");
+        jToggleButton142.setMargin(null);
+        jPanel204.add(jToggleButton142);
+
+        jPanel214.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel214Layout = new javax.swing.GroupLayout(jPanel214);
+        jPanel214.setLayout(jPanel214Layout);
+        jPanel214Layout.setHorizontalGroup(
+            jPanel214Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel214Layout.setVerticalGroup(
+            jPanel214Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel214);
+
+        jToggleButton143.setText("jToggleButton1");
+        jToggleButton143.setMargin(null);
+        jPanel204.add(jToggleButton143);
+
+        jPanel215.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel215Layout = new javax.swing.GroupLayout(jPanel215);
+        jPanel215.setLayout(jPanel215Layout);
+        jPanel215Layout.setHorizontalGroup(
+            jPanel215Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel215Layout.setVerticalGroup(
+            jPanel215Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel204.add(jPanel215);
+
+        jToggleButton144.setText("jToggleButton1");
+        jToggleButton144.setMargin(null);
+        jPanel204.add(jToggleButton144);
+
+        add(jPanel204);
+
+        jPanel216.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel216.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel217.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel217Layout = new javax.swing.GroupLayout(jPanel217);
+        jPanel217.setLayout(jPanel217Layout);
+        jPanel217Layout.setHorizontalGroup(
+            jPanel217Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel217Layout.setVerticalGroup(
+            jPanel217Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel217);
+
+        jToggleButton145.setText("jToggleButton1");
+        jToggleButton145.setMargin(null);
+        jPanel216.add(jToggleButton145);
+
+        jPanel218.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel218Layout = new javax.swing.GroupLayout(jPanel218);
+        jPanel218.setLayout(jPanel218Layout);
+        jPanel218Layout.setHorizontalGroup(
+            jPanel218Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel218Layout.setVerticalGroup(
+            jPanel218Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel218);
+
+        jPanel219.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel219Layout = new javax.swing.GroupLayout(jPanel219);
+        jPanel219.setLayout(jPanel219Layout);
+        jPanel219Layout.setHorizontalGroup(
+            jPanel219Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel219Layout.setVerticalGroup(
+            jPanel219Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel219);
+
+        jPanel220.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel220Layout = new javax.swing.GroupLayout(jPanel220);
+        jPanel220.setLayout(jPanel220Layout);
+        jPanel220Layout.setHorizontalGroup(
+            jPanel220Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel220Layout.setVerticalGroup(
+            jPanel220Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel220);
+
+        jToggleButton146.setText("jToggleButton1");
+        jToggleButton146.setMargin(null);
+        jPanel216.add(jToggleButton146);
+
+        jPanel221.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel221Layout = new javax.swing.GroupLayout(jPanel221);
+        jPanel221.setLayout(jPanel221Layout);
+        jPanel221Layout.setHorizontalGroup(
+            jPanel221Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel221Layout.setVerticalGroup(
+            jPanel221Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel221);
+
+        jToggleButton147.setText("jToggleButton1");
+        jToggleButton147.setMargin(null);
+        jPanel216.add(jToggleButton147);
+
+        jPanel222.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel222Layout = new javax.swing.GroupLayout(jPanel222);
+        jPanel222.setLayout(jPanel222Layout);
+        jPanel222Layout.setHorizontalGroup(
+            jPanel222Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel222Layout.setVerticalGroup(
+            jPanel222Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel222);
+
+        jToggleButton148.setText("jToggleButton1");
+        jToggleButton148.setMargin(null);
+        jPanel216.add(jToggleButton148);
+
+        jPanel223.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel223Layout = new javax.swing.GroupLayout(jPanel223);
+        jPanel223.setLayout(jPanel223Layout);
+        jPanel223Layout.setHorizontalGroup(
+            jPanel223Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel223Layout.setVerticalGroup(
+            jPanel223Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel223);
+
+        jPanel224.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel224Layout = new javax.swing.GroupLayout(jPanel224);
+        jPanel224.setLayout(jPanel224Layout);
+        jPanel224Layout.setHorizontalGroup(
+            jPanel224Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel224Layout.setVerticalGroup(
+            jPanel224Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel224);
+
+        jPanel225.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel225Layout = new javax.swing.GroupLayout(jPanel225);
+        jPanel225.setLayout(jPanel225Layout);
+        jPanel225Layout.setHorizontalGroup(
+            jPanel225Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel225Layout.setVerticalGroup(
+            jPanel225Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel225);
+
+        jToggleButton149.setText("jToggleButton1");
+        jToggleButton149.setMargin(null);
+        jPanel216.add(jToggleButton149);
+
+        jPanel226.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel226Layout = new javax.swing.GroupLayout(jPanel226);
+        jPanel226.setLayout(jPanel226Layout);
+        jPanel226Layout.setHorizontalGroup(
+            jPanel226Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel226Layout.setVerticalGroup(
+            jPanel226Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel226);
+
+        jToggleButton150.setText("jToggleButton1");
+        jToggleButton150.setMargin(null);
+        jPanel216.add(jToggleButton150);
+
+        jPanel227.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel227Layout = new javax.swing.GroupLayout(jPanel227);
+        jPanel227.setLayout(jPanel227Layout);
+        jPanel227Layout.setHorizontalGroup(
+            jPanel227Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel227Layout.setVerticalGroup(
+            jPanel227Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel227);
+
+        jToggleButton151.setText("jToggleButton1");
+        jToggleButton151.setMargin(null);
+        jPanel216.add(jToggleButton151);
+
+        jPanel228.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel228Layout = new javax.swing.GroupLayout(jPanel228);
+        jPanel228.setLayout(jPanel228Layout);
+        jPanel228Layout.setHorizontalGroup(
+            jPanel228Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel228Layout.setVerticalGroup(
+            jPanel228Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel228);
+
+        jPanel229.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel229Layout = new javax.swing.GroupLayout(jPanel229);
+        jPanel229.setLayout(jPanel229Layout);
+        jPanel229Layout.setHorizontalGroup(
+            jPanel229Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel229Layout.setVerticalGroup(
+            jPanel229Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel229);
+
+        jPanel230.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel230Layout = new javax.swing.GroupLayout(jPanel230);
+        jPanel230.setLayout(jPanel230Layout);
+        jPanel230Layout.setHorizontalGroup(
+            jPanel230Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel230Layout.setVerticalGroup(
+            jPanel230Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel230);
+
+        jToggleButton152.setText("jToggleButton1");
+        jToggleButton152.setMargin(null);
+        jPanel216.add(jToggleButton152);
+
+        jPanel231.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel231Layout = new javax.swing.GroupLayout(jPanel231);
+        jPanel231.setLayout(jPanel231Layout);
+        jPanel231Layout.setHorizontalGroup(
+            jPanel231Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel231Layout.setVerticalGroup(
+            jPanel231Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel216.add(jPanel231);
+
+        add(jPanel216);
+
+        jPanel232.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel232.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel233.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel233Layout = new javax.swing.GroupLayout(jPanel233);
+        jPanel233.setLayout(jPanel233Layout);
+        jPanel233Layout.setHorizontalGroup(
+            jPanel233Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel233Layout.setVerticalGroup(
+            jPanel233Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel233);
+
+        jPanel234.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel234Layout = new javax.swing.GroupLayout(jPanel234);
+        jPanel234.setLayout(jPanel234Layout);
+        jPanel234Layout.setHorizontalGroup(
+            jPanel234Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel234Layout.setVerticalGroup(
+            jPanel234Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel234);
+
+        jToggleButton153.setText("jToggleButton1");
+        jToggleButton153.setMargin(null);
+        jPanel232.add(jToggleButton153);
+
+        jPanel235.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel235Layout = new javax.swing.GroupLayout(jPanel235);
+        jPanel235.setLayout(jPanel235Layout);
+        jPanel235Layout.setHorizontalGroup(
+            jPanel235Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel235Layout.setVerticalGroup(
+            jPanel235Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel235);
+
+        jToggleButton154.setText("jToggleButton1");
+        jToggleButton154.setMargin(null);
+        jPanel232.add(jToggleButton154);
+
+        jPanel236.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel236Layout = new javax.swing.GroupLayout(jPanel236);
+        jPanel236.setLayout(jPanel236Layout);
+        jPanel236Layout.setHorizontalGroup(
+            jPanel236Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel236Layout.setVerticalGroup(
+            jPanel236Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel236);
+
+        jToggleButton155.setText("jToggleButton1");
+        jToggleButton155.setMargin(null);
+        jPanel232.add(jToggleButton155);
+
+        jPanel237.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel237Layout = new javax.swing.GroupLayout(jPanel237);
+        jPanel237.setLayout(jPanel237Layout);
+        jPanel237Layout.setHorizontalGroup(
+            jPanel237Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel237Layout.setVerticalGroup(
+            jPanel237Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel237);
+
+        jToggleButton156.setText("jToggleButton1");
+        jToggleButton156.setMargin(null);
+        jPanel232.add(jToggleButton156);
+
+        jPanel238.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel238Layout = new javax.swing.GroupLayout(jPanel238);
+        jPanel238.setLayout(jPanel238Layout);
+        jPanel238Layout.setHorizontalGroup(
+            jPanel238Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel238Layout.setVerticalGroup(
+            jPanel238Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel238);
+
+        jToggleButton157.setText("jToggleButton1");
+        jToggleButton157.setMargin(null);
+        jPanel232.add(jToggleButton157);
+
+        jPanel239.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel239Layout = new javax.swing.GroupLayout(jPanel239);
+        jPanel239.setLayout(jPanel239Layout);
+        jPanel239Layout.setHorizontalGroup(
+            jPanel239Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel239Layout.setVerticalGroup(
+            jPanel239Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel239);
+
+        jToggleButton158.setText("jToggleButton1");
+        jToggleButton158.setMargin(null);
+        jPanel232.add(jToggleButton158);
+
+        jPanel240.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel240Layout = new javax.swing.GroupLayout(jPanel240);
+        jPanel240.setLayout(jPanel240Layout);
+        jPanel240Layout.setHorizontalGroup(
+            jPanel240Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel240Layout.setVerticalGroup(
+            jPanel240Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel240);
+
+        jToggleButton159.setText("jToggleButton1");
+        jToggleButton159.setMargin(null);
+        jPanel232.add(jToggleButton159);
+
+        jPanel241.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel241Layout = new javax.swing.GroupLayout(jPanel241);
+        jPanel241.setLayout(jPanel241Layout);
+        jPanel241Layout.setHorizontalGroup(
+            jPanel241Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel241Layout.setVerticalGroup(
+            jPanel241Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel241);
+
+        jToggleButton160.setText("jToggleButton1");
+        jToggleButton160.setMargin(null);
+        jPanel232.add(jToggleButton160);
+
+        jPanel242.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel242Layout = new javax.swing.GroupLayout(jPanel242);
+        jPanel242.setLayout(jPanel242Layout);
+        jPanel242Layout.setHorizontalGroup(
+            jPanel242Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel242Layout.setVerticalGroup(
+            jPanel242Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel242);
+
+        jToggleButton161.setText("jToggleButton1");
+        jToggleButton161.setMargin(null);
+        jPanel232.add(jToggleButton161);
+
+        jPanel243.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel243Layout = new javax.swing.GroupLayout(jPanel243);
+        jPanel243.setLayout(jPanel243Layout);
+        jPanel243Layout.setHorizontalGroup(
+            jPanel243Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel243Layout.setVerticalGroup(
+            jPanel243Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel243);
+
+        jToggleButton162.setText("jToggleButton1");
+        jToggleButton162.setMargin(null);
+        jPanel232.add(jToggleButton162);
+
+        jPanel308.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel308Layout = new javax.swing.GroupLayout(jPanel308);
+        jPanel308.setLayout(jPanel308Layout);
+        jPanel308Layout.setHorizontalGroup(
+            jPanel308Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel308Layout.setVerticalGroup(
+            jPanel308Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel232.add(jPanel308);
+
+        jToggleButton206.setText("jToggleButton1");
+        jToggleButton206.setMargin(null);
+        jPanel232.add(jToggleButton206);
+
+        add(jPanel232);
+
+        jPanel244.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel244.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel245.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel245Layout = new javax.swing.GroupLayout(jPanel245);
+        jPanel245.setLayout(jPanel245Layout);
+        jPanel245Layout.setHorizontalGroup(
+            jPanel245Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel245Layout.setVerticalGroup(
+            jPanel245Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel245);
+
+        jToggleButton163.setText("jToggleButton1");
+        jToggleButton163.setMargin(null);
+        jPanel244.add(jToggleButton163);
+
+        jPanel246.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel246Layout = new javax.swing.GroupLayout(jPanel246);
+        jPanel246.setLayout(jPanel246Layout);
+        jPanel246Layout.setHorizontalGroup(
+            jPanel246Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel246Layout.setVerticalGroup(
+            jPanel246Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel246);
+
+        jToggleButton164.setText("jToggleButton1");
+        jToggleButton164.setMargin(null);
+        jPanel244.add(jToggleButton164);
+
+        jPanel247.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel247Layout = new javax.swing.GroupLayout(jPanel247);
+        jPanel247.setLayout(jPanel247Layout);
+        jPanel247Layout.setHorizontalGroup(
+            jPanel247Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel247Layout.setVerticalGroup(
+            jPanel247Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel247);
+
+        jToggleButton165.setText("jToggleButton1");
+        jToggleButton165.setMargin(null);
+        jPanel244.add(jToggleButton165);
+
+        jPanel248.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel248Layout = new javax.swing.GroupLayout(jPanel248);
+        jPanel248.setLayout(jPanel248Layout);
+        jPanel248Layout.setHorizontalGroup(
+            jPanel248Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel248Layout.setVerticalGroup(
+            jPanel248Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel248);
+
+        jToggleButton166.setText("jToggleButton1");
+        jToggleButton166.setMargin(null);
+        jPanel244.add(jToggleButton166);
+
+        jPanel249.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel249Layout = new javax.swing.GroupLayout(jPanel249);
+        jPanel249.setLayout(jPanel249Layout);
+        jPanel249Layout.setHorizontalGroup(
+            jPanel249Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel249Layout.setVerticalGroup(
+            jPanel249Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel249);
+
+        jToggleButton167.setText("jToggleButton1");
+        jToggleButton167.setMargin(null);
+        jPanel244.add(jToggleButton167);
+
+        jPanel250.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel250Layout = new javax.swing.GroupLayout(jPanel250);
+        jPanel250.setLayout(jPanel250Layout);
+        jPanel250Layout.setHorizontalGroup(
+            jPanel250Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel250Layout.setVerticalGroup(
+            jPanel250Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel250);
+
+        jToggleButton168.setText("jToggleButton1");
+        jToggleButton168.setMargin(null);
+        jPanel244.add(jToggleButton168);
+
+        jPanel251.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel251Layout = new javax.swing.GroupLayout(jPanel251);
+        jPanel251.setLayout(jPanel251Layout);
+        jPanel251Layout.setHorizontalGroup(
+            jPanel251Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel251Layout.setVerticalGroup(
+            jPanel251Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel251);
+
+        jToggleButton169.setText("jToggleButton1");
+        jToggleButton169.setMargin(null);
+        jPanel244.add(jToggleButton169);
+
+        jPanel252.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel252Layout = new javax.swing.GroupLayout(jPanel252);
+        jPanel252.setLayout(jPanel252Layout);
+        jPanel252Layout.setHorizontalGroup(
+            jPanel252Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel252Layout.setVerticalGroup(
+            jPanel252Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel252);
+
+        jToggleButton170.setText("jToggleButton1");
+        jToggleButton170.setMargin(null);
+        jPanel244.add(jToggleButton170);
+
+        jPanel253.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel253Layout = new javax.swing.GroupLayout(jPanel253);
+        jPanel253.setLayout(jPanel253Layout);
+        jPanel253Layout.setHorizontalGroup(
+            jPanel253Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel253Layout.setVerticalGroup(
+            jPanel253Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel253);
+
+        jToggleButton171.setText("jToggleButton1");
+        jToggleButton171.setMargin(null);
+        jPanel244.add(jToggleButton171);
+
+        jPanel254.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel254Layout = new javax.swing.GroupLayout(jPanel254);
+        jPanel254.setLayout(jPanel254Layout);
+        jPanel254Layout.setHorizontalGroup(
+            jPanel254Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel254Layout.setVerticalGroup(
+            jPanel254Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel254);
+
+        jToggleButton172.setText("jToggleButton1");
+        jToggleButton172.setMargin(null);
+        jPanel244.add(jToggleButton172);
+
+        jPanel255.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel255Layout = new javax.swing.GroupLayout(jPanel255);
+        jPanel255.setLayout(jPanel255Layout);
+        jPanel255Layout.setHorizontalGroup(
+            jPanel255Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel255Layout.setVerticalGroup(
+            jPanel255Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel255);
+
+        jToggleButton173.setText("jToggleButton1");
+        jToggleButton173.setMargin(null);
+        jPanel244.add(jToggleButton173);
+
+        jPanel256.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel256Layout = new javax.swing.GroupLayout(jPanel256);
+        jPanel256.setLayout(jPanel256Layout);
+        jPanel256Layout.setHorizontalGroup(
+            jPanel256Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel256Layout.setVerticalGroup(
+            jPanel256Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel244.add(jPanel256);
+
+        add(jPanel244);
+
+        jPanel257.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel257.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel258.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel258Layout = new javax.swing.GroupLayout(jPanel258);
+        jPanel258.setLayout(jPanel258Layout);
+        jPanel258Layout.setHorizontalGroup(
+            jPanel258Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel258Layout.setVerticalGroup(
+            jPanel258Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel258);
+
+        jPanel259.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel259Layout = new javax.swing.GroupLayout(jPanel259);
+        jPanel259.setLayout(jPanel259Layout);
+        jPanel259Layout.setHorizontalGroup(
+            jPanel259Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel259Layout.setVerticalGroup(
+            jPanel259Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel259);
+
+        jToggleButton174.setText("jToggleButton1");
+        jToggleButton174.setMargin(null);
+        jPanel257.add(jToggleButton174);
+
+        jPanel260.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel260Layout = new javax.swing.GroupLayout(jPanel260);
+        jPanel260.setLayout(jPanel260Layout);
+        jPanel260Layout.setHorizontalGroup(
+            jPanel260Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel260Layout.setVerticalGroup(
+            jPanel260Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel260);
+
+        jToggleButton175.setText("jToggleButton1");
+        jToggleButton175.setMargin(null);
+        jPanel257.add(jToggleButton175);
+
+        jPanel261.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel261Layout = new javax.swing.GroupLayout(jPanel261);
+        jPanel261.setLayout(jPanel261Layout);
+        jPanel261Layout.setHorizontalGroup(
+            jPanel261Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel261Layout.setVerticalGroup(
+            jPanel261Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel261);
+
+        jToggleButton176.setText("jToggleButton1");
+        jToggleButton176.setMargin(null);
+        jPanel257.add(jToggleButton176);
+
+        jPanel262.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel262Layout = new javax.swing.GroupLayout(jPanel262);
+        jPanel262.setLayout(jPanel262Layout);
+        jPanel262Layout.setHorizontalGroup(
+            jPanel262Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel262Layout.setVerticalGroup(
+            jPanel262Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel262);
+
+        jToggleButton177.setText("jToggleButton1");
+        jToggleButton177.setMargin(null);
+        jPanel257.add(jToggleButton177);
+
+        jPanel263.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel263Layout = new javax.swing.GroupLayout(jPanel263);
+        jPanel263.setLayout(jPanel263Layout);
+        jPanel263Layout.setHorizontalGroup(
+            jPanel263Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel263Layout.setVerticalGroup(
+            jPanel263Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel263);
+
+        jToggleButton178.setText("jToggleButton1");
+        jToggleButton178.setMargin(null);
+        jPanel257.add(jToggleButton178);
+
+        jPanel264.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel264Layout = new javax.swing.GroupLayout(jPanel264);
+        jPanel264.setLayout(jPanel264Layout);
+        jPanel264Layout.setHorizontalGroup(
+            jPanel264Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel264Layout.setVerticalGroup(
+            jPanel264Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel264);
+
+        jToggleButton179.setText("jToggleButton1");
+        jToggleButton179.setMargin(null);
+        jPanel257.add(jToggleButton179);
+
+        jPanel265.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel265Layout = new javax.swing.GroupLayout(jPanel265);
+        jPanel265.setLayout(jPanel265Layout);
+        jPanel265Layout.setHorizontalGroup(
+            jPanel265Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel265Layout.setVerticalGroup(
+            jPanel265Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel265);
+
+        jToggleButton180.setText("jToggleButton1");
+        jToggleButton180.setMargin(null);
+        jPanel257.add(jToggleButton180);
+
+        jPanel266.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel266Layout = new javax.swing.GroupLayout(jPanel266);
+        jPanel266.setLayout(jPanel266Layout);
+        jPanel266Layout.setHorizontalGroup(
+            jPanel266Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel266Layout.setVerticalGroup(
+            jPanel266Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel266);
+
+        jToggleButton181.setText("jToggleButton1");
+        jToggleButton181.setMargin(null);
+        jPanel257.add(jToggleButton181);
+
+        jPanel267.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel267Layout = new javax.swing.GroupLayout(jPanel267);
+        jPanel267.setLayout(jPanel267Layout);
+        jPanel267Layout.setHorizontalGroup(
+            jPanel267Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel267Layout.setVerticalGroup(
+            jPanel267Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel267);
+
+        jToggleButton182.setText("jToggleButton1");
+        jToggleButton182.setMargin(null);
+        jPanel257.add(jToggleButton182);
+
+        jPanel268.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel268Layout = new javax.swing.GroupLayout(jPanel268);
+        jPanel268.setLayout(jPanel268Layout);
+        jPanel268Layout.setHorizontalGroup(
+            jPanel268Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel268Layout.setVerticalGroup(
+            jPanel268Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel257.add(jPanel268);
+
+        jToggleButton183.setText("jToggleButton1");
+        jToggleButton183.setMargin(null);
+        jPanel257.add(jToggleButton183);
+
+        add(jPanel257);
+
+        jPanel269.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel269.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel270.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel270Layout = new javax.swing.GroupLayout(jPanel270);
+        jPanel270.setLayout(jPanel270Layout);
+        jPanel270Layout.setHorizontalGroup(
+            jPanel270Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel270Layout.setVerticalGroup(
+            jPanel270Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel270);
+
+        jPanel271.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel271Layout = new javax.swing.GroupLayout(jPanel271);
+        jPanel271.setLayout(jPanel271Layout);
+        jPanel271Layout.setHorizontalGroup(
+            jPanel271Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel271Layout.setVerticalGroup(
+            jPanel271Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel271);
+
+        jPanel272.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel272Layout = new javax.swing.GroupLayout(jPanel272);
+        jPanel272.setLayout(jPanel272Layout);
+        jPanel272Layout.setHorizontalGroup(
+            jPanel272Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel272Layout.setVerticalGroup(
+            jPanel272Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel272);
+
+        jToggleButton184.setText("jToggleButton1");
+        jToggleButton184.setMargin(null);
+        jPanel269.add(jToggleButton184);
+
+        jPanel273.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel273Layout = new javax.swing.GroupLayout(jPanel273);
+        jPanel273.setLayout(jPanel273Layout);
+        jPanel273Layout.setHorizontalGroup(
+            jPanel273Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel273Layout.setVerticalGroup(
+            jPanel273Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel273);
+
+        jToggleButton185.setText("jToggleButton1");
+        jToggleButton185.setMargin(null);
+        jPanel269.add(jToggleButton185);
+
+        jPanel274.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel274Layout = new javax.swing.GroupLayout(jPanel274);
+        jPanel274.setLayout(jPanel274Layout);
+        jPanel274Layout.setHorizontalGroup(
+            jPanel274Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel274Layout.setVerticalGroup(
+            jPanel274Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel274);
+
+        jPanel275.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel275Layout = new javax.swing.GroupLayout(jPanel275);
+        jPanel275.setLayout(jPanel275Layout);
+        jPanel275Layout.setHorizontalGroup(
+            jPanel275Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel275Layout.setVerticalGroup(
+            jPanel275Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel275);
+
+        jPanel276.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel276Layout = new javax.swing.GroupLayout(jPanel276);
+        jPanel276.setLayout(jPanel276Layout);
+        jPanel276Layout.setHorizontalGroup(
+            jPanel276Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel276Layout.setVerticalGroup(
+            jPanel276Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel276);
+
+        jToggleButton186.setText("jToggleButton1");
+        jToggleButton186.setMargin(null);
+        jPanel269.add(jToggleButton186);
+
+        jPanel277.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel277Layout = new javax.swing.GroupLayout(jPanel277);
+        jPanel277.setLayout(jPanel277Layout);
+        jPanel277Layout.setHorizontalGroup(
+            jPanel277Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel277Layout.setVerticalGroup(
+            jPanel277Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel277);
+
+        jToggleButton187.setText("jToggleButton1");
+        jToggleButton187.setMargin(null);
+        jPanel269.add(jToggleButton187);
+
+        jPanel278.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel278Layout = new javax.swing.GroupLayout(jPanel278);
+        jPanel278.setLayout(jPanel278Layout);
+        jPanel278Layout.setHorizontalGroup(
+            jPanel278Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel278Layout.setVerticalGroup(
+            jPanel278Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel278);
+
+        jToggleButton188.setText("jToggleButton1");
+        jToggleButton188.setMargin(null);
+        jPanel269.add(jToggleButton188);
+
+        jPanel279.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel279Layout = new javax.swing.GroupLayout(jPanel279);
+        jPanel279.setLayout(jPanel279Layout);
+        jPanel279Layout.setHorizontalGroup(
+            jPanel279Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel279Layout.setVerticalGroup(
+            jPanel279Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel279);
+
+        jPanel280.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel280Layout = new javax.swing.GroupLayout(jPanel280);
+        jPanel280.setLayout(jPanel280Layout);
+        jPanel280Layout.setHorizontalGroup(
+            jPanel280Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel280Layout.setVerticalGroup(
+            jPanel280Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel280);
+
+        jPanel281.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel281Layout = new javax.swing.GroupLayout(jPanel281);
+        jPanel281.setLayout(jPanel281Layout);
+        jPanel281Layout.setHorizontalGroup(
+            jPanel281Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel281Layout.setVerticalGroup(
+            jPanel281Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel281);
+
+        jToggleButton189.setText("jToggleButton1");
+        jToggleButton189.setMargin(null);
+        jPanel269.add(jToggleButton189);
+
+        jPanel282.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel282Layout = new javax.swing.GroupLayout(jPanel282);
+        jPanel282.setLayout(jPanel282Layout);
+        jPanel282Layout.setHorizontalGroup(
+            jPanel282Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel282Layout.setVerticalGroup(
+            jPanel282Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel282);
+
+        jToggleButton190.setText("jToggleButton1");
+        jToggleButton190.setMargin(null);
+        jPanel269.add(jToggleButton190);
+
+        jPanel283.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel283Layout = new javax.swing.GroupLayout(jPanel283);
+        jPanel283.setLayout(jPanel283Layout);
+        jPanel283Layout.setHorizontalGroup(
+            jPanel283Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel283Layout.setVerticalGroup(
+            jPanel283Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel283);
+
+        jPanel284.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel284Layout = new javax.swing.GroupLayout(jPanel284);
+        jPanel284.setLayout(jPanel284Layout);
+        jPanel284Layout.setHorizontalGroup(
+            jPanel284Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel284Layout.setVerticalGroup(
+            jPanel284Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel269.add(jPanel284);
+
+        add(jPanel269);
+
+        jPanel5.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel5.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel285.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel285Layout = new javax.swing.GroupLayout(jPanel285);
+        jPanel285.setLayout(jPanel285Layout);
+        jPanel285Layout.setHorizontalGroup(
+            jPanel285Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel285Layout.setVerticalGroup(
+            jPanel285Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel285);
+
+        jPanel286.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel286Layout = new javax.swing.GroupLayout(jPanel286);
+        jPanel286.setLayout(jPanel286Layout);
+        jPanel286Layout.setHorizontalGroup(
+            jPanel286Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel286Layout.setVerticalGroup(
+            jPanel286Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel286);
+
+        jPanel287.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel287Layout = new javax.swing.GroupLayout(jPanel287);
+        jPanel287.setLayout(jPanel287Layout);
+        jPanel287Layout.setHorizontalGroup(
+            jPanel287Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel287Layout.setVerticalGroup(
+            jPanel287Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel287);
+
+        jPanel288.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel288Layout = new javax.swing.GroupLayout(jPanel288);
+        jPanel288.setLayout(jPanel288Layout);
+        jPanel288Layout.setHorizontalGroup(
+            jPanel288Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel288Layout.setVerticalGroup(
+            jPanel288Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel288);
+
+        jToggleButton191.setText("jToggleButton1");
+        jToggleButton191.setMargin(null);
+        jPanel5.add(jToggleButton191);
+
+        jPanel289.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel289Layout = new javax.swing.GroupLayout(jPanel289);
+        jPanel289.setLayout(jPanel289Layout);
+        jPanel289Layout.setHorizontalGroup(
+            jPanel289Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel289Layout.setVerticalGroup(
+            jPanel289Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel289);
+
+        jToggleButton192.setText("jToggleButton1");
+        jToggleButton192.setMargin(null);
+        jPanel5.add(jToggleButton192);
+
+        jPanel290.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel290Layout = new javax.swing.GroupLayout(jPanel290);
+        jPanel290.setLayout(jPanel290Layout);
+        jPanel290Layout.setHorizontalGroup(
+            jPanel290Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel290Layout.setVerticalGroup(
+            jPanel290Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel290);
+
+        jToggleButton193.setText("jToggleButton1");
+        jToggleButton193.setMargin(null);
+        jPanel5.add(jToggleButton193);
+
+        jPanel291.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel291Layout = new javax.swing.GroupLayout(jPanel291);
+        jPanel291.setLayout(jPanel291Layout);
+        jPanel291Layout.setHorizontalGroup(
+            jPanel291Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel291Layout.setVerticalGroup(
+            jPanel291Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel291);
+
+        jToggleButton194.setText("jToggleButton1");
+        jToggleButton194.setMargin(null);
+        jPanel5.add(jToggleButton194);
+
+        jPanel292.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel292Layout = new javax.swing.GroupLayout(jPanel292);
+        jPanel292.setLayout(jPanel292Layout);
+        jPanel292Layout.setHorizontalGroup(
+            jPanel292Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel292Layout.setVerticalGroup(
+            jPanel292Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel292);
+
+        jToggleButton195.setText("jToggleButton1");
+        jToggleButton195.setMargin(null);
+        jPanel5.add(jToggleButton195);
+
+        jPanel293.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel293Layout = new javax.swing.GroupLayout(jPanel293);
+        jPanel293.setLayout(jPanel293Layout);
+        jPanel293Layout.setHorizontalGroup(
+            jPanel293Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel293Layout.setVerticalGroup(
+            jPanel293Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel293);
+
+        jToggleButton196.setText("jToggleButton1");
+        jToggleButton196.setMargin(null);
+        jPanel5.add(jToggleButton196);
+
+        jPanel294.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel294Layout = new javax.swing.GroupLayout(jPanel294);
+        jPanel294.setLayout(jPanel294Layout);
+        jPanel294Layout.setHorizontalGroup(
+            jPanel294Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel294Layout.setVerticalGroup(
+            jPanel294Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel294);
+
+        jToggleButton197.setText("jToggleButton1");
+        jToggleButton197.setMargin(null);
+        jPanel5.add(jToggleButton197);
+
+        jPanel295.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel295Layout = new javax.swing.GroupLayout(jPanel295);
+        jPanel295.setLayout(jPanel295Layout);
+        jPanel295Layout.setHorizontalGroup(
+            jPanel295Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel295Layout.setVerticalGroup(
+            jPanel295Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel295);
+
+        jToggleButton198.setText("jToggleButton1");
+        jToggleButton198.setMargin(null);
+        jPanel5.add(jToggleButton198);
+
+        jPanel296.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel296Layout = new javax.swing.GroupLayout(jPanel296);
+        jPanel296.setLayout(jPanel296Layout);
+        jPanel296Layout.setHorizontalGroup(
+            jPanel296Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel296Layout.setVerticalGroup(
+            jPanel296Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel5.add(jPanel296);
+
+        add(jPanel5);
+
+        jPanel6.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel6.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel297.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel297Layout = new javax.swing.GroupLayout(jPanel297);
+        jPanel297.setLayout(jPanel297Layout);
+        jPanel297Layout.setHorizontalGroup(
+            jPanel297Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel297Layout.setVerticalGroup(
+            jPanel297Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel297);
+
+        jPanel298.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel298Layout = new javax.swing.GroupLayout(jPanel298);
+        jPanel298.setLayout(jPanel298Layout);
+        jPanel298Layout.setHorizontalGroup(
+            jPanel298Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel298Layout.setVerticalGroup(
+            jPanel298Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel298);
+
+        jPanel299.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel299Layout = new javax.swing.GroupLayout(jPanel299);
+        jPanel299.setLayout(jPanel299Layout);
+        jPanel299Layout.setHorizontalGroup(
+            jPanel299Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel299Layout.setVerticalGroup(
+            jPanel299Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel299);
+
+        jPanel300.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel300Layout = new javax.swing.GroupLayout(jPanel300);
+        jPanel300.setLayout(jPanel300Layout);
+        jPanel300Layout.setHorizontalGroup(
+            jPanel300Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel300Layout.setVerticalGroup(
+            jPanel300Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel300);
+
+        jPanel301.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel301Layout = new javax.swing.GroupLayout(jPanel301);
+        jPanel301.setLayout(jPanel301Layout);
+        jPanel301Layout.setHorizontalGroup(
+            jPanel301Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel301Layout.setVerticalGroup(
+            jPanel301Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel301);
+
+        jToggleButton199.setText("jToggleButton1");
+        jToggleButton199.setMargin(null);
+        jPanel6.add(jToggleButton199);
+
+        jPanel302.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel302Layout = new javax.swing.GroupLayout(jPanel302);
+        jPanel302.setLayout(jPanel302Layout);
+        jPanel302Layout.setHorizontalGroup(
+            jPanel302Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel302Layout.setVerticalGroup(
+            jPanel302Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel302);
+
+        jToggleButton200.setText("jToggleButton1");
+        jToggleButton200.setMargin(null);
+        jPanel6.add(jToggleButton200);
+
+        jPanel303.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel303Layout = new javax.swing.GroupLayout(jPanel303);
+        jPanel303.setLayout(jPanel303Layout);
+        jPanel303Layout.setHorizontalGroup(
+            jPanel303Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel303Layout.setVerticalGroup(
+            jPanel303Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel303);
+
+        jToggleButton201.setText("jToggleButton1");
+        jToggleButton201.setMargin(null);
+        jPanel6.add(jToggleButton201);
+
+        jPanel304.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel304Layout = new javax.swing.GroupLayout(jPanel304);
+        jPanel304.setLayout(jPanel304Layout);
+        jPanel304Layout.setHorizontalGroup(
+            jPanel304Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel304Layout.setVerticalGroup(
+            jPanel304Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel304);
+
+        jToggleButton202.setText("jToggleButton1");
+        jToggleButton202.setMargin(null);
+        jPanel6.add(jToggleButton202);
+
+        jPanel305.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel305Layout = new javax.swing.GroupLayout(jPanel305);
+        jPanel305.setLayout(jPanel305Layout);
+        jPanel305Layout.setHorizontalGroup(
+            jPanel305Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel305Layout.setVerticalGroup(
+            jPanel305Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel305);
+
+        jToggleButton203.setText("jToggleButton1");
+        jToggleButton203.setMargin(null);
+        jPanel6.add(jToggleButton203);
+
+        jPanel306.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel306Layout = new javax.swing.GroupLayout(jPanel306);
+        jPanel306.setLayout(jPanel306Layout);
+        jPanel306Layout.setHorizontalGroup(
+            jPanel306Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel306Layout.setVerticalGroup(
+            jPanel306Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel306);
+
+        jToggleButton204.setText("jToggleButton1");
+        jToggleButton204.setMargin(null);
+        jPanel6.add(jToggleButton204);
+
+        jPanel307.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel307Layout = new javax.swing.GroupLayout(jPanel307);
+        jPanel307.setLayout(jPanel307Layout);
+        jPanel307Layout.setHorizontalGroup(
+            jPanel307Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel307Layout.setVerticalGroup(
+            jPanel307Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(jPanel307);
+
+        jToggleButton205.setText("jToggleButton1");
+        jToggleButton205.setMargin(null);
+        jPanel6.add(jToggleButton205);
+
+        add(jPanel6);
+
+        jPanel7.setPreferredSize(new java.awt.Dimension(20, 500));
+        jPanel7.setLayout(new java.awt.GridLayout(23, 0));
+
+        jPanel309.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel309Layout = new javax.swing.GroupLayout(jPanel309);
+        jPanel309.setLayout(jPanel309Layout);
+        jPanel309Layout.setHorizontalGroup(
+            jPanel309Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel309Layout.setVerticalGroup(
+            jPanel309Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel309);
+
+        jPanel310.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel310Layout = new javax.swing.GroupLayout(jPanel310);
+        jPanel310.setLayout(jPanel310Layout);
+        jPanel310Layout.setHorizontalGroup(
+            jPanel310Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel310Layout.setVerticalGroup(
+            jPanel310Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel310);
+
+        jPanel311.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel311Layout = new javax.swing.GroupLayout(jPanel311);
+        jPanel311.setLayout(jPanel311Layout);
+        jPanel311Layout.setHorizontalGroup(
+            jPanel311Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel311Layout.setVerticalGroup(
+            jPanel311Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel311);
+
+        jPanel312.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel312Layout = new javax.swing.GroupLayout(jPanel312);
+        jPanel312.setLayout(jPanel312Layout);
+        jPanel312Layout.setHorizontalGroup(
+            jPanel312Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel312Layout.setVerticalGroup(
+            jPanel312Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel312);
+
+        jPanel313.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel313Layout = new javax.swing.GroupLayout(jPanel313);
+        jPanel313.setLayout(jPanel313Layout);
+        jPanel313Layout.setHorizontalGroup(
+            jPanel313Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel313Layout.setVerticalGroup(
+            jPanel313Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel313);
+
+        jPanel314.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel314Layout = new javax.swing.GroupLayout(jPanel314);
+        jPanel314.setLayout(jPanel314Layout);
+        jPanel314Layout.setHorizontalGroup(
+            jPanel314Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel314Layout.setVerticalGroup(
+            jPanel314Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel314);
+
+        jPanel315.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel315Layout = new javax.swing.GroupLayout(jPanel315);
+        jPanel315.setLayout(jPanel315Layout);
+        jPanel315Layout.setHorizontalGroup(
+            jPanel315Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel315Layout.setVerticalGroup(
+            jPanel315Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel315);
+
+        jPanel316.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel316Layout = new javax.swing.GroupLayout(jPanel316);
+        jPanel316.setLayout(jPanel316Layout);
+        jPanel316Layout.setHorizontalGroup(
+            jPanel316Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel316Layout.setVerticalGroup(
+            jPanel316Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel316);
+
+        jToggleButton207.setText("jToggleButton1");
+        jToggleButton207.setMargin(null);
+        jPanel7.add(jToggleButton207);
+
+        jPanel317.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel317Layout = new javax.swing.GroupLayout(jPanel317);
+        jPanel317.setLayout(jPanel317Layout);
+        jPanel317Layout.setHorizontalGroup(
+            jPanel317Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel317Layout.setVerticalGroup(
+            jPanel317Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel317);
+
+        jToggleButton208.setText("jToggleButton1");
+        jToggleButton208.setMargin(null);
+        jPanel7.add(jToggleButton208);
+
+        jPanel318.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel318Layout = new javax.swing.GroupLayout(jPanel318);
+        jPanel318.setLayout(jPanel318Layout);
+        jPanel318Layout.setHorizontalGroup(
+            jPanel318Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel318Layout.setVerticalGroup(
+            jPanel318Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel318);
+
+        jToggleButton209.setText("jToggleButton1");
+        jToggleButton209.setMargin(null);
+        jPanel7.add(jToggleButton209);
+
+        jPanel319.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel319Layout = new javax.swing.GroupLayout(jPanel319);
+        jPanel319.setLayout(jPanel319Layout);
+        jPanel319Layout.setHorizontalGroup(
+            jPanel319Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel319Layout.setVerticalGroup(
+            jPanel319Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel319);
+
+        jToggleButton210.setText("jToggleButton1");
+        jToggleButton210.setMargin(null);
+        jPanel7.add(jToggleButton210);
+
+        jPanel320.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel320Layout = new javax.swing.GroupLayout(jPanel320);
+        jPanel320.setLayout(jPanel320Layout);
+        jPanel320Layout.setHorizontalGroup(
+            jPanel320Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel320Layout.setVerticalGroup(
+            jPanel320Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel320);
+
+        jToggleButton211.setText("jToggleButton1");
+        jToggleButton211.setMargin(null);
+        jPanel7.add(jToggleButton211);
+
+        jPanel321.setPreferredSize(new java.awt.Dimension(25, 25));
+
+        javax.swing.GroupLayout jPanel321Layout = new javax.swing.GroupLayout(jPanel321);
+        jPanel321.setLayout(jPanel321Layout);
+        jPanel321Layout.setHorizontalGroup(
+            jPanel321Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 119, Short.MAX_VALUE)
+        );
+        jPanel321Layout.setVerticalGroup(
+            jPanel321Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 24, Short.MAX_VALUE)
+        );
+
+        jPanel7.add(jPanel321);
+
+        add(jPanel7);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                               
+        // TODO add your handling code here:
+    }                                              
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel100;
+    private javax.swing.JPanel jPanel101;
+    private javax.swing.JPanel jPanel102;
+    private javax.swing.JPanel jPanel103;
+    private javax.swing.JPanel jPanel104;
+    private javax.swing.JPanel jPanel105;
+    private javax.swing.JPanel jPanel106;
+    private javax.swing.JPanel jPanel107;
+    private javax.swing.JPanel jPanel108;
+    private javax.swing.JPanel jPanel109;
+    private javax.swing.JPanel jPanel110;
+    private javax.swing.JPanel jPanel111;
+    private javax.swing.JPanel jPanel112;
+    private javax.swing.JPanel jPanel113;
+    private javax.swing.JPanel jPanel114;
+    private javax.swing.JPanel jPanel115;
+    private javax.swing.JPanel jPanel116;
+    private javax.swing.JPanel jPanel117;
+    private javax.swing.JPanel jPanel118;
+    private javax.swing.JPanel jPanel119;
+    private javax.swing.JPanel jPanel120;
+    private javax.swing.JPanel jPanel121;
+    private javax.swing.JPanel jPanel122;
+    private javax.swing.JPanel jPanel123;
+    private javax.swing.JPanel jPanel124;
+    private javax.swing.JPanel jPanel125;
+    private javax.swing.JPanel jPanel126;
+    private javax.swing.JPanel jPanel127;
+    private javax.swing.JPanel jPanel128;
+    private javax.swing.JPanel jPanel129;
+    private javax.swing.JPanel jPanel130;
+    private javax.swing.JPanel jPanel131;
+    private javax.swing.JPanel jPanel132;
+    private javax.swing.JPanel jPanel133;
+    private javax.swing.JPanel jPanel134;
+    private javax.swing.JPanel jPanel135;
+    private javax.swing.JPanel jPanel136;
+    private javax.swing.JPanel jPanel137;
+    private javax.swing.JPanel jPanel138;
+    private javax.swing.JPanel jPanel139;
+    private javax.swing.JPanel jPanel140;
+    private javax.swing.JPanel jPanel141;
+    private javax.swing.JPanel jPanel142;
+    private javax.swing.JPanel jPanel143;
+    private javax.swing.JPanel jPanel144;
+    private javax.swing.JPanel jPanel145;
+    private javax.swing.JPanel jPanel146;
+    private javax.swing.JPanel jPanel147;
+    private javax.swing.JPanel jPanel148;
+    private javax.swing.JPanel jPanel149;
+    private javax.swing.JPanel jPanel150;
+    private javax.swing.JPanel jPanel151;
+    private javax.swing.JPanel jPanel152;
+    private javax.swing.JPanel jPanel153;
+    private javax.swing.JPanel jPanel154;
+    private javax.swing.JPanel jPanel155;
+    private javax.swing.JPanel jPanel156;
+    private javax.swing.JPanel jPanel157;
+    private javax.swing.JPanel jPanel158;
+    private javax.swing.JPanel jPanel159;
+    private javax.swing.JPanel jPanel160;
+    private javax.swing.JPanel jPanel161;
+    private javax.swing.JPanel jPanel162;
+    private javax.swing.JPanel jPanel163;
+    private javax.swing.JPanel jPanel164;
+    private javax.swing.JPanel jPanel165;
+    private javax.swing.JPanel jPanel166;
+    private javax.swing.JPanel jPanel167;
+    private javax.swing.JPanel jPanel168;
+    private javax.swing.JPanel jPanel169;
+    private javax.swing.JPanel jPanel170;
+    private javax.swing.JPanel jPanel171;
+    private javax.swing.JPanel jPanel172;
+    private javax.swing.JPanel jPanel173;
+    private javax.swing.JPanel jPanel174;
+    private javax.swing.JPanel jPanel175;
+    private javax.swing.JPanel jPanel176;
+    private javax.swing.JPanel jPanel177;
+    private javax.swing.JPanel jPanel178;
+    private javax.swing.JPanel jPanel179;
+    private javax.swing.JPanel jPanel180;
+    private javax.swing.JPanel jPanel181;
+    private javax.swing.JPanel jPanel182;
+    private javax.swing.JPanel jPanel183;
+    private javax.swing.JPanel jPanel184;
+    private javax.swing.JPanel jPanel185;
+    private javax.swing.JPanel jPanel186;
+    private javax.swing.JPanel jPanel187;
+    private javax.swing.JPanel jPanel188;
+    private javax.swing.JPanel jPanel189;
+    private javax.swing.JPanel jPanel190;
+    private javax.swing.JPanel jPanel191;
+    private javax.swing.JPanel jPanel192;
+    private javax.swing.JPanel jPanel193;
+    private javax.swing.JPanel jPanel194;
+    private javax.swing.JPanel jPanel195;
+    private javax.swing.JPanel jPanel196;
+    private javax.swing.JPanel jPanel197;
+    private javax.swing.JPanel jPanel198;
+    private javax.swing.JPanel jPanel199;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel200;
+    private javax.swing.JPanel jPanel201;
+    private javax.swing.JPanel jPanel202;
+    private javax.swing.JPanel jPanel203;
+    private javax.swing.JPanel jPanel204;
+    private javax.swing.JPanel jPanel205;
+    private javax.swing.JPanel jPanel206;
+    private javax.swing.JPanel jPanel207;
+    private javax.swing.JPanel jPanel208;
+    private javax.swing.JPanel jPanel209;
+    private javax.swing.JPanel jPanel210;
+    private javax.swing.JPanel jPanel211;
+    private javax.swing.JPanel jPanel212;
+    private javax.swing.JPanel jPanel213;
+    private javax.swing.JPanel jPanel214;
+    private javax.swing.JPanel jPanel215;
+    private javax.swing.JPanel jPanel216;
+    private javax.swing.JPanel jPanel217;
+    private javax.swing.JPanel jPanel218;
+    private javax.swing.JPanel jPanel219;
+    private javax.swing.JPanel jPanel220;
+    private javax.swing.JPanel jPanel221;
+    private javax.swing.JPanel jPanel222;
+    private javax.swing.JPanel jPanel223;
+    private javax.swing.JPanel jPanel224;
+    private javax.swing.JPanel jPanel225;
+    private javax.swing.JPanel jPanel226;
+    private javax.swing.JPanel jPanel227;
+    private javax.swing.JPanel jPanel228;
+    private javax.swing.JPanel jPanel229;
+    private javax.swing.JPanel jPanel230;
+    private javax.swing.JPanel jPanel231;
+    private javax.swing.JPanel jPanel232;
+    private javax.swing.JPanel jPanel233;
+    private javax.swing.JPanel jPanel234;
+    private javax.swing.JPanel jPanel235;
+    private javax.swing.JPanel jPanel236;
+    private javax.swing.JPanel jPanel237;
+    private javax.swing.JPanel jPanel238;
+    private javax.swing.JPanel jPanel239;
+    private javax.swing.JPanel jPanel240;
+    private javax.swing.JPanel jPanel241;
+    private javax.swing.JPanel jPanel242;
+    private javax.swing.JPanel jPanel243;
+    private javax.swing.JPanel jPanel244;
+    private javax.swing.JPanel jPanel245;
+    private javax.swing.JPanel jPanel246;
+    private javax.swing.JPanel jPanel247;
+    private javax.swing.JPanel jPanel248;
+    private javax.swing.JPanel jPanel249;
+    private javax.swing.JPanel jPanel25;
+    private javax.swing.JPanel jPanel250;
+    private javax.swing.JPanel jPanel251;
+    private javax.swing.JPanel jPanel252;
+    private javax.swing.JPanel jPanel253;
+    private javax.swing.JPanel jPanel254;
+    private javax.swing.JPanel jPanel255;
+    private javax.swing.JPanel jPanel256;
+    private javax.swing.JPanel jPanel257;
+    private javax.swing.JPanel jPanel258;
+    private javax.swing.JPanel jPanel259;
+    private javax.swing.JPanel jPanel26;
+    private javax.swing.JPanel jPanel260;
+    private javax.swing.JPanel jPanel261;
+    private javax.swing.JPanel jPanel262;
+    private javax.swing.JPanel jPanel263;
+    private javax.swing.JPanel jPanel264;
+    private javax.swing.JPanel jPanel265;
+    private javax.swing.JPanel jPanel266;
+    private javax.swing.JPanel jPanel267;
+    private javax.swing.JPanel jPanel268;
+    private javax.swing.JPanel jPanel269;
+    private javax.swing.JPanel jPanel27;
+    private javax.swing.JPanel jPanel270;
+    private javax.swing.JPanel jPanel271;
+    private javax.swing.JPanel jPanel272;
+    private javax.swing.JPanel jPanel273;
+    private javax.swing.JPanel jPanel274;
+    private javax.swing.JPanel jPanel275;
+    private javax.swing.JPanel jPanel276;
+    private javax.swing.JPanel jPanel277;
+    private javax.swing.JPanel jPanel278;
+    private javax.swing.JPanel jPanel279;
+    private javax.swing.JPanel jPanel28;
+    private javax.swing.JPanel jPanel280;
+    private javax.swing.JPanel jPanel281;
+    private javax.swing.JPanel jPanel282;
+    private javax.swing.JPanel jPanel283;
+    private javax.swing.JPanel jPanel284;
+    private javax.swing.JPanel jPanel285;
+    private javax.swing.JPanel jPanel286;
+    private javax.swing.JPanel jPanel287;
+    private javax.swing.JPanel jPanel288;
+    private javax.swing.JPanel jPanel289;
+    private javax.swing.JPanel jPanel29;
+    private javax.swing.JPanel jPanel290;
+    private javax.swing.JPanel jPanel291;
+    private javax.swing.JPanel jPanel292;
+    private javax.swing.JPanel jPanel293;
+    private javax.swing.JPanel jPanel294;
+    private javax.swing.JPanel jPanel295;
+    private javax.swing.JPanel jPanel296;
+    private javax.swing.JPanel jPanel297;
+    private javax.swing.JPanel jPanel298;
+    private javax.swing.JPanel jPanel299;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel30;
+    private javax.swing.JPanel jPanel300;
+    private javax.swing.JPanel jPanel301;
+    private javax.swing.JPanel jPanel302;
+    private javax.swing.JPanel jPanel303;
+    private javax.swing.JPanel jPanel304;
+    private javax.swing.JPanel jPanel305;
+    private javax.swing.JPanel jPanel306;
+    private javax.swing.JPanel jPanel307;
+    private javax.swing.JPanel jPanel308;
+    private javax.swing.JPanel jPanel309;
+    private javax.swing.JPanel jPanel31;
+    private javax.swing.JPanel jPanel310;
+    private javax.swing.JPanel jPanel311;
+    private javax.swing.JPanel jPanel312;
+    private javax.swing.JPanel jPanel313;
+    private javax.swing.JPanel jPanel314;
+    private javax.swing.JPanel jPanel315;
+    private javax.swing.JPanel jPanel316;
+    private javax.swing.JPanel jPanel317;
+    private javax.swing.JPanel jPanel318;
+    private javax.swing.JPanel jPanel319;
+    private javax.swing.JPanel jPanel32;
+    private javax.swing.JPanel jPanel320;
+    private javax.swing.JPanel jPanel321;
+    private javax.swing.JPanel jPanel33;
+    private javax.swing.JPanel jPanel34;
+    private javax.swing.JPanel jPanel35;
+    private javax.swing.JPanel jPanel36;
+    private javax.swing.JPanel jPanel37;
+    private javax.swing.JPanel jPanel38;
+    private javax.swing.JPanel jPanel39;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel40;
+    private javax.swing.JPanel jPanel41;
+    private javax.swing.JPanel jPanel42;
+    private javax.swing.JPanel jPanel43;
+    private javax.swing.JPanel jPanel44;
+    private javax.swing.JPanel jPanel45;
+    private javax.swing.JPanel jPanel46;
+    private javax.swing.JPanel jPanel47;
+    private javax.swing.JPanel jPanel48;
+    private javax.swing.JPanel jPanel49;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel50;
+    private javax.swing.JPanel jPanel51;
+    private javax.swing.JPanel jPanel52;
+    private javax.swing.JPanel jPanel53;
+    private javax.swing.JPanel jPanel54;
+    private javax.swing.JPanel jPanel55;
+    private javax.swing.JPanel jPanel56;
+    private javax.swing.JPanel jPanel57;
+    private javax.swing.JPanel jPanel58;
+    private javax.swing.JPanel jPanel59;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel60;
+    private javax.swing.JPanel jPanel61;
+    private javax.swing.JPanel jPanel62;
+    private javax.swing.JPanel jPanel63;
+    private javax.swing.JPanel jPanel64;
+    private javax.swing.JPanel jPanel65;
+    private javax.swing.JPanel jPanel66;
+    private javax.swing.JPanel jPanel67;
+    private javax.swing.JPanel jPanel68;
+    private javax.swing.JPanel jPanel69;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel70;
+    private javax.swing.JPanel jPanel71;
+    private javax.swing.JPanel jPanel72;
+    private javax.swing.JPanel jPanel73;
+    private javax.swing.JPanel jPanel74;
+    private javax.swing.JPanel jPanel75;
+    private javax.swing.JPanel jPanel76;
+    private javax.swing.JPanel jPanel77;
+    private javax.swing.JPanel jPanel78;
+    private javax.swing.JPanel jPanel79;
+    private javax.swing.JPanel jPanel80;
+    private javax.swing.JPanel jPanel81;
+    private javax.swing.JPanel jPanel82;
+    private javax.swing.JPanel jPanel83;
+    private javax.swing.JPanel jPanel84;
+    private javax.swing.JPanel jPanel85;
+    private javax.swing.JPanel jPanel86;
+    private javax.swing.JPanel jPanel87;
+    private javax.swing.JPanel jPanel88;
+    private javax.swing.JPanel jPanel89;
+    private javax.swing.JPanel jPanel90;
+    private javax.swing.JPanel jPanel91;
+    private javax.swing.JPanel jPanel92;
+    private javax.swing.JPanel jPanel93;
+    private javax.swing.JPanel jPanel94;
+    private javax.swing.JPanel jPanel95;
+    private javax.swing.JPanel jPanel96;
+    private javax.swing.JPanel jPanel97;
+    private javax.swing.JPanel jPanel98;
+    private javax.swing.JPanel jPanel99;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JToggleButton jToggleButton10;
+    private javax.swing.JToggleButton jToggleButton100;
+    private javax.swing.JToggleButton jToggleButton101;
+    private javax.swing.JToggleButton jToggleButton102;
+    private javax.swing.JToggleButton jToggleButton103;
+    private javax.swing.JToggleButton jToggleButton104;
+    private javax.swing.JToggleButton jToggleButton105;
+    private javax.swing.JToggleButton jToggleButton106;
+    private javax.swing.JToggleButton jToggleButton107;
+    private javax.swing.JToggleButton jToggleButton108;
+    private javax.swing.JToggleButton jToggleButton109;
+    private javax.swing.JToggleButton jToggleButton11;
+    private javax.swing.JToggleButton jToggleButton110;
+    private javax.swing.JToggleButton jToggleButton111;
+    private javax.swing.JToggleButton jToggleButton112;
+    private javax.swing.JToggleButton jToggleButton113;
+    private javax.swing.JToggleButton jToggleButton114;
+    private javax.swing.JToggleButton jToggleButton115;
+    private javax.swing.JToggleButton jToggleButton116;
+    private javax.swing.JToggleButton jToggleButton117;
+    private javax.swing.JToggleButton jToggleButton118;
+    private javax.swing.JToggleButton jToggleButton119;
+    private javax.swing.JToggleButton jToggleButton12;
+    private javax.swing.JToggleButton jToggleButton120;
+    private javax.swing.JToggleButton jToggleButton121;
+    private javax.swing.JToggleButton jToggleButton122;
+    private javax.swing.JToggleButton jToggleButton123;
+    private javax.swing.JToggleButton jToggleButton124;
+    private javax.swing.JToggleButton jToggleButton125;
+    private javax.swing.JToggleButton jToggleButton126;
+    private javax.swing.JToggleButton jToggleButton127;
+    private javax.swing.JToggleButton jToggleButton128;
+    private javax.swing.JToggleButton jToggleButton129;
+    private javax.swing.JToggleButton jToggleButton13;
+    private javax.swing.JToggleButton jToggleButton130;
+    private javax.swing.JToggleButton jToggleButton131;
+    private javax.swing.JToggleButton jToggleButton132;
+    private javax.swing.JToggleButton jToggleButton133;
+    private javax.swing.JToggleButton jToggleButton134;
+    private javax.swing.JToggleButton jToggleButton135;
+    private javax.swing.JToggleButton jToggleButton136;
+    private javax.swing.JToggleButton jToggleButton137;
+    private javax.swing.JToggleButton jToggleButton138;
+    private javax.swing.JToggleButton jToggleButton139;
+    private javax.swing.JToggleButton jToggleButton14;
+    private javax.swing.JToggleButton jToggleButton140;
+    private javax.swing.JToggleButton jToggleButton141;
+    private javax.swing.JToggleButton jToggleButton142;
+    private javax.swing.JToggleButton jToggleButton143;
+    private javax.swing.JToggleButton jToggleButton144;
+    private javax.swing.JToggleButton jToggleButton145;
+    private javax.swing.JToggleButton jToggleButton146;
+    private javax.swing.JToggleButton jToggleButton147;
+    private javax.swing.JToggleButton jToggleButton148;
+    private javax.swing.JToggleButton jToggleButton149;
+    private javax.swing.JToggleButton jToggleButton15;
+    private javax.swing.JToggleButton jToggleButton150;
+    private javax.swing.JToggleButton jToggleButton151;
+    private javax.swing.JToggleButton jToggleButton152;
+    private javax.swing.JToggleButton jToggleButton153;
+    private javax.swing.JToggleButton jToggleButton154;
+    private javax.swing.JToggleButton jToggleButton155;
+    private javax.swing.JToggleButton jToggleButton156;
+    private javax.swing.JToggleButton jToggleButton157;
+    private javax.swing.JToggleButton jToggleButton158;
+    private javax.swing.JToggleButton jToggleButton159;
+    private javax.swing.JToggleButton jToggleButton16;
+    private javax.swing.JToggleButton jToggleButton160;
+    private javax.swing.JToggleButton jToggleButton161;
+    private javax.swing.JToggleButton jToggleButton162;
+    private javax.swing.JToggleButton jToggleButton163;
+    private javax.swing.JToggleButton jToggleButton164;
+    private javax.swing.JToggleButton jToggleButton165;
+    private javax.swing.JToggleButton jToggleButton166;
+    private javax.swing.JToggleButton jToggleButton167;
+    private javax.swing.JToggleButton jToggleButton168;
+    private javax.swing.JToggleButton jToggleButton169;
+    private javax.swing.JToggleButton jToggleButton17;
+    private javax.swing.JToggleButton jToggleButton170;
+    private javax.swing.JToggleButton jToggleButton171;
+    private javax.swing.JToggleButton jToggleButton172;
+    private javax.swing.JToggleButton jToggleButton173;
+    private javax.swing.JToggleButton jToggleButton174;
+    private javax.swing.JToggleButton jToggleButton175;
+    private javax.swing.JToggleButton jToggleButton176;
+    private javax.swing.JToggleButton jToggleButton177;
+    private javax.swing.JToggleButton jToggleButton178;
+    private javax.swing.JToggleButton jToggleButton179;
+    private javax.swing.JToggleButton jToggleButton18;
+    private javax.swing.JToggleButton jToggleButton180;
+    private javax.swing.JToggleButton jToggleButton181;
+    private javax.swing.JToggleButton jToggleButton182;
+    private javax.swing.JToggleButton jToggleButton183;
+    private javax.swing.JToggleButton jToggleButton184;
+    private javax.swing.JToggleButton jToggleButton185;
+    private javax.swing.JToggleButton jToggleButton186;
+    private javax.swing.JToggleButton jToggleButton187;
+    private javax.swing.JToggleButton jToggleButton188;
+    private javax.swing.JToggleButton jToggleButton189;
+    private javax.swing.JToggleButton jToggleButton19;
+    private javax.swing.JToggleButton jToggleButton190;
+    private javax.swing.JToggleButton jToggleButton191;
+    private javax.swing.JToggleButton jToggleButton192;
+    private javax.swing.JToggleButton jToggleButton193;
+    private javax.swing.JToggleButton jToggleButton194;
+    private javax.swing.JToggleButton jToggleButton195;
+    private javax.swing.JToggleButton jToggleButton196;
+    private javax.swing.JToggleButton jToggleButton197;
+    private javax.swing.JToggleButton jToggleButton198;
+    private javax.swing.JToggleButton jToggleButton199;
+    private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JToggleButton jToggleButton20;
+    private javax.swing.JToggleButton jToggleButton200;
+    private javax.swing.JToggleButton jToggleButton201;
+    private javax.swing.JToggleButton jToggleButton202;
+    private javax.swing.JToggleButton jToggleButton203;
+    private javax.swing.JToggleButton jToggleButton204;
+    private javax.swing.JToggleButton jToggleButton205;
+    private javax.swing.JToggleButton jToggleButton206;
+    private javax.swing.JToggleButton jToggleButton207;
+    private javax.swing.JToggleButton jToggleButton208;
+    private javax.swing.JToggleButton jToggleButton209;
+    private javax.swing.JToggleButton jToggleButton21;
+    private javax.swing.JToggleButton jToggleButton210;
+    private javax.swing.JToggleButton jToggleButton211;
+    private javax.swing.JToggleButton jToggleButton22;
+    private javax.swing.JToggleButton jToggleButton23;
+    private javax.swing.JToggleButton jToggleButton24;
+    private javax.swing.JToggleButton jToggleButton25;
+    private javax.swing.JToggleButton jToggleButton26;
+    private javax.swing.JToggleButton jToggleButton27;
+    private javax.swing.JToggleButton jToggleButton28;
+    private javax.swing.JToggleButton jToggleButton29;
+    private javax.swing.JToggleButton jToggleButton3;
+    private javax.swing.JToggleButton jToggleButton30;
+    private javax.swing.JToggleButton jToggleButton31;
+    private javax.swing.JToggleButton jToggleButton32;
+    private javax.swing.JToggleButton jToggleButton33;
+    private javax.swing.JToggleButton jToggleButton34;
+    private javax.swing.JToggleButton jToggleButton35;
+    private javax.swing.JToggleButton jToggleButton36;
+    private javax.swing.JToggleButton jToggleButton37;
+    private javax.swing.JToggleButton jToggleButton38;
+    private javax.swing.JToggleButton jToggleButton39;
+    private javax.swing.JToggleButton jToggleButton4;
+    private javax.swing.JToggleButton jToggleButton40;
+    private javax.swing.JToggleButton jToggleButton41;
+    private javax.swing.JToggleButton jToggleButton42;
+    private javax.swing.JToggleButton jToggleButton43;
+    private javax.swing.JToggleButton jToggleButton44;
+    private javax.swing.JToggleButton jToggleButton45;
+    private javax.swing.JToggleButton jToggleButton46;
+    private javax.swing.JToggleButton jToggleButton47;
+    private javax.swing.JToggleButton jToggleButton48;
+    private javax.swing.JToggleButton jToggleButton49;
+    private javax.swing.JToggleButton jToggleButton5;
+    private javax.swing.JToggleButton jToggleButton50;
+    private javax.swing.JToggleButton jToggleButton51;
+    private javax.swing.JToggleButton jToggleButton52;
+    private javax.swing.JToggleButton jToggleButton53;
+    private javax.swing.JToggleButton jToggleButton54;
+    private javax.swing.JToggleButton jToggleButton55;
+    private javax.swing.JToggleButton jToggleButton56;
+    private javax.swing.JToggleButton jToggleButton57;
+    private javax.swing.JToggleButton jToggleButton58;
+    private javax.swing.JToggleButton jToggleButton59;
+    private javax.swing.JToggleButton jToggleButton6;
+    private javax.swing.JToggleButton jToggleButton60;
+    private javax.swing.JToggleButton jToggleButton61;
+    private javax.swing.JToggleButton jToggleButton62;
+    private javax.swing.JToggleButton jToggleButton63;
+    private javax.swing.JToggleButton jToggleButton64;
+    private javax.swing.JToggleButton jToggleButton65;
+    private javax.swing.JToggleButton jToggleButton66;
+    private javax.swing.JToggleButton jToggleButton67;
+    private javax.swing.JToggleButton jToggleButton68;
+    private javax.swing.JToggleButton jToggleButton69;
+    private javax.swing.JToggleButton jToggleButton7;
+    private javax.swing.JToggleButton jToggleButton70;
+    private javax.swing.JToggleButton jToggleButton71;
+    private javax.swing.JToggleButton jToggleButton72;
+    private javax.swing.JToggleButton jToggleButton73;
+    private javax.swing.JToggleButton jToggleButton74;
+    private javax.swing.JToggleButton jToggleButton75;
+    private javax.swing.JToggleButton jToggleButton76;
+    private javax.swing.JToggleButton jToggleButton77;
+    private javax.swing.JToggleButton jToggleButton78;
+    private javax.swing.JToggleButton jToggleButton79;
+    private javax.swing.JToggleButton jToggleButton8;
+    private javax.swing.JToggleButton jToggleButton80;
+    private javax.swing.JToggleButton jToggleButton81;
+    private javax.swing.JToggleButton jToggleButton82;
+    private javax.swing.JToggleButton jToggleButton83;
+    private javax.swing.JToggleButton jToggleButton84;
+    private javax.swing.JToggleButton jToggleButton85;
+    private javax.swing.JToggleButton jToggleButton86;
+    private javax.swing.JToggleButton jToggleButton87;
+    private javax.swing.JToggleButton jToggleButton88;
+    private javax.swing.JToggleButton jToggleButton89;
+    private javax.swing.JToggleButton jToggleButton9;
+    private javax.swing.JToggleButton jToggleButton90;
+    private javax.swing.JToggleButton jToggleButton91;
+    private javax.swing.JToggleButton jToggleButton92;
+    private javax.swing.JToggleButton jToggleButton93;
+    private javax.swing.JToggleButton jToggleButton94;
+    private javax.swing.JToggleButton jToggleButton95;
+    private javax.swing.JToggleButton jToggleButton96;
+    private javax.swing.JToggleButton jToggleButton97;
+    private javax.swing.JToggleButton jToggleButton98;
+    private javax.swing.JToggleButton jToggleButton99;
+    // End of variables declaration//GEN-END:variables
+}
