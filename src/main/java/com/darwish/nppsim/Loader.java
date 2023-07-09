@@ -267,7 +267,7 @@ public class Loader extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             try {
-            Desktop.getDesktop().browse(new URI("https://github.com/AliDarwish786"));
+            Desktop.getDesktop().browse(new URI("https://github.com/AliDarwish786/RBMK-1500-Simulator"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
