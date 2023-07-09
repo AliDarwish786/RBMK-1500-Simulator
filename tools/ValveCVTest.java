@@ -38,12 +38,12 @@ public class ValveCVTest {
         System.out.println("cV based on flow " + flow + ": " + cV);
     }
 
-    static double getCriticalPressureRatioFactor(double pSat, double pCritical) { //arguments to be given in pa //flows in kg/h
+    static double getCriticalPressureRatioFactor(double pSat, double pCritical) { //arguments to be given in pa
         return 0.96 - 0.28 * Math.sqrt(pSat / pCritical);
     }
 
 
-    static void steamValve(double cV, double p1, double p2, double p, double diameter) {
+    static void steamValve(double cV, double p1, double p2, double p, double diameter) { //pressures in Kpa //flows in kg/h
         final double fY = 1.3 / 1.4;
         double pC = (p1 - p2) / p1; 
         double flow = 0.0;
