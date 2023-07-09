@@ -480,17 +480,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         rpm1A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         rpm1A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         rpm1A.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.rpm1A.lcdUnitString")); // NOI18N
-        rpm1A.setLcdValue(3000.0);
 
         amps1A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         amps1A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         amps1A.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.amps1A.lcdUnitString")); // NOI18N
-        amps1A.setLcdValue(1600.7);
 
         flow1A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         flow1A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         flow1A.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.flow1A.lcdUnitString")); // NOI18N
-        flow1A.setLcdValue(530.2);
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -981,17 +978,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         rpm2A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         rpm2A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         rpm2A.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.rpm2A.lcdUnitString")); // NOI18N
-        rpm2A.setLcdValue(3000.0);
 
         amps2A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         amps2A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         amps2A.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.amps2A.lcdUnitString")); // NOI18N
-        amps2A.setLcdValue(1600.7);
 
         flow2A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         flow2A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         flow2A.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.flow2A.lcdUnitString")); // NOI18N
-        flow2A.setLcdValue(530.2);
 
         javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
         jPanel17.setLayout(jPanel17Layout);
@@ -1545,27 +1539,24 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         con1RPM.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con1RPM.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con1RPM.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.con1RPM.lcdUnitString")); // NOI18N
-        con1RPM.setLcdValue(3000.0);
 
         con1A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con1A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con1A.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.con1A.lcdUnitString")); // NOI18N
-        con1A.setLcdValue(1600.7);
 
         con1Flow.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con1Flow.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con1Flow.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.con1Flow.lcdUnitString")); // NOI18N
-        con1Flow.setLcdValue(530.2);
 
         con1Outlet.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con1Outlet.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con1Outlet.setLcdUnitString("°C");
-        con1Outlet.setLcdValue(100.0);
+        con1Outlet.setLcdValue(15.0);
 
         con1Inlet.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con1Inlet.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con1Inlet.setLcdUnitString("°C");
-        con1Inlet.setLcdValue(100.0);
+        con1Inlet.setLcdValue(15.0);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, "Inlet");
@@ -1684,17 +1675,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         con2RPM.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con2RPM.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con2RPM.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.con2RPM.lcdUnitString")); // NOI18N
-        con2RPM.setLcdValue(3000.0);
 
         con2A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con2A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con2A.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.con2A.lcdUnitString")); // NOI18N
-        con2A.setLcdValue(1600.7);
 
         con2Flow.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con2Flow.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con2Flow.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.con2Flow.lcdUnitString")); // NOI18N
-        con2Flow.setLcdValue(530.2);
 
         jLabel49.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(jLabel49, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jLabel49.text")); // NOI18N
@@ -1704,12 +1692,12 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         con2Inlet.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con2Inlet.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con2Inlet.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.con2Inlet.lcdUnitString")); // NOI18N
-        con2Inlet.setLcdValue(100.0);
+        con2Inlet.setLcdValue(15.0);
 
         con2Outlet.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         con2Outlet.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         con2Outlet.setLcdUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.con2Outlet.lcdUnitString")); // NOI18N
-        con2Outlet.setLcdValue(100.0);
+        con2Outlet.setLcdValue(15.0);
 
         jLabel3.setFont(new java.awt.Font("Dialog", 1, 11)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(jLabel3, "Outlet\n");

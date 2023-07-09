@@ -498,7 +498,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.rpm1A.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="3000.0"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -516,7 +515,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.amps1A.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="1600.7"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -534,7 +532,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.flow1A.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="530.2"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -1514,7 +1511,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.rpm2A.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="3000.0"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -1532,7 +1528,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.amps2A.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="1600.7"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -1550,7 +1545,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.flow2A.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="530.2"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2574,7 +2568,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.con1RPM.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="3000.0"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2592,7 +2585,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.con1A.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="1600.7"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2610,7 +2602,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.con1Flow.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="530.2"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2626,7 +2617,7 @@
                           <Value id="LIGHTBLUE_LCD"/>
                         </Property>
                         <Property name="lcdUnitString" type="java.lang.String" value="&#xb0;C"/>
-                        <Property name="lcdValue" type="double" value="100.0"/>
+                        <Property name="lcdValue" type="double" value="15.0"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2642,7 +2633,7 @@
                           <Value id="LIGHTBLUE_LCD"/>
                         </Property>
                         <Property name="lcdUnitString" type="java.lang.String" value="&#xb0;C"/>
-                        <Property name="lcdValue" type="double" value="100.0"/>
+                        <Property name="lcdValue" type="double" value="15.0"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2841,7 +2832,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.con2RPM.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="3000.0"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2859,7 +2849,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.con2A.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="1600.7"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2877,7 +2866,6 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.con2Flow.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="530.2"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2916,7 +2904,7 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.con2Inlet.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="100.0"/>
+                        <Property name="lcdValue" type="double" value="15.0"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
@@ -2934,7 +2922,7 @@
                         <Property name="lcdUnitString" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="com/darwish/nppsim/Bundle.properties" key="CondensateUI.con2Outlet.lcdUnitString" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="lcdValue" type="double" value="100.0"/>
+                        <Property name="lcdValue" type="double" value="15.0"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">

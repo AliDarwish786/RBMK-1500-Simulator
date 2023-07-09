@@ -1,7 +1,6 @@
 Welcome to RBMK-1500 Simulator
 
 The goal of this project is to create a 1 to 1 realistic simulation of a generic RBMK-1500 unit and all its elements.
-For support or information visit our official Discord: https://discord.gg/DDKX5qVW8W
 
 What has been achieved so far:
 

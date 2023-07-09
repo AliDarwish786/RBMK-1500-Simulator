@@ -416,17 +416,14 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         rpm1A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         rpm1A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         rpm1A.setLcdUnitString(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.rpm1A.lcdUnitString")); // NOI18N
-        rpm1A.setLcdValue(3000.0);
 
         amps1A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         amps1A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         amps1A.setLcdUnitString(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.amps1A.lcdUnitString")); // NOI18N
-        amps1A.setLcdValue(1600.7);
 
         flow1A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         flow1A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         flow1A.setLcdUnitString(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.flow1A.lcdUnitString")); // NOI18N
-        flow1A.setLcdValue(530.2);
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -741,17 +738,14 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         rpm2A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         rpm2A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         rpm2A.setLcdUnitString(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.rpm2A.lcdUnitString")); // NOI18N
-        rpm2A.setLcdValue(3000.0);
 
         amps2A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         amps2A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         amps2A.setLcdUnitString(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.amps2A.lcdUnitString")); // NOI18N
-        amps2A.setLcdValue(1600.7);
 
         flow2A.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         flow2A.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         flow2A.setLcdUnitString(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.flow2A.lcdUnitString")); // NOI18N
-        flow2A.setLcdValue(530.2);
 
         javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
         jPanel17.setLayout(jPanel17Layout);
@@ -1676,10 +1670,10 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
                             .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(8, 8, 8)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addContainerGap(88, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel3);
