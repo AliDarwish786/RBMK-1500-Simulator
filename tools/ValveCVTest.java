@@ -1,7 +1,7 @@
 public class ValveCVTest {
     public static void main(String[] args) {
-        ///steamValve(745.76, 6960.0, 1000.0, 36.015, 300.0);    //SDV-C 4 per loop
-        waterValve(1667.52, 1766, 1400, 1001.9, 0.887);        //Dearator for 180 C
+        //steamValve(745.76, 6960.0, 1000.0, 36.015, 300.0);    //SDV-C 4 per loop
+        //waterValve(1667.52, 1766, 1400, 1001.9, 0.887);        //Dearator for 180 C
         //waterValve(498.01, 8550, 7550, 1254.2, 0.876);        //Main Feeder 3 per loop for 190 C
         //waterValve(197.44, 8400, 7420, 1254.2, 0.876);        //Aux Feeder 1 per loop for 190 C
         //steamValve(5.14, 6960.0, 0.10142, 36.015, 300.0);     //ejector?
@@ -11,10 +11,11 @@ public class ValveCVTest {
         //steamValve(461.33, 7360, 1000.0, 36.015, 300.0);    //msv group 1
         //steamValve(458.53, 7450, 1000.0, 36.015, 300.0);    //msv group 2
         //steamValve(455.48, 7550, 1000.0, 36.015, 300.0);    //msv group 3
-        waterValve(200, 2157, 1400, 42.45, 0.997); //dearator makeup valve for 30 C
+        //waterValve(209.77, 2157, 1400, 42.45, 0.997); //dearator makeup valve for 30 C
+        waterValve(41.4, 1000, 101.4, 42.45, 0.997);
     }
 
-    static void waterValve(double cV, double p1, double p2, double pVapor, double sG) { // pressures in Kpa
+    static void waterValve(double cV, double p1, double p2, double pVapor, double sG) { // pressures in Kpa //flows in m3/h
         final double FL = 0.9, FF = getCriticalPressureRatioFactor(pVapor * 1000, 22120000.0);
         double flow = 0.0;
         if (p1 - p2 < Math.pow(FL, 2) * (p1 - FF * pVapor)) {
@@ -26,7 +27,8 @@ public class ValveCVTest {
 
         //flow = 571.23; //aux feeder
         //flow = 2930.0; //dearator
-        flow = 500; //dearator makeup valve
+        //flow = 500; //dearator makeup valve
+        //flow = 100; //dearator overflow valve
 
         if (p1 - p2 < Math.pow(FL, 2) * (p1 - FF * pVapor)) {
             cV = flow / 0.0865 * Math.sqrt(sG / (p1 - p2));
@@ -36,7 +38,7 @@ public class ValveCVTest {
         System.out.println("cV based on flow " + flow + ": " + cV);
     }
 
-    static double getCriticalPressureRatioFactor(double pSat, double pCritical) { //arguments to be given in pa
+    static double getCriticalPressureRatioFactor(double pSat, double pCritical) { //arguments to be given in pa //flows in kg/h
         return 0.96 - 0.28 * Math.sqrt(pSat / pCritical);
     }
 
