@@ -4,8 +4,6 @@ package com.darwish.nppsim;
 
 import static com.darwish.nppsim.NPPSim.atmosphere;
 import static com.darwish.nppsim.NPPSim.mcc;
-import java.io.Serializable;
-
 
 interface Connectable {
     // methods required for connectors

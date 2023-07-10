@@ -22,6 +22,11 @@ class TG extends Component implements Connectable {
     private boolean synced = false, tripped = true, reversePower = false;
     private static float gridPhase = 180.0f;
     private float genPhase = 0.0f, genAlignment;
+    private boolean isTG1 = false, reversePowerRecorded = false;
+
+    public TG() {
+        this.condenser = null;
+    }
 
     public TG(Condenser condenser) {
         this.condenser = condenser;
@@ -41,6 +46,14 @@ class TG extends Component implements Connectable {
     }
     
     protected void trip() {
+        if (tripped) {
+            return;
+        }
+        if (isTG1) {
+            autoControl.recordEvent("TG-1 Trip");
+        } else {
+            autoControl.recordEvent("TG-2 Trip");
+        }
         synced = false;
         TG1InletValves.forEach(valve -> {
             if (valve.drain.equals(this)) {
@@ -55,14 +68,20 @@ class TG extends Component implements Connectable {
             }
         });
         if (!this.isTripped() && (tg1.isTripped() || tg2.isTripped()) && core.getThermalPower() > 2400) {
-            autoControl.az1Control.trip();
+            autoControl.az1Control.trip("Turbine Trip");
         }
         tripped = true;
     }
     
     protected void reset() {
-        if (rpm < 3250 && condenser.getPressure() < 0.030 && mcc.drum1.getPressure() > 5 && mcc.drum2.getPressure() > 5)
-        tripped = false;
+        if (rpm < 3250 && condenser.getPressure() < 0.030 && mcc.drum1.getPressure() > 5 && mcc.drum2.getPressure() > 5) {
+            tripped = false;
+            if (isTG1) {
+                autoControl.recordEvent("TG-1 Reset");
+            } else {
+                autoControl.recordEvent("TG-2 Reset");
+            }
+        }
     }
 
     public void update() {
@@ -80,9 +99,9 @@ class TG extends Component implements Connectable {
             load = 0;
             var benchmark = steamInflow / 7.0 * 3000;
             if (rpm < benchmark) {
-                rpm += (benchmark - rpm) / 300;
+                rpm += (benchmark - rpm) / 1000;
             } else {
-                rpm += (benchmark - rpm) / 3000;
+                rpm += (benchmark - rpm) / 3000; 
             }
             if (rpm < 0) {
                 rpm = 0;
@@ -219,16 +238,29 @@ class TG extends Component implements Connectable {
     }
 
     private void reversePowerTrip() {
+        if(!reversePowerRecorded) {
+            if (isTG1) {
+                autoControl.recordEvent("TG-1 Reverse Power");
+            } else {
+                autoControl.recordEvent("TG-2 Reverse Power");
+            }
+            reversePowerRecorded = true;
+        }
         new Thread(() -> {
             try {
                 Thread.sleep(7000); // if reverse power for 7 seconds trip turbine;
                 if (reversePower) {
                     trip();
                 }
+                reversePowerRecorded = false;
             } catch (InterruptedException e) {
-                //void
+                reversePowerRecorded = false;
             }
         }).start();
+    }
+    
+    public void setTG1() {
+        isTG1 = true;
     }
 }
 
@@ -422,6 +454,7 @@ class Condenser implements Connectable, UIReadable, Serializable {
         throw new UnsupportedOperationException("Unimplemented method 'getWaterInflowRate'");
     }
 
+    @Override
     public double getWaterLevel() {
         return feedwaterLevel;
     }

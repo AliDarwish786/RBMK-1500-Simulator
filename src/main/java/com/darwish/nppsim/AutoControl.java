@@ -1,5 +1,6 @@
 package com.darwish.nppsim;
 
+import static com.darwish.nppsim.Loader.soundProvider;
 import static com.darwish.nppsim.NPPSim.TG1InletValves;
 import static com.darwish.nppsim.NPPSim.TG2InletValves;
 import static com.darwish.nppsim.NPPSim.auxFeederValves;
@@ -17,6 +18,7 @@ import static com.darwish.nppsim.NPPSim.mcc;
 import java.util.Arrays;
 
 public class AutoControl extends Component {
+    ArrayList<String> eventLog = new ArrayList<>();
     ArrayList<WaterLevelControl> dearatorWaterControl = new ArrayList<>();
     ArrayList<WaterLevelControl> dearatorMakeupControl = new ArrayList<>();
     ArrayList<InletSteamPressureControl> dearatorPressureControl = new ArrayList<>();
@@ -29,7 +31,12 @@ public class AutoControl extends Component {
     ArrayList<OutletSteamPressureControl> msv2Control = new ArrayList<>();
     AZ1Control az1Control;
     FASRControl fasrControl;
-    AutomaticRodController ar1Control, ar2Control, ar12Control, larControl;
+    FluidAutomaticRodController automaticRodController;
+    //AutomaticRodController ar1Control, ar2Control, ar12Control, larControl;
+    ArrayList<ControlRodChannel> ar1 = new ArrayList<>();
+    ArrayList<ControlRodChannel> ar2 = new ArrayList<>();
+    ArrayList<ControlRodChannel> lar = new ArrayList<>();
+    private long simulationTime = 0; //simulation time in seconds
 
     public AutoControl() {
         dearatorValves.forEach(valve -> {
@@ -73,8 +80,8 @@ public class AutoControl extends Component {
         });
         sdv_cControl.forEach(controller -> {
             controller.setEnabled(true);
-            controller.setpoint = 6.96; 
-            controller.activationTreshold = 6.96;
+            controller.setpoint = 7.02; 
+            controller.activationTreshold = 7.02;
         });
         sdv_aControl.forEach(controller -> {
         controller.setEnabled(true);
@@ -104,10 +111,7 @@ public class AutoControl extends Component {
         
         az1Control = new AZ1Control();
         fasrControl = new FASRControl();
-        
-        ArrayList<ControlRodChannel> ar1 = new ArrayList<>();
-        ArrayList<ControlRodChannel> ar2 = new ArrayList<>();
-        ArrayList<ControlRodChannel> lar = new ArrayList<>();
+
         core.coreArray.forEach(row -> {
             row.forEach(channel -> {
                 if (channel instanceof ACRChannel) {
@@ -119,10 +123,11 @@ public class AutoControl extends Component {
                 }
             });
         });
-        ar1Control = new AutomaticRodController(new ControlRodChannel[] {ar1.get(0), ar1.get(1), ar1.get(2), ar1.get(3)});
-        ar2Control = new AutomaticRodController(new ControlRodChannel[] {ar2.get(0), ar2.get(1), ar2.get(2), ar2.get(3)});
-        ar12Control = new AutomaticRodController(new ControlRodChannel[] {ar1.get(0), ar1.get(1), ar1.get(2), ar1.get(3), ar2.get(0), ar2.get(1), ar2.get(2), ar2.get(3)});
-        larControl = new AutomaticRodController(new ControlRodChannel[] {lar.get(0), lar.get(1), lar.get(2), lar.get(3), lar.get(4), lar.get(5), lar.get(6), lar.get(7), lar.get(8), lar.get(9), lar.get(10), lar.get(11)});
+        automaticRodController = new FluidAutomaticRodController();
+//        ar1Control = new AutomaticRodController(new ControlRodChannel[] {ar1.get(0), ar1.get(1), ar1.get(2), ar1.get(3)});
+//        ar2Control = new AutomaticRodController(new ControlRodChannel[] {ar2.get(0), ar2.get(1), ar2.get(2), ar2.get(3)});
+//        ar12Control = new AutomaticRodController(new ControlRodChannel[] {ar1.get(0), ar1.get(1), ar1.get(2), ar1.get(3), ar2.get(0), ar2.get(1), ar2.get(2), ar2.get(3)});
+//        larControl = new AutomaticRodController(new ControlRodChannel[] {lar.get(0), lar.get(1), lar.get(2), lar.get(3), lar.get(4), lar.get(5), lar.get(6), lar.get(7), lar.get(8), lar.get(9), lar.get(10), lar.get(11)});
     }
 
     public void update() {
@@ -183,16 +188,7 @@ public class AutoControl extends Component {
         });
         az1Control.update();
         fasrControl.update();
-        if (ar1Control.isEnabled()) {   //only one of these should be enabled at a time
-            ar1Control.update();
-        } else if (ar2Control.isEnabled()) {
-            ar2Control.update();
-        } else if (ar12Control.isEnabled()) {
-            ar12Control.update();
-        }
-        if (larControl.isEnabled()) {
-            larControl.update();
-        }
+        automaticRodController.update();
     }
 
     class WaterLevelControl implements Serializable {
@@ -265,7 +261,7 @@ public class AutoControl extends Component {
         }
 
         public void update() {
-            currentPressure = target.getPressure() - 0.02;
+            currentPressure = target.getPressure();
             deltaPressure = currentPressure - previousPressure;
             deltaPressureSetpoint = (setpoint - currentPressure) / 200;
             if (deltaPressure > deltaPressureSetpoint + 0.0001) {
@@ -332,7 +328,6 @@ public class AutoControl extends Component {
                 }
             }
             previousPressure = currentPressure;
-            //System.out.println(valveArray[0].getAutoState() + " DP " + deltaPressure + " DPS " + deltaPressureSetpoint + " WL " + target.getPressure());
         } 
 
         public void setActivationTreshold(double treshold) {
@@ -346,29 +341,39 @@ public class AutoControl extends Component {
         
         public void update() {
             if (mcc.drum1.getPressure() > 7.26 || mcc.drum2.getPressure() > 7.26) {
-                trip();
+                trip("High Drum Pressure");
             }
             if (mcc.drum1.getWaterLevel() > 30 || mcc.drum2.getWaterLevel() > 30 ) {
-                trip();
+                trip("High Water Level");
             }
             if (mcc.drum1.getWaterLevel() < -40 || mcc.drum2.getWaterLevel() < -40) {
-                trip();
+                trip("Low Water Level");
             }
             if (core.getReactivity() > 0.02) {
                 if (persistentReactivity) {
-                    trip();
+                    trip("High Neutron Rate");
+                    persistentReactivity = false;
                 }
-                
-                persistentReactivity = true;
-            } else {
-                persistentReactivity = false;
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(500);
+                        persistentReactivity = true;
+                    } catch (InterruptedException e) {
+                        persistentReactivity = true;
+                    }
+                }).start();
             }
             if (core.getThermalPower() > 5800) {
-                trip();
+                trip("High Thermal Power");
             }
         }
         
-        public void trip() {
+        public void trip(String reason) {
+            if (tripped) {
+                return;
+            }
+            soundProvider.playContinuously(soundProvider.ALARM_2);
+            recordEvent("AZ-1 Trip Signal: " + reason);
             tripped = true;
             core.coreArray.forEach(row -> {
                 row.forEach(channel -> {
@@ -382,7 +387,9 @@ public class AutoControl extends Component {
         }   
         
         public void reset() {
+            recordEvent("AZ-1 Reset");
             tripped = false;
+            soundProvider.stop(soundProvider.ALARM_2);
             core.coreArray.forEach(row -> {
                 row.forEach(channel -> {
                     if (channel instanceof ControlRodChannel) {
@@ -478,6 +485,7 @@ public class AutoControl extends Component {
             thermalPower = core.getThermalPower();
             toControl.clear();
             toControl.addAll(Arrays.asList(linkedChannels));
+            averagePower = 0;
             var upperLimit = false;
             var lowerLimit = false;
             var checkError = false;
@@ -578,6 +586,226 @@ public class AutoControl extends Component {
         
         public boolean isBusy() {
             return busy;
+        }
+    }
+    
+    public long getSimulationTime() {
+        return simulationTime;
+    }
+    
+    public void updateSimulationTime() {
+        simulationTime++;
+    }
+    
+    public void recordEvent(String event) {
+        eventLog.add(NPPMath.formatSecondsToDaysAndTime(simulationTime, false) + "  " + event);
+    }
+    
+    class FluidAutomaticRodController implements Serializable {
+    private double setpoint = 0.0;
+    double ro, roSetpoint, thermalPower, averagePower;
+    final ArrayList<ControlRodChannel> linkedChannels = new ArrayList<>();
+    final ArrayList<ControlRodChannel> toControl = new ArrayList<>();
+    private final boolean[] enabled = {false, false, false}; //{lar, 1ar, 2ar}
+    private final boolean[] error = {false, false, false};
+    private final boolean[] limit = {false, false, false};
+    private final boolean[] busy = {false, false, false};
+
+        public void update() {
+            thermalPower = core.getThermalPower();
+            toControl.clear();
+            toControl.addAll(linkedChannels);
+            averagePower = 0;
+            boolean upperLimit[] = {false, false, false};
+            boolean lowerLimit[] = {false, false, false};
+            boolean checkError[] = {false, false, false};
+            boolean checkBusy[] = {false, false, false};
+            boolean fineControl = true;
+            for (ControlRodChannel channel: linkedChannels) {
+                averagePower += channel.getNeutronPopulation()[0];
+                if (channel.getPosition() == 0) {
+                    if (ar1.contains(channel)) {
+                        upperLimit[1] = true;
+                    } else if (ar2.contains(channel)) {
+                        upperLimit[2] = true;
+                    } else {
+                        upperLimit[0] = true;
+                    }
+                } else if (channel.getPosition() == 1) {
+                    if (ar1.contains(channel)) {
+                        lowerLimit[1] = true;
+                    } else if (ar2.contains(channel)) {
+                        lowerLimit[2] = true;
+                    } else {
+                        lowerLimit[0] = true;
+                    }
+                }
+            }
+            averagePower /= linkedChannels.size();
+            ro = core.getReactivity();
+            roSetpoint = 0 + ((setpoint - thermalPower) / 30000); 
+            if (ro  > roSetpoint + 0.00001) {
+                if (ro  > roSetpoint + 0.00005) {
+                    fineControl = false;
+                }
+                for (int i = 0; i < 3; i++) {
+                    limit[i] = lowerLimit[i];
+                    if (limit[i]) {
+                        checkError[i] = true;
+                    }
+                }
+                for (ControlRodChannel channel: linkedChannels) {
+                    if (channel.getNeutronPopulation()[0] < averagePower * 0.99) {
+                        toControl.remove(channel);
+                    }
+                }
+                if (toControl.isEmpty()) {
+                    toControl.addAll(linkedChannels);
+                }
+                for (ControlRodChannel rod: toControl) {
+                    if (fineControl) {
+                        rod.setAutoState(1);
+                        rod.setPosition(rod.getPosition() + 0.00025f);
+                    } else {
+                        rod.setAutoState(2);
+                    }
+                    if (rod.getPosition() < 1) {
+                        if (ar1.contains(rod)) {
+                            checkBusy[1] = true;
+                        } else if (ar2.contains(rod)) {
+                            checkBusy[2] = true;
+                        } else {
+                            checkBusy[0] = true;
+                        }
+                    }
+                }
+            } else if (ro < roSetpoint - 0.00001) { 
+                if (ro  < roSetpoint - 0.00005) {
+                    fineControl = false;
+                }
+                for (int i = 0; i < 3; i++) {
+                    limit[i] = upperLimit[i];
+                }
+                if (fasrControl.getSequenceBlock()) {
+                    for (int i = 0; i < 3; i++) {
+                        error[i] = true;
+                        busy[i] = false;
+                    }
+                    for (ControlRodChannel rod: linkedChannels) {
+                        rod.setAutoState(1);
+                    }
+                    return;
+                }
+                for (ControlRodChannel channel: linkedChannels) {
+                    if (channel.getNeutronPopulation()[0] > averagePower * 1.01) {
+                        toControl.remove(channel);
+                    }
+                }
+                if (toControl.isEmpty()) {
+                    toControl.addAll(linkedChannels);
+                }
+                for (ControlRodChannel rod: toControl) {
+                    if (fineControl) {
+                        rod.setAutoState(1);
+                        rod.setPosition(rod.getPosition() - 0.00025f);
+                    } else {
+                        rod.setAutoState(0);
+                    }
+                    if (rod.getPosition() > 0) {
+                        if (ar1.contains(rod)) {
+                            checkBusy[1] = true;
+                        } else if (ar2.contains(rod)) {
+                            checkBusy[2] = true;
+                        } else {
+                            checkBusy[0] = true;
+                        }
+                    }
+                }
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    busy[i] = false;
+                    limit[i] = false;
+                }
+                for (ControlRodChannel rod: linkedChannels) {
+                    rod.setAutoState(1);
+                }
+            }
+            for (int i = 0; i < 3; i++) {
+                    error[i] = checkError[i];
+                    busy[i] = checkBusy[i];
+                }
+        }
+        
+        public void setSetpoint(double setpoint) {
+            this.setpoint = setpoint;
+        }
+        
+        public double getSetpoint() {
+            return setpoint;
+        }
+        
+        public boolean[] isEnabled() {
+            return enabled;
+        }
+        
+        public boolean[] hasError() {
+            return error;
+        }
+        
+        public boolean[] onLimit() {
+            return limit;
+        }
+        
+        public boolean[] isBusy() {
+            return busy;
+        }
+        
+        public void enableLAR() {
+            if (enabled[0]) {
+                return;
+            }
+            linkedChannels.addAll(lar);
+            enabled[0] = true;
+        }
+        
+        public void disableLar() {
+            if(!enabled[0]) {
+                return;
+            }
+            linkedChannels.removeAll(lar);
+            enabled[0] = false;
+        }
+        
+        public void enable1AR() {
+            if (enabled[1]) {
+                return;
+            }
+            linkedChannels.addAll(ar1);
+            enabled[1] = true;
+        }
+        
+        public void disable1AR() {
+            if (!enabled[1]) {
+                return;
+            }
+            linkedChannels.removeAll(ar1);
+            enabled[1] = false;
+        }
+        
+        public void enable2AR() {
+            if (enabled[2]) {
+                return;
+            }
+            linkedChannels.addAll(ar2);
+            enabled[2] = true;
+        }
+        
+        public void disable2AR() {
+            if (!enabled[2]) {
+                return;
+            }
+            linkedChannels.removeAll(ar2);
+            enabled[2] = false;
         }
     }
 }

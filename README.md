@@ -15,7 +15,7 @@ Roadmap (more things will be added to this over time):
 - Better Control and Safety Systems;
 - Rework of TG and Condensers;
 - Advanced Reactor Core Model;
-- Electrical systems;
+- Electrical systems
 - Auxiliary Systems;
 - User-friendliness stuff like UI themes and settings for increasing simulation speed like burnup and decay; 
 - Fission and decay product simulation for each element;

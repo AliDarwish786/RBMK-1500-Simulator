@@ -6,6 +6,7 @@ com/darwish/nppsim/MCC.class
 com/darwish/nppsim/Loader$3.class
 com/darwish/nppsim/DearatorUI$4.class
 com/darwish/nppsim/CondensateUI$11.class
+com/darwish/nppsim/UI$50.class
 com/darwish/nppsim/TGUI$37.class
 com/darwish/nppsim/PCSUI$53.class
 com/darwish/nppsim/LoadDialog$2.class
@@ -28,6 +29,7 @@ com/darwish/nppsim/DearatorUI$65.class
 com/darwish/nppsim/DearatorUI$25.class
 com/darwish/nppsim/FeedwaterUI$12.class
 com/darwish/nppsim/CondensateUI$29.class
+com/darwish/nppsim/UI$49.class
 com/darwish/nppsim/PCSUI$8.class
 com/darwish/nppsim/CondensateUI$3.class
 com/darwish/nppsim/DearatorUI$99.class
@@ -45,6 +47,7 @@ com/darwish/nppsim/Selsyn$2.class
 com/darwish/nppsim/DearatorUI$59.class
 com/darwish/nppsim/DearatorUI$46.class
 com/darwish/nppsim/CoreMap$3$1.class
+com/darwish/nppsim/UI$42.class
 com/darwish/nppsim/Condenser.class
 com/darwish/nppsim/FeedwaterUI$19.class
 com/darwish/nppsim/TGUI$32.class
@@ -153,6 +156,9 @@ com/darwish/nppsim/DearatorUI$62.class
 com/darwish/nppsim/DearatorUI$100.class
 com/darwish/nppsim/FeedwaterUI$2.class
 com/darwish/nppsim/DearatorUI$50.class
+com/darwish/nppsim/UI$46.class
+com/darwish/nppsim/UI$52.class
+com/darwish/nppsim/SoundProvider.class
 com/darwish/nppsim/DearatorUI$6.class
 com/darwish/nppsim/TGUI$28.class
 com/darwish/nppsim/FeedwaterUI$42.class
@@ -164,6 +170,7 @@ com/darwish/nppsim/PCSUI$51.class
 com/darwish/nppsim/TGUI$39.class
 com/darwish/nppsim/DearatorUI$7.class
 com/darwish/nppsim/Atmosphere.class
+com/darwish/nppsim/UI$53.class
 com/darwish/nppsim/TGUI$50.class
 com/darwish/nppsim/PCSUI$11.class
 com/darwish/nppsim/FeedwaterUI$36.class
@@ -185,10 +192,12 @@ com/darwish/nppsim/DearatorUI$54.class
 com/darwish/nppsim/TGUI$43.class
 com/darwish/nppsim/TGUI$33.class
 com/darwish/nppsim/CoreMap.class
+com/darwish/nppsim/UI$44.class
 com/darwish/nppsim/DearatorUI$61.class
 com/darwish/nppsim/FeedwaterUI$44.class
 com/darwish/nppsim/UI$37.class
 com/darwish/nppsim/FeedwaterUI$6.class
+com/darwish/nppsim/UI$47.class
 com/darwish/nppsim/SaveDialog.class
 com/darwish/nppsim/Component.class
 com/darwish/nppsim/DearatorUI$11.class
@@ -204,6 +213,7 @@ com/darwish/nppsim/DearatorUI$5.class
 com/darwish/nppsim/CondensateUI$36.class
 com/darwish/nppsim/DearatorUI$57.class
 com/darwish/nppsim/CondensateUI$45.class
+com/darwish/nppsim/UI$51.class
 com/darwish/nppsim/PCSUI$52.class
 com/darwish/nppsim/PCSUI$47.class
 com/darwish/nppsim/CondensateUI$42.class
@@ -213,6 +223,7 @@ com/darwish/nppsim/UIReadable.class
 com/darwish/nppsim/TGUI$41.class
 com/darwish/nppsim/PCSUI$55.class
 com/darwish/nppsim/PCSUI$49.class
+com/darwish/nppsim/UI$45.class
 com/darwish/nppsim/TGUI$35.class
 com/darwish/nppsim/DearatorUI$56.class
 com/darwish/nppsim/FeedwaterUI$8.class
@@ -224,6 +235,7 @@ com/darwish/nppsim/PCSUI$48.class
 com/darwish/nppsim/SACRChannel.class
 com/darwish/nppsim/oldUI$5.class
 com/darwish/nppsim/TGUI$36.class
+com/darwish/nppsim/AutoControl$FluidAutomaticRodController.class
 com/darwish/nppsim/PCSUI$54.class
 com/darwish/nppsim/FeedwaterUI$7.class
 com/darwish/nppsim/DearatorUI$60.class
@@ -248,6 +260,7 @@ com/darwish/nppsim/CondensateUI$44.class
 com/darwish/nppsim/TGUI$52.class
 com/darwish/nppsim/ChannelUIUpdatable.class
 com/darwish/nppsim/FeedwaterUI$18.class
+com/darwish/nppsim/UI$43.class
 com/darwish/nppsim/DearatorUI$45.class
 com/darwish/nppsim/CondensateUI$2.class
 com/darwish/nppsim/TGUI$57.class
@@ -266,6 +279,7 @@ com/darwish/nppsim/FeedwaterUI$40.class
 com/darwish/nppsim/DearatorUI$85.class
 com/darwish/nppsim/AutoControl$WaterLevelControl.class
 com/darwish/nppsim/TGUI$38.class
+com/darwish/nppsim/LogWindow.class
 com/darwish/nppsim/TGUI$1.class
 com/darwish/nppsim/FeedwaterUI$4.class
 com/darwish/nppsim/CondensateUI$12.class
@@ -285,6 +299,7 @@ com/darwish/nppsim/DearatorUI$98.class
 com/darwish/nppsim/FeedwaterUI$13.class
 com/darwish/nppsim/CondensateUI$9.class
 com/darwish/nppsim/DearatorUI$110.class
+com/darwish/nppsim/UI$48.class
 com/darwish/nppsim/TGUI$44.class
 com/darwish/nppsim/DearatorUI$80.class
 com/darwish/nppsim/DearatorUI$58.class
@@ -299,6 +314,7 @@ com/darwish/nppsim/DearatorUI$64.class
 com/darwish/nppsim/PCSUI$67.class
 com/darwish/nppsim/DearatorUI$74.class
 com/darwish/nppsim/TGUI$23.class
+com/darwish/nppsim/UI$54.class
 com/darwish/nppsim/PCSUI$14.class
 com/darwish/nppsim/DearatorUI$87.class
 com/darwish/nppsim/FeedwaterUI$34.class

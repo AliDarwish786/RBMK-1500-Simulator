@@ -1,5 +1,6 @@
 package com.darwish.nppsim;
 
+import static com.darwish.nppsim.Loader.soundProvider;
 import java.awt.Color;
 import java.util.HashMap;
 
@@ -16,6 +17,7 @@ public class Annunciator {
     public static final Color BLUEOFF_COLOR = new Color(8,106,107);
     public static final Color BLUEON_COLOR = new Color(15,206,208);
     public static Thread annunciatorThread;
+    private static boolean alarmPlaying = false;
 
     /**
      * @param annunciatorPanel the panel with JTextFields which act as annunciator lights
@@ -34,7 +36,7 @@ public class Annunciator {
         annunciatorThread = new Thread(() -> {
             while (true) {
                 try {
-                    while(NPPSim.getPaused()) {
+                    while(NPPSim.isPaused()) {
                         Thread.sleep(500);
                     }
                     annunciatorBlinker = true;
@@ -73,7 +75,13 @@ public class Annunciator {
                     } else {
                         field.setBackground(colorOn);
                     }
+                    alarmPlaying = true;
                     break;
+            }
+            if (alarmPlaying) {
+                soundProvider.playContinuously(soundProvider.ALARM_1);
+            } else {
+                soundProvider.stop(soundProvider.ALARM_1);
             }
         });
     }
@@ -86,10 +94,16 @@ public class Annunciator {
         annunciatorArray.forEach((element, state) -> {
             annunciatorArray.replace(element, 2, 1);
         });
+        alarmPlaying = false;
+        soundProvider.stop(soundProvider.ALARM_2);
     }
     
     public void reset(javax.swing.JTextField element) {
         annunciatorArray.replace(element, 0);
+        if (annunciatorArray.containsValue(2)) {
+            return;
+        }
+        alarmPlaying = false;
     }
     
     /**

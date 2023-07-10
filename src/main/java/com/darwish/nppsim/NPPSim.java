@@ -1,17 +1,16 @@
 package com.darwish.nppsim;
 
+import static com.darwish.nppsim.Loader.soundProvider;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sound.sampled.LineListener;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-
-import org.json.JSONException;
 
 public class NPPSim {
     static UI ui;
@@ -86,7 +85,6 @@ public class NPPSim {
 
         //parse the steam tables
         tables = Loader.tables;
-       
 
         //initialize all components
         atmosphere = new Atmosphere(15);
@@ -99,6 +97,7 @@ public class NPPSim {
         //TG and Condenser Components
         tg1 = new TG(new Condenser());
         tg2 = new TG(new Condenser());
+        tg1.setTG1();
 
         for (int i = 0; i < 4; i++) {
             ejectors.add(new Ejector(5.14, 10, steamPiping, atmosphere, tg1.condenser, atmosphere));
@@ -184,7 +183,7 @@ public class NPPSim {
         autoControl = new AutoControl();
 
         //set variables if needed
-
+        
         //initialize UI
         simPaused = false;
         ui = new UI();
@@ -295,6 +294,10 @@ public class NPPSim {
         auxFeederValves.add((WaterValve)state.get(102));
         pcs = (PCS)state.get(103);
         autoControl = (AutoControl)state.get(148);
+        autoControl.sdv_cControl.forEach(controller -> {
+            controller.setSetpoint(7);
+            controller.setActivationTreshold(7);
+        });
 
         simPaused = false;
         ui = new UI();
@@ -405,28 +408,36 @@ public class NPPSim {
                     timeStepLengthCumulative += timestep;
                 }
             } catch (InterruptedException e) {
-                //
+                e.printStackTrace();
             } catch (Exception e) {
-                new ErrorWindow("A component has been damaged beyond repair", ExceptionUtils.getStackTrace(e)).setVisible(true);
+                new ErrorWindow("A component has been damaged beyond repair", ExceptionUtils.getStackTrace(e), false).setVisible(true);
             }
         });
         updateThread.start();
     }
 
     private void printTimer() {
+        final long timeToSleep[] = {900};
+        long start[] =  {0, 0};
         printThread = new Thread(() -> {
             try {
                 while(run) {
-                    Thread.sleep(950);
+                    
+                    Thread.sleep(timeToSleep[0]);
                     while (updateCount < 20 ) {
                         Thread.sleep(10);
                     }
                     //System.out.println("Average time step: " + timeStepLengthCumulative / updateCount + " " + updateCount); //used sometimes for debugging
                     if (updateCount > 20) {
-                        System.out.println("WARNING: Timesteps = " + updateCount);
+                        if (timeToSleep[0] > 0) {
+                            timeToSleep[0] -= 50;
+                        }
+                        System.out.println("WARNING: Timesteps = " + updateCount + ". UI Wait time will be " + timeToSleep[0]);
                     }
                     updateCount = 0;
                     timeStepLengthCumulative = 0;
+                    
+                    autoControl.updateSimulationTime();
                     ui.update();
                     while (simPaused) {
                         Thread.sleep(100);
@@ -449,7 +460,8 @@ public class NPPSim {
             updateThread.interrupt();
             printThread.interrupt();
             run = false;
-            
+            ui.dispose();
+            Loader.soundProvider.stopAll();
         } catch (Exception e) {
             //void
         }
@@ -459,14 +471,18 @@ public class NPPSim {
         simPaused = paused;
     }
     
-    public static boolean getPaused() {
+    public static boolean isPaused() {
         return simPaused;
+    }
+    
+    public static boolean isRunning() {
+        return run;
     }
     
     public ArrayList<Serializable> getState() {
         return stateArray;
     }
-    
+
     public static void save(File file) {
         try (
             FileOutputStream fout = new FileOutputStream(file);
@@ -481,7 +497,7 @@ public class NPPSim {
             oos.close();
             fout.close();
         } catch (Exception e) {
-            new ErrorWindow("Error Saving IC", ExceptionUtils.getStackTrace(e)).setVisible(true);
+            new ErrorWindow("Error Saving IC", ExceptionUtils.getStackTrace(e), true).setVisible(true);
             setPaused(false);
         }
     }
@@ -498,7 +514,7 @@ public class NPPSim {
             endSimulation();
             Loader.simulation = new NPPSim(read);
         } catch (Exception e) {
-            new ErrorWindow("Error Loading IC", ExceptionUtils.getStackTrace(e)).setVisible(true);
+            new ErrorWindow("Error Loading IC", ExceptionUtils.getStackTrace(e), true).setVisible(true);
         }
     }
 }

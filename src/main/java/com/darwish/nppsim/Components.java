@@ -291,6 +291,7 @@ class SimplePressureHeader extends Component implements Connectable, UIReadable 
         double[] inflowData = NPPMath.mixWater(waterInflow, waterInflowTemperature, flow, tempC);
         waterInflow = inflowData[0];
         waterInflowTemperature = inflowData[1];
+        waterInflowRate += waterInflow;
     }
 
     @Override

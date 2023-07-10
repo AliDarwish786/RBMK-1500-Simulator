@@ -21,6 +21,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
      */
     public DearatorUI() {
         initComponents();
+        this.setTitle("Dearators");
         initializeDialUpdateThread();
         annunciator = new Annunciator(annunciatorPanel);
         level1.setTrackVisible(true);
@@ -73,23 +74,25 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     
     @Override
     public void update() {
-        temp1.setLcdValue(da1.getWaterTemperature());
-        temp2.setLcdValue(da2.getWaterTemperature());
-        temp3.setLcdValue(da3.getWaterTemperature());
-        temp4.setLcdValue(da4.getWaterTemperature());
-        steamIn1.setLcdValue(da1.getSteamInflowRate());
-        steamIn2.setLcdValue(da2.getSteamInflowRate());
-        steamIn3.setLcdValue(da3.getSteamInflowRate());
-        steamIn4.setLcdValue(da4.getSteamInflowRate());
-        steamOut1.setLcdValue(da1.getSteamOutflowRate());
-        steamOut2.setLcdValue(da2.getSteamOutflowRate());
-        steamOut3.setLcdValue(da3.getSteamOutflowRate());
-        steamOut4.setLcdValue(da4.getSteamOutflowRate());
-        over1.setLcdValue(pcs.dearatorOverflowValves.get(0).timestepFlow * 20);
-        over2.setLcdValue(pcs.dearatorOverflowValves.get(1).timestepFlow * 20);
-        over3.setLcdValue(pcs.dearatorOverflowValves.get(2).timestepFlow * 20);
-        over4.setLcdValue(pcs.dearatorOverflowValves.get(3).timestepFlow * 20);
         checkAlarms();
+        if (this.isVisible()) {
+            temp1.setLcdValue(da1.getWaterTemperature());
+            temp2.setLcdValue(da2.getWaterTemperature());
+            temp3.setLcdValue(da3.getWaterTemperature());
+            temp4.setLcdValue(da4.getWaterTemperature());
+            steamIn1.setLcdValue(da1.getSteamInflowRate());
+            steamIn2.setLcdValue(da2.getSteamInflowRate());
+            steamIn3.setLcdValue(da3.getSteamInflowRate());
+            steamIn4.setLcdValue(da4.getSteamInflowRate());
+            steamOut1.setLcdValue(da1.getSteamOutflowRate());
+            steamOut2.setLcdValue(da2.getSteamOutflowRate());
+            steamOut3.setLcdValue(da3.getSteamOutflowRate());
+            steamOut4.setLcdValue(da4.getSteamOutflowRate());
+            over1.setLcdValue(pcs.dearatorOverflowValves.get(0).timestepFlow * 20);
+            over2.setLcdValue(pcs.dearatorOverflowValves.get(1).timestepFlow * 20);
+            over3.setLcdValue(pcs.dearatorOverflowValves.get(2).timestepFlow * 20);
+            over4.setLcdValue(pcs.dearatorOverflowValves.get(3).timestepFlow * 20);
+        }
     }
 
     @Override
@@ -97,8 +100,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         Thread dearatorUIThread = new Thread(() -> {
             try {
                 while (true) {
-                    if (this.isFocused()) {
-                        annunciator.update();
+                    annunciator.update();
+                    if (this.isVisible()) {
                         var waterInV1Pos = dearatorValves.get(0).getPosition() * 100;
                         var waterInV2Pos = dearatorValves.get(1).getPosition() * 100;
                         var waterInV3Pos = dearatorValves.get(2).getPosition() * 100;
@@ -141,7 +144,11 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
                         steamOutV3.setValue(steamOutV3Pos);
                         steamOutV4.setValue(steamOutV4Pos);
                     }
-                    Thread.sleep(50);
+                    if (this.isFocused()) {
+                            Thread.sleep(UI.getUpdateRate());
+                        } else {
+                            Thread.sleep(200);
+                        }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

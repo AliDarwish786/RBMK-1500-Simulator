@@ -4,6 +4,7 @@
  */
 package com.darwish.nppsim;
 
+import static com.darwish.nppsim.Loader.soundProvider;
 import static com.darwish.nppsim.NPPSim.autoControl;
 import static com.darwish.nppsim.NPPSim.auxFeedWaterPumps;
 import static com.darwish.nppsim.NPPSim.auxiliaryFWPressureHeader;
@@ -43,6 +44,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     final Annunciator annunciator;
     private double previousNeutronFlux = 0;
     private boolean debounce = false;
+    private static long uiUpdateRate = 50;
     
     public UI() {
         try {
@@ -100,12 +102,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
         });
         
         //set values
-        toggleAR1.getModel().setSelected(autoControl.ar1Control.isEnabled());
-        toggleAR2.getModel().setSelected(autoControl.ar2Control.isEnabled());
-        toggleAR1.getModel().setSelected(autoControl.ar12Control.isEnabled());
-        toggleAR2.getModel().setSelected(autoControl.ar12Control.isEnabled());
-        toggleLAC.getModel().setSelected(autoControl.larControl.isEnabled());
-        setpoint.setLcdValue(autoControl.larControl.getSetpoint());
+        toggleAR1.getModel().setSelected(autoControl.automaticRodController.isEnabled()[1]);
+        toggleAR2.getModel().setSelected(autoControl.automaticRodController.isEnabled()[2]);
+        toggleLAC.getModel().setSelected(autoControl.automaticRodController.isEnabled()[0]);
+        setpoint.setLcdValue(autoControl.automaticRodController.getSetpoint());
         start1.setSelected(mcc.mcp.get(0).isActive());
         start2.setSelected(mcc.mcp.get(4).isActive());
         power2A1.setLedOn(mcc.mcp.get(0).isActive());
@@ -119,6 +119,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     }
     
     public void update() {
+        setTitle(NPPMath.formatSecondsToDaysAndTime(autoControl.getSimulationTime(), true));
         for (UIUpdateable i: elementsToUpdate) {
             i.update();
         }
@@ -209,6 +210,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
             valve.resetFlowRates();
         });
         pcs.demineralizedWaterTank.resetFlowRates();
+        pcs.pcsPressureHeader.resetFlowRates();
         pcs.admsPumps.forEach(pump -> {
             pump.resetFlowRate();
         });
@@ -219,81 +221,60 @@ public class UI extends javax.swing.JFrame implements Serializable {
             new Thread(() -> {
                 try {
                     while (true) {
+                        annunciator.update();
                         if (this.isFocused()) {
                             annunciator.update();
-                            manualRodControl1.update();
-                            if (autoControl.larControl.isEnabled()) {
-                                if (autoControl.larControl.onLimit()) {
+                            if (autoControl.automaticRodController.isEnabled()[0]) {
+                                if (autoControl.automaticRodController.onLimit()[0]) {
                                     limitLAC.setBackground(Annunciator.YELLOWON_COLOR);
                                 } else {
                                     limitLAC.setBackground(Annunciator.YELLOWOFF_COLOR);
                                 }
-                                if (autoControl.larControl.hasError()) {
+                                if (autoControl.automaticRodController.hasError()[0]) {
                                     errorLAC.setBackground(Annunciator.YELLOWON_COLOR);
                                 } else {
                                     errorLAC.setBackground(Annunciator.YELLOWOFF_COLOR);
                                 }
-                                if (autoControl.larControl.isBusy()) {
+                                if (autoControl.automaticRodController.isBusy()[0]) {
                                     busyLAC.setBackground(Annunciator.GREENON_COLOR);
                                 } else {
                                     busyLAC.setBackground(Annunciator.GREENOFF_COLOR);
                                 }
                             }
-                            if (autoControl.ar1Control.isEnabled()) {
-                                if (autoControl.ar1Control.onLimit()) {
+                            if (autoControl.automaticRodController.isEnabled()[1]) {
+                                if (autoControl.automaticRodController.onLimit()[1]) {
                                     limit1AR.setBackground(Annunciator.YELLOWON_COLOR);
                                 } else {
                                     limit1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
                                 }
-                                if (autoControl.ar1Control.hasError()) {
+                                if (autoControl.automaticRodController.hasError()[1]) {
                                     error1AR.setBackground(Annunciator.YELLOWON_COLOR);
                                 } else {
                                     error1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
                                 }
-                                if (autoControl.ar1Control.isBusy()) {
+                                if (autoControl.automaticRodController.isBusy()[1]) {
                                     busy1AR.setBackground(Annunciator.GREENON_COLOR);
                                 } else {
                                     busy1AR.setBackground(Annunciator.GREENOFF_COLOR);
                                 }
-                            } else if (autoControl.ar2Control.isEnabled()) {
-                                if (autoControl.ar2Control.onLimit()) {
+                            }
+                            if (autoControl.automaticRodController.isEnabled()[2]) {
+                                if (autoControl.automaticRodController.onLimit()[2]) {
                                     limit2AR.setBackground(Annunciator.YELLOWON_COLOR);
                                 } else {
                                     limit2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
                                 }
-                                if (autoControl.ar2Control.hasError()) {
+                                if (autoControl.automaticRodController.hasError()[2]) {
                                     error2AR.setBackground(Annunciator.YELLOWON_COLOR);
                                 } else {
                                     error2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
                                 }
-                                if (autoControl.ar2Control.isBusy()) {
+                                if (autoControl.automaticRodController.isBusy()[2]) {
                                     busy2AR.setBackground(Annunciator.GREENON_COLOR);
                                 } else {
                                     busy2AR.setBackground(Annunciator.GREENOFF_COLOR);
                                 }
-                            } else if (autoControl.ar12Control.isEnabled()) {
-                                if (autoControl.ar12Control.onLimit()) {
-                                    limit2AR.setBackground(Annunciator.YELLOWON_COLOR);
-                                    limit1AR.setBackground(Annunciator.YELLOWON_COLOR);
-                                } else {
-                                    limit2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-                                    limit1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-                                }
-                                if (autoControl.ar12Control.hasError()) {
-                                    error1AR.setBackground(Annunciator.YELLOWON_COLOR);
-                                    error2AR.setBackground(Annunciator.YELLOWON_COLOR);
-                                } else {
-                                    error1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-                                    error2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-                                }
-                                if (autoControl.ar12Control.isBusy()) {
-                                    busy2AR.setBackground(Annunciator.GREENON_COLOR);
-                                    busy1AR.setBackground(Annunciator.GREENON_COLOR);
-                                } else {
-                                    busy2AR.setBackground(Annunciator.GREENOFF_COLOR);
-                                    busy1AR.setBackground(Annunciator.GREENOFF_COLOR);
-                                }
-                            } 
+                            }
                             Thread.sleep(50);
                         }
                     }
@@ -331,8 +312,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
                 break;
             }
         }
-        boolean arInop = (autoControl.ar1Control.isEnabled() && autoControl.ar1Control.hasError() && autoControl.ar1Control.onLimit()) || (autoControl.ar2Control.isEnabled() && autoControl.ar2Control.hasError() && autoControl.ar2Control.onLimit()) || (autoControl.ar12Control.isEnabled() && autoControl.ar12Control.hasError() && autoControl.ar12Control.onLimit());
-        boolean lacInop = autoControl.larControl.isEnabled() && autoControl.larControl.hasError() && autoControl.larControl.onLimit();
+        boolean arInop = (autoControl.automaticRodController.isEnabled()[1] && autoControl.automaticRodController.hasError()[1] && autoControl.automaticRodController.onLimit()[1]) || (autoControl.automaticRodController.isEnabled()[2] && autoControl.automaticRodController.hasError()[2] && autoControl.automaticRodController.onLimit()[2]);
+        boolean lacInop = autoControl.automaticRodController.isEnabled()[0] && autoControl.automaticRodController.hasError()[0] && autoControl.automaticRodController.onLimit()[0];
         double currentPeriod = core.getPeriod();
         boolean periodLess30 = currentPeriod < 30 && currentPeriod > 0;
         annunciator.setTrigger(mcc.drum1.getWaterLevel() < -25 || mcc.drum2.getWaterLevel() < -25, lowWaterLevel);
@@ -439,6 +420,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
         }
     }
     
+    public static long getUpdateRate() {
+        return uiUpdateRate;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -454,6 +439,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         buttonGroup4 = new javax.swing.ButtonGroup();
         buttonGroup5 = new javax.swing.ButtonGroup();
         buttonGroup6 = new javax.swing.ButtonGroup();
+        buttonGroup7 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
         annunciatorPanel = new javax.swing.JPanel();
@@ -500,7 +486,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         deltaKeff = new eu.hansolo.steelseries.gauges.Linear();
         jLabel3 = new javax.swing.JLabel();
         electric2 = new eu.hansolo.steelseries.gauges.DisplayRectangular();
-        mTK1 = new com.darwish.nppsim.MTK();
         jPanel7 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         setpoint = new eu.hansolo.steelseries.gauges.DisplaySingle();
@@ -564,6 +549,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         power2A8 = new eu.hansolo.steelseries.extras.Led();
         thermalPower1 = new eu.hansolo.steelseries.gauges.DisplayRectangular();
         electric1 = new eu.hansolo.steelseries.gauges.DisplayRectangular();
+        mTK1 = new com.darwish.nppsim.MTK();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -576,9 +562,15 @@ public class UI extends javax.swing.JFrame implements Serializable {
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         pause = new javax.swing.JCheckBoxMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenu7 = new javax.swing.JMenu();
+        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItem3 = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItem4 = new javax.swing.JRadioButtonMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         mtkPlus = new javax.swing.JRadioButtonMenuItem();
@@ -1074,7 +1066,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         electric2.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.STANDARD_LCD);
         electric2.setLcdUnitString("MWe");
         electric2.setLcdUnitStringVisible(true);
-        electric2.setLcdValue(500.0);
         electric2.setMaxValue(1000.0);
         electric2.setSize(new java.awt.Dimension(170, 90));
 
@@ -1701,7 +1692,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         thermalPower1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.BLACKRED_LCD);
         thermalPower1.setLcdUnitString("MWt");
         thermalPower1.setLcdUnitStringVisible(true);
-        thermalPower1.setLcdValue(3200.0);
         thermalPower1.setSize(new java.awt.Dimension(170, 90));
 
         electric1.setBackgroundColor(eu.hansolo.steelseries.tools.BackgroundColor.BEIGE);
@@ -1711,7 +1701,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         electric1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.STANDARD_LCD);
         electric1.setLcdUnitString("MWe");
         electric1.setLcdUnitStringVisible(true);
-        electric1.setLcdValue(500.0);
         electric1.setMaxValue(1000.0);
         electric1.setSize(new java.awt.Dimension(170, 90));
 
@@ -1721,7 +1710,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(annunciatorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1743,8 +1732,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(electric2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(72, 72, 72)
-                        .addComponent(mTK1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(mTK1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1763,28 +1752,28 @@ public class UI extends javax.swing.JFrame implements Serializable {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(thermalPower1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(0, 0, Short.MAX_VALUE)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(electric2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(electric1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addComponent(annunciatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addComponent(mTK1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(thermalPower1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(electric2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(electric1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(annunciatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 11, Short.MAX_VALUE))
+                    .addComponent(mTK1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1794,7 +1783,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
                             .addComponent(jPanel26, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(manualRodControl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(41, 41, 41))
+                .addGap(30, 30, 30))
         );
 
         jScrollPane1.setViewportView(jPanel3);
@@ -1877,13 +1866,13 @@ public class UI extends javax.swing.JFrame implements Serializable {
         });
         jMenu2.add(jMenuItem9);
 
-        jMenuItem4.setText("oldUI");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem1.setText("Log");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem4);
+        jMenu2.add(jMenuItem1);
 
         jMenuBar1.add(jMenu2);
 
@@ -1896,6 +1885,55 @@ public class UI extends javax.swing.JFrame implements Serializable {
             }
         });
         jMenu3.add(pause);
+
+        jMenuItem4.setText("Clear Event Logs");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem4);
+
+        jMenu7.setText("UI Update rate");
+
+        buttonGroup7.add(jRadioButtonMenuItem1);
+        jRadioButtonMenuItem1.setSelected(true);
+        jRadioButtonMenuItem1.setText("50ms");
+        jRadioButtonMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu7.add(jRadioButtonMenuItem1);
+
+        buttonGroup7.add(jRadioButtonMenuItem2);
+        jRadioButtonMenuItem2.setText("100ms");
+        jRadioButtonMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu7.add(jRadioButtonMenuItem2);
+
+        buttonGroup7.add(jRadioButtonMenuItem3);
+        jRadioButtonMenuItem3.setText("150ms");
+        jRadioButtonMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu7.add(jRadioButtonMenuItem3);
+
+        buttonGroup7.add(jRadioButtonMenuItem4);
+        jRadioButtonMenuItem4.setText("200ms");
+        jRadioButtonMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu7.add(jRadioButtonMenuItem4);
+
+        jMenu3.add(jMenu7);
 
         jMenuBar1.add(jMenu3);
 
@@ -2009,7 +2047,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2080,7 +2118,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     }//GEN-LAST:event_rodsOut1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        autoControl.az1Control.trip();
+        autoControl.az1Control.trip("AZ-1K Pressed");
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -2114,14 +2152,11 @@ public class UI extends javax.swing.JFrame implements Serializable {
             return;
         }
         debounce = true;
-        if (autoControl.larControl.getSetpoint() == 0) {
+        if (autoControl.automaticRodController.getSetpoint() == 0) {
             return;
         }
         setpoint.setLcdValue(setpoint.getLcdValue() - 5);
-        autoControl.larControl.setSetpoint(setpoint.getLcdValue());
-        autoControl.ar1Control.setSetpoint(setpoint.getLcdValue());
-        autoControl.ar2Control.setSetpoint(setpoint.getLcdValue());
-        autoControl.ar12Control.setSetpoint(setpoint.getLcdValue());
+        autoControl.automaticRodController.setSetpoint(setpoint.getLcdValue());
     }//GEN-LAST:event_precisionDecrement2ActionPerformed
 
     private void precisionIncrement2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionIncrement2ActionPerformed
@@ -2129,58 +2164,43 @@ public class UI extends javax.swing.JFrame implements Serializable {
             return;
         }
         debounce = true;
-        if (autoControl.larControl.getSetpoint() == 5200) {
+        if (autoControl.automaticRodController.getSetpoint() == 5200) {
             return;
         }
         setpoint.setLcdValue(setpoint.getLcdValue() + 5);
-        autoControl.larControl.setSetpoint(setpoint.getLcdValue());
-        autoControl.ar1Control.setSetpoint(setpoint.getLcdValue());
-        autoControl.ar2Control.setSetpoint(setpoint.getLcdValue());
-        autoControl.ar12Control.setSetpoint(setpoint.getLcdValue());
+        autoControl.automaticRodController.setSetpoint(setpoint.getLcdValue());
     }//GEN-LAST:event_precisionIncrement2ActionPerformed
 
     private void toggleAR1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleAR1ActionPerformed
         if (toggleAR1.getModel().isSelected()) {
-            if (autoControl.ar2Control.isEnabled()) {
-                autoControl.ar2Control.setEnabled(false);
-                autoControl.ar12Control.setEnabled(true);
-            } else {
-                autoControl.ar1Control.setEnabled(true);
-            }
+            autoControl.automaticRodController.enable1AR();
         } else {
-            if (autoControl.ar12Control.isEnabled()) {
-                autoControl.ar2Control.setEnabled(true);
-                autoControl.ar12Control.setEnabled(false);
-            }
-            autoControl.ar1Control.setEnabled(false);
-            limit1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-            error1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-            busy1AR.setBackground(Annunciator.GREENOFF_COLOR);
+            autoControl.automaticRodController.disable1AR();
         }
+        limit1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
+        error1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
+        busy1AR.setBackground(Annunciator.GREENOFF_COLOR);
+        
     }//GEN-LAST:event_toggleAR1ActionPerformed
 
     private void toggleAR2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleAR2ActionPerformed
         if (toggleAR2.getModel().isSelected()) {
-            if (autoControl.ar1Control.isEnabled()) {
-                autoControl.ar1Control.setEnabled(false);
-                autoControl.ar12Control.setEnabled(true);
-            } else {
-                autoControl.ar2Control.setEnabled(true);
-            }
+            autoControl.automaticRodController.enable2AR();
         } else {
-            if (autoControl.ar12Control.isEnabled()) {
-                autoControl.ar1Control.setEnabled(true);
-                autoControl.ar12Control.setEnabled(false);
-            }
-            autoControl.ar2Control.setEnabled(false);
-            limit2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-            error2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-            busy2AR.setBackground(Annunciator.GREENOFF_COLOR);
+            autoControl.automaticRodController.disable2AR();
         }
+        limit2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
+        error2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
+        busy2AR.setBackground(Annunciator.GREENOFF_COLOR);
+        
     }//GEN-LAST:event_toggleAR2ActionPerformed
 
     private void toggleLACActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toggleLACActionPerformed
-        autoControl.larControl.setEnabled(toggleLAC.getModel().isSelected());
+        if (toggleLAC.getModel().isSelected()) {
+            autoControl.automaticRodController.enableLAR();
+        } else {
+            autoControl.automaticRodController.disableLar();
+        }
         limitLAC.setBackground(Annunciator.YELLOWOFF_COLOR);
         errorLAC.setBackground(Annunciator.YELLOWOFF_COLOR);
         busyLAC.setBackground(Annunciator.GREENOFF_COLOR);
@@ -2303,29 +2323,49 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private void stop2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop2ActionPerformed
         mcc.mcp.get((int)mcp2Spinner.getValue() - 1).setActive(false);
         switch((int)mcp2Spinner.getValue()) {
-            case 1:
+            case 5:
             power2A5.setLedOn(false);
             break;
-            case 2:
+            case 6:
             power2A6.setLedOn(false);
             break;
-            case 3:
+            case 7:
             power2A7.setLedOn(false);
             break;
-            case 4:
+            case 8:
             power2A8.setLedOn(false);
             break;
         }
     }//GEN-LAST:event_stop2ActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        createOrContinue(LogWindow.class, false);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        autoControl.eventLog.clear();
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jRadioButtonMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem2ActionPerformed
+        uiUpdateRate = 100;
+    }//GEN-LAST:event_jRadioButtonMenuItem2ActionPerformed
+
+    private void jRadioButtonMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem1ActionPerformed
+        uiUpdateRate = 50;
+    }//GEN-LAST:event_jRadioButtonMenuItem1ActionPerformed
+
+    private void jRadioButtonMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem3ActionPerformed
+        uiUpdateRate = 150;
+    }//GEN-LAST:event_jRadioButtonMenuItem3ActionPerformed
+
+    private void jRadioButtonMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem4ActionPerformed
+        uiUpdateRate = 200;
+    }//GEN-LAST:event_jRadioButtonMenuItem4ActionPerformed
+
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         createOrContinue(CoreMap.class, false);
     }
-
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {
-        createOrContinue(oldUI.class, false);
-    }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private eu.hansolo.steelseries.gauges.DisplaySingle amps1;
     private javax.swing.JPanel annunciatorPanel;
@@ -2340,6 +2380,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.ButtonGroup buttonGroup4;
     private javax.swing.ButtonGroup buttonGroup5;
     private javax.swing.ButtonGroup buttonGroup6;
+    private javax.swing.ButtonGroup buttonGroup7;
     private eu.hansolo.steelseries.gauges.Linear deltaKeff;
     private eu.hansolo.steelseries.gauges.DisplaySingle drumTemp;
     private eu.hansolo.steelseries.gauges.DisplaySingle drumTemp1;
@@ -2383,7 +2424,9 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
+    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem2;
@@ -2408,6 +2451,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem3;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField5;
     private eu.hansolo.steelseries.gauges.DisplaySingle keff;

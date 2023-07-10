@@ -16,6 +16,7 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
   
     public SelsynPanel() {
         initComponents();
+        this.setTitle("Rod Position Indicators");
         selsynBinding = new HashMap<>();
         while (colNumber != 50) {
             if (colNumber % 2 != 0 ) {
@@ -29,9 +30,11 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
 
     @Override
     public void update() {
-        selsynBinding.forEach((channel, selsyn) -> {
-            selsyn.setValue(channel.getPosition() * 7);
-        });
+        if (this.isVisible()) {
+            selsynBinding.forEach((channel, selsyn) -> {
+                selsyn.setValue(channel.getPosition() * 7);
+            });
+        }
     }
     
     @Override
@@ -40,34 +43,31 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
             new Thread(() -> {
                 try {
                     while (true) {
-                        if (autoControl.larControl.isEnabled()) {
-                            for (ControlRodChannel i: autoControl.larControl.linkedChannels) {
-                                selsynBinding.get(i).setValue(i.getPosition() * 7);
+                        if (this.isVisible()) {
+                            if (!autoControl.automaticRodController.linkedChannels.isEmpty()) {
+                                for (ControlRodChannel i: autoControl.automaticRodController.linkedChannels) {
+                                    selsynBinding.get(i).setValue(i.getPosition() * 7);
+                                }
                             }
-                        }
-                        if (autoControl.ar1Control.isEnabled() || autoControl.ar2Control.isEnabled() || autoControl.ar12Control.isEnabled()) {
-                            for (ControlRodChannel i: autoControl.ar12Control.linkedChannels) {
-                                selsynBinding.get(i).setValue(i.getPosition() * 7);
+                            if (NPPSim.autoControl.az1Control.isTripped()) {
+                                selsynBinding.forEach((channel, selsyn) -> {
+                                    selsyn.setValue(channel.getPosition() * 7);
+                                });
                             }
-                        }
-                        if (NPPSim.autoControl.az1Control.isTripped()) {
-                            selsynBinding.forEach((channel, selsyn) -> {
-                                selsyn.setValue(channel.getPosition() * 7);
-                            });
-                        }
-                        UI.selectedControlRods.forEach(channel -> {
-                            selsynBinding.get(channel).setValue(channel.getPosition() * 7);
-                            selsynBinding.get(channel).setDialColor(dialLightColor);
+                            UI.selectedControlRods.forEach(channel -> {
+                                selsynBinding.get(channel).setValue(channel.getPosition() * 7);
+                                selsynBinding.get(channel).setDialColor(dialLightColor);
 
-                        });
-                        previousSelectedRods.forEach(channel -> {
-                            if (!UI.selectedControlRods.contains(channel)) {
-                                selsynBinding.get(channel).setDialColor(Color.LIGHT_GRAY);
-                            }
-                        });
-                        previousSelectedRods.clear();
-                        previousSelectedRods.addAll(UI.selectedControlRods);
-                        Thread.sleep(50);
+                            });
+                            previousSelectedRods.forEach(channel -> {
+                                if (!UI.selectedControlRods.contains(channel)) {
+                                    selsynBinding.get(channel).setDialColor(Color.LIGHT_GRAY);
+                                }
+                            });
+                            previousSelectedRods.clear();
+                            previousSelectedRods.addAll(UI.selectedControlRods);
+                        }
+                        Thread.sleep(UI.getUpdateRate());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -175,6 +175,7 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
         setBackground(UI.BACKGROUND);
         setFocusable(false);
         setFocusableWindowState(false);
+        setMaximumSize(new java.awt.Dimension(1200, 700));
         setPreferredSize(new java.awt.Dimension(1200, 700));
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -182,6 +183,7 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(1200, 1200));
 
         jPanel1.setBackground(UI.BACKGROUND);
+        jPanel1.setMaximumSize(new java.awt.Dimension(1300, 900));
         jPanel1.setPreferredSize(new java.awt.Dimension(1300, 900));
         jPanel1.setLayout(new java.awt.GridLayout(1, 23));
         jScrollPane1.setViewportView(jPanel1);

@@ -7,8 +7,6 @@ package com.darwish.nppsim;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import javax.imageio.ImageIO;
@@ -20,6 +18,7 @@ public class Loader extends javax.swing.JFrame {
     protected static Loader loader;
     protected static NPPSim simulation;
     protected static SteamTables tables;
+    protected static SoundProvider soundProvider;
     private boolean loading = false;
     
     /**
@@ -49,6 +48,7 @@ public class Loader extends javax.swing.JFrame {
         loader = new Loader();
         new Thread(() -> {
             tables = new SteamTables();
+            soundProvider = new SoundProvider();
             loader.setLoading(false);
         }).start();
         loader.pack();
@@ -151,7 +151,7 @@ public class Loader extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Dialog", 2, 12)); // NOI18N
-        jLabel2.setText("Version 1.0.0 Alpha");
+        jLabel2.setText("Version 1.1.0 Alpha");
 
         jButton5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jButton5.setText("Load Standard IC");

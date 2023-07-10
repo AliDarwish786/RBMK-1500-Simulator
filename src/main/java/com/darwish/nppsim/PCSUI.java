@@ -12,7 +12,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
      */
     public PCSUI() {
         initComponents();
-        
+        this.setTitle("Purification and Cooling System");
         annunciator = new Annunciator(annunciatorPanel);
         
         ((JSpinner.DefaultEditor)spinner1A.getEditor()).getTextField().setEditable(false);
@@ -96,61 +96,62 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     
     @Override
     public void update() {
-        Pump coolingPump = pcs.coolingPump;
-        Pump selected1A1 = pcs.admsPumps.get((int)spinner1A1.getValue() - 1);
-        Pump selected1A;
-        if ((int)spinner1A.getValue() == 1) {
-            selected1A = pcs.pcsPump1;
-        } else {
-            selected1A = pcs.pcsPump2;
-        }
-            
-        filterInletTemp.setLcdValue(pcs.pcsFilterPressureHeader.getWaterTemperature());
-
-        rpm1A.setLcdValue(selected1A.getRPM());
-        flow1A.setLcdValue(selected1A.timestepFlow * 20);
-        amps1A.setLcdValue(selected1A.getPowerUsage());
-        rpm1A2.setLcdValue(coolingPump.getRPM());
-        flow1A2.setLcdValue(coolingPump.timestepFlow * 20);
-        amps1A2.setLcdValue(coolingPump.getPowerUsage());
-        rpm1A1.setLcdValue(selected1A1.getRPM());
-        flow1A1.setLcdValue(selected1A1.getFlowRate());
-        amps1A1.setLcdValue(selected1A1.getPowerUsage());
-        
-        flow1A4.setLcdValue(pcs.dearatorMakeupValves.get((int)spinner1A2.getValue() - 1).timestepFlow * 20);
-        
-        regen1InTemp1.setLcdValue(pcs.regenerator1.getWaterInflow1Temp());
-        regen1InTemp2.setLcdValue(pcs.regenerator1.getWaterInflow2Temp());
-        regen2InTemp1.setLcdValue(pcs.regenerator2.getWaterInflow1Temp());
-        regen2InTemp2.setLcdValue(pcs.regenerator2.getWaterInflow2Temp());
-        regen1OutTemp1.setLcdValue(pcs.regenerator1.getWaterOutflow1Temp());
-        regen1OutTemp2.setLcdValue(pcs.regenerator1.getWaterOutflow2Temp());
-        regen2OutTemp1.setLcdValue(pcs.regenerator2.getWaterOutflow1Temp());
-        regen2OutTemp2.setLcdValue(pcs.regenerator2.getWaterOutflow2Temp());
-        regen1Inflow1.setLcdValue(pcs.regenerator1.getWaterFlowRate1());
-        regen1Inflow2.setLcdValue(pcs.regenerator1.getWaterFlowRate2());
-        regen2Inflow1.setLcdValue(pcs.regenerator2.getWaterFlowRate1());
-        regen2Inflow2.setLcdValue(pcs.regenerator2.getWaterFlowRate2());
-        
-        cooler1InTemp1.setLcdValue(pcs.pcsCooler1.getWaterInflow1Temp());
-        cooler1InTemp2.setLcdValue(pcs.pcsCooler1.getWaterInflow2Temp());
-        cooler2InTemp1.setLcdValue(pcs.pcsCooler2.getWaterInflow1Temp());
-        cooler2InTemp2.setLcdValue(pcs.pcsCooler2.getWaterInflow2Temp());
-        cooler1OutTemp1.setLcdValue(pcs.pcsCooler1.getWaterOutflow1Temp());
-        cooler1OutTemp2.setLcdValue(pcs.pcsCooler1.getWaterOutflow2Temp());
-        cooler2OutTemp1.setLcdValue(pcs.pcsCooler2.getWaterOutflow1Temp());
-        cooler2OutTemp2.setLcdValue(pcs.pcsCooler2.getWaterOutflow2Temp());
-        cooler1Inflow1.setLcdValue(pcs.pcsCooler1.getWaterFlowRate1());
-        cooler1Inflow2.setLcdValue(pcs.pcsCooler1.getWaterFlowRate2());
-        cooler2Inflow1.setLcdValue(pcs.pcsCooler2.getWaterFlowRate1());
-        cooler2Inflow2.setLcdValue(pcs.pcsCooler2.getWaterFlowRate2());
-        
-        dwTank.setValue(pcs.demineralizedWaterTank.getWaterLevel() * 10 + 1000);
-        dwTemp.setLcdValue(pcs.demineralizedWaterTank.getWaterTemperature());
-        dwInflow.setLcdValue(pcs.demineralizedWaterTank.getWaterInflowRate());
-        dwOutflow.setLcdValue(pcs.demineralizedWaterTank.getWaterOutflowRate());
-        
         checkAlarms();
+        if (this.isVisible()) {
+            Pump coolingPump = pcs.coolingPump;
+            Pump selected1A1 = pcs.admsPumps.get((int)spinner1A1.getValue() - 1);
+            Pump selected1A;
+            if ((int)spinner1A.getValue() == 1) {
+                selected1A = pcs.pcsPump1;
+            } else {
+                selected1A = pcs.pcsPump2;
+            }
+            operationalLed.setLedOn(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected() && pcs.pcsPressureHeader.getWaterInflowRate() > 50));
+            filterInletTemp.setLcdValue(pcs.pcsFilterPressureHeader.getWaterTemperature());
+
+            rpm1A.setLcdValue(selected1A.getRPM());
+            flow1A.setLcdValue(selected1A.timestepFlow * 20);
+            amps1A.setLcdValue(selected1A.getPowerUsage());
+            rpm1A2.setLcdValue(coolingPump.getRPM());
+            flow1A2.setLcdValue(coolingPump.timestepFlow * 20);
+            amps1A2.setLcdValue(coolingPump.getPowerUsage());
+            rpm1A1.setLcdValue(selected1A1.getRPM());
+            flow1A1.setLcdValue(selected1A1.getFlowRate());
+            amps1A1.setLcdValue(selected1A1.getPowerUsage());
+
+            flow1A4.setLcdValue(pcs.dearatorMakeupValves.get((int)spinner1A2.getValue() - 1).timestepFlow * 20);
+
+            regen1InTemp1.setLcdValue(pcs.regenerator1.getWaterInflow1Temp());
+            regen1InTemp2.setLcdValue(pcs.regenerator1.getWaterInflow2Temp());
+            regen2InTemp1.setLcdValue(pcs.regenerator2.getWaterInflow1Temp());
+            regen2InTemp2.setLcdValue(pcs.regenerator2.getWaterInflow2Temp());
+            regen1OutTemp1.setLcdValue(pcs.regenerator1.getWaterOutflow1Temp());
+            regen1OutTemp2.setLcdValue(pcs.regenerator1.getWaterOutflow2Temp());
+            regen2OutTemp1.setLcdValue(pcs.regenerator2.getWaterOutflow1Temp());
+            regen2OutTemp2.setLcdValue(pcs.regenerator2.getWaterOutflow2Temp());
+            regen1Inflow1.setLcdValue(pcs.regenerator1.getWaterFlowRate1());
+            regen1Inflow2.setLcdValue(pcs.regenerator1.getWaterFlowRate2());
+            regen2Inflow1.setLcdValue(pcs.regenerator2.getWaterFlowRate1());
+            regen2Inflow2.setLcdValue(pcs.regenerator2.getWaterFlowRate2());
+
+            cooler1InTemp1.setLcdValue(pcs.pcsCooler1.getWaterInflow1Temp());
+            cooler1InTemp2.setLcdValue(pcs.pcsCooler1.getWaterInflow2Temp());
+            cooler2InTemp1.setLcdValue(pcs.pcsCooler2.getWaterInflow1Temp());
+            cooler2InTemp2.setLcdValue(pcs.pcsCooler2.getWaterInflow2Temp());
+            cooler1OutTemp1.setLcdValue(pcs.pcsCooler1.getWaterOutflow1Temp());
+            cooler1OutTemp2.setLcdValue(pcs.pcsCooler1.getWaterOutflow2Temp());
+            cooler2OutTemp1.setLcdValue(pcs.pcsCooler2.getWaterOutflow1Temp());
+            cooler2OutTemp2.setLcdValue(pcs.pcsCooler2.getWaterOutflow2Temp());
+            cooler1Inflow1.setLcdValue(pcs.pcsCooler1.getWaterFlowRate1());
+            cooler1Inflow2.setLcdValue(pcs.pcsCooler1.getWaterFlowRate2());
+            cooler2Inflow1.setLcdValue(pcs.pcsCooler2.getWaterFlowRate1());
+            cooler2Inflow2.setLcdValue(pcs.pcsCooler2.getWaterFlowRate2());
+
+            dwTank.setValue(pcs.demineralizedWaterTank.getWaterLevel() * 10 + 1000);
+            dwTemp.setLcdValue(pcs.demineralizedWaterTank.getWaterTemperature());
+            dwInflow.setLcdValue(pcs.demineralizedWaterTank.getWaterInflowRate());
+            dwOutflow.setLcdValue(pcs.demineralizedWaterTank.getWaterOutflowRate());
+        }
     }
 
     @Override
@@ -159,13 +160,16 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
             new Thread(() -> {
                 try {
                     while (true) {
-                        if (this.isFocused()) {
-                            annunciator.update();
-                            operationalLed.setLedOn(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected()));
+                        annunciator.update();
+                        if (this.isVisible()) {
                             valvePos3.setValue(pcs.pcsValve.getPosition() * 100);
                             valvePos4.setValue(pcs.coolingPump.outletValve.getPosition() * 100);
                         }
-                        Thread.sleep(50);
+                        if (this.isFocused()) {
+                            Thread.sleep(UI.getUpdateRate());
+                        } else {
+                            Thread.sleep(200);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -189,8 +193,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         annunciator.setTrigger(pcs.pcsFilterPressureHeader.waterTemperature > 60, waterTemp);
         annunciator.setTrigger(pcs.demineralizedWaterTank.getWaterLevel() < 0, dwLow);
         annunciator.setTrigger(pcs.demineralizedWaterTank.getWaterLevel() > 95, dwHigh);
-        annunciator.setTrigger(!operationalLed.isLedOn(), INOP);
-        
+        annunciator.setTrigger(!(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected() && pcs.pcsPressureHeader.getWaterInflowRate() > 50)), INOP);
     }
 
 

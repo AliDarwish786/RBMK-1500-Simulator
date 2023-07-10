@@ -190,4 +190,30 @@ public class NPPMath {
         }
         return position;
     }
+    
+    public static String formatSecondsToDaysAndTime(long timeSeconds, boolean longFormat) {
+        var days = timeSeconds / 86400;
+        var hours = timeSeconds % 86400 / 3600;
+        var minutes = timeSeconds % 3600 / 60;
+        var seconds = timeSeconds % 60;
+        var hoursZero = "";
+        var minutesZero = "";
+        var secondsZero = "";
+        var longFormatString = " ";
+        if (hours < 10) {
+            hoursZero = "0";
+        }
+        if (minutes < 10) {
+            minutesZero = "0";
+        }
+        if (seconds < 10) {
+            secondsZero = "0";
+        }
+        if (longFormat) {
+            longFormatString = "            ";
+        }
+        return "Day " + (days + 1) + longFormatString + hoursZero + hours + ":" + minutesZero + minutes + ":" + secondsZero + seconds;
+    }
+    
+    
 }

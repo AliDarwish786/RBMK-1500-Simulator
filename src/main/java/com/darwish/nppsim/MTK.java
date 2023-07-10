@@ -7,8 +7,9 @@ import javax.swing.JTextField;
 
 public class MTK extends javax.swing.JPanel {
     static Color CPSONCOLOR = new SARChannel().uiData.UISelectedColor;
-    static Color CPSOFFCOLOR = new SARChannel().uiData.UIBackgroundColor;
-    static Color CHANNELOFFCOLOR;
+    static Color CPSOFFCOLOR = new SARChannel().uiData.UIBackgroundColor.darker();
+    static Color CHANNELOFFCOLOR; 
+    static Color TESTCOLOR = new Color(229, 229, 149);
     private short rowNumber = 0;
     private int[] fuelCPSCount = {0, 0};
     private HashMap<Channel, JTextField> channelMtkBinding;
@@ -59,9 +60,9 @@ public class MTK extends javax.swing.JPanel {
             if (positive) {
                 if (channel instanceof FuelChannel) {
                    if (channel.getNeutronPopulation()[0] > medianFuelAndCPSFlux[0] * (1 + threshold)) {
-                       light.setBackground(((FuelChannel) channel).uiData.UISelectedColor.brighter());
+                       light.setBackground(((FuelChannel) channel).uiData.UISelectedColor.brighter().brighter());
                    } else {
-                       light.setBackground(((FuelChannel) channel).uiData.UIBackgroundColor);
+                       light.setBackground(CHANNELOFFCOLOR);
                    }
                 } else if (channel instanceof CPSChannel) {
                     if (channel.getNeutronPopulation()[0] > medianFuelAndCPSFlux[1] * (1 + threshold)) {
@@ -73,9 +74,9 @@ public class MTK extends javax.swing.JPanel {
             } else {
                 if (channel instanceof FuelChannel) {
                    if (channel.getNeutronPopulation()[0] < medianFuelAndCPSFlux[0] * (1 - threshold)) {
-                       light.setBackground(((FuelChannel) channel).uiData.UISelectedColor.brighter());
+                       light.setBackground(((FuelChannel) channel).uiData.UISelectedColor.brighter().brighter());
                    } else {
-                       light.setBackground(((FuelChannel) channel).uiData.UIBackgroundColor);
+                       light.setBackground(CHANNELOFFCOLOR);
                    }
                 } else if (channel instanceof CPSChannel) {
                     if (channel.getNeutronPopulation()[0] < medianFuelAndCPSFlux[1] * (1 - threshold)) {
@@ -105,7 +106,7 @@ public class MTK extends javax.swing.JPanel {
                 button.setBorder(javax.swing.BorderFactory.createLineBorder(CHANNELOFFCOLOR.darker(), 1));
                 button.setMaximumSize(new java.awt.Dimension(35, 35));
                 button.setMinimumSize(new java.awt.Dimension(5, 5));
-                button.setPreferredSize(new java.awt.Dimension(7, 7));
+                button.setPreferredSize(new java.awt.Dimension(8, 7));
                 if (currentChannel instanceof FuelChannel) {
                     button.setBackground(currentChannel.uiData.UIBackgroundColor);
                 } else {
@@ -118,7 +119,7 @@ public class MTK extends javax.swing.JPanel {
                 button.setBackground(UI.BACKGROUND.darker());
                 button.setMaximumSize(new java.awt.Dimension(35, 35));
                 button.setMinimumSize(new java.awt.Dimension(5, 5));
-                button.setPreferredSize(new java.awt.Dimension(7, 7));
+                button.setPreferredSize(new java.awt.Dimension(8, 7));
                 row.add(button);
             }
         }

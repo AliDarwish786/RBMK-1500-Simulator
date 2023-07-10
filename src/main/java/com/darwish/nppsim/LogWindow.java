@@ -1,20 +1,42 @@
 package com.darwish.nppsim;
 
-public class ErrorWindow extends javax.swing.JFrame {
-    private boolean loader;
+import static com.darwish.nppsim.NPPSim.autoControl;
+
+public class LogWindow extends javax.swing.JFrame implements UIUpdateable {
+
     /**
-     * Creates new form ErrorWindow
-     * @param title type of error
-     * @param error the error message or stack trace
-     * @param loader set if the loading window must open when closing this window
+     * Creates new form MessageWindow
      */
-    public ErrorWindow(String title, String error, boolean loader) {
+    public LogWindow() {
         initComponents();
-        this.loader = loader;
-        jTextArea1.setText(error);
-        jLabel1.setText(title);
+        setTitle("Event Log");
+    }
+    
+    @Override
+    public void update() {
+        StringBuilder strBuilder = new StringBuilder();
+            for (String event: autoControl.eventLog) {
+                strBuilder.append(event);
+                strBuilder.append("\n");
+            }
+        jTextArea1.setText(strBuilder.toString());
     }
 
+    @Override
+    public void initializeDialUpdateThread() {
+        //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setVisibility(boolean visible) {
+        this.setVisible(visible);//throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void discard() {
+        this.setVisible(false);//throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -24,19 +46,14 @@ public class ErrorWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jLabel1.setText("jLabel1");
+        setAlwaysOnTop(true);
+        setAutoRequestFocus(false);
+        setFocusable(false);
+        setFocusableWindowState(false);
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
@@ -49,35 +66,23 @@ public class ErrorWindow extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        if (loader) {
-            Loader.loader.setVisible(true);
-        }
-    }//GEN-LAST:event_formWindowClosed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
+
 }

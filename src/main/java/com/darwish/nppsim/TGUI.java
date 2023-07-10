@@ -19,7 +19,7 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
      */
     public TGUI() {
         initComponents();
-        
+        this.setTitle("Turbine-Generators");
         annunciator = new Annunciator(annunciatorPanel);
         
         ((JSpinner.DefaultEditor)sdvcSpinner1.getEditor()).getTextField().setEditable(false);
@@ -111,25 +111,29 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         rpm1B.setLcdValue(setpoint);
         rpm1B1.setLcdValue(setpoint);
         sdvcManual.setSelected(!autoControl.sdv_cControl.get(0).isEnabled());
+        autoSteamPressure1On.setSelected(autoControl.tgValveControl.get(0).isEnabled());
+        autoSteamPressure1On1.setSelected(autoControl.tgValveControl.get(2).isEnabled());
     }
     
     @Override
     public void update() {
-        var totalFlow1 = 0.0;
-        var totalFlow2 = 0.0;
-        for (int i = 0; i < 4; i++) {
-            totalFlow1 += sdv_c.get(i).getFlowRate();
-        }
-        for (int i = 4; i < 8; i++) {
-            totalFlow2 += sdv_c.get(i).getFlowRate();
-        }
-        interlockLed1.setLedOn(sdv_c.get(0).isLocked());
-        interlockLed2.setLedOn(sdv_c.get(4).isLocked());
-        sdvcFlow1.setLcdValue(sdv_c.get((int)sdvcSpinner1.getValue() - 1).getFlowRate());
-        sdvcFlow2.setLcdValue(sdv_c.get((int)sdvcSpinner2.getValue() - 1).getFlowRate());
-        sdvcTotal1.setLcdValue(totalFlow1);
-        sdvcTotal2.setLcdValue(totalFlow2);
         checkAlarms();
+        if (this.isVisible()) {
+            var totalFlow1 = 0.0;
+            var totalFlow2 = 0.0;
+            for (int i = 0; i < 4; i++) {
+                totalFlow1 += sdv_c.get(i).getFlowRate();
+            }
+            for (int i = 4; i < 8; i++) {
+                totalFlow2 += sdv_c.get(i).getFlowRate();
+            }
+            interlockLed1.setLedOn(sdv_c.get(0).isLocked());
+            interlockLed2.setLedOn(sdv_c.get(4).isLocked());
+            sdvcFlow1.setLcdValue(sdv_c.get((int)sdvcSpinner1.getValue() - 1).getFlowRate());
+            sdvcFlow2.setLcdValue(sdv_c.get((int)sdvcSpinner2.getValue() - 1).getFlowRate());
+            sdvcTotal1.setLcdValue(totalFlow1);
+            sdvcTotal2.setLcdValue(totalFlow2);
+        }
     }
 
     @Override
@@ -138,8 +142,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
             new Thread(() -> {
                 try {
                     while (true) {
-                        if (this.isFocused()) {
-                            annunciator.update();
+                        annunciator.update();
+                        if (this.isVisible()) {
                             var alignment1 = tg1.getGenAligmnent();
                             var rpm1 = tg1.getRpm();
                             var alignment2 = tg2.getGenAligmnent();
@@ -176,7 +180,11 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
                             valvePos8.setValue(sdv_c.get(7).getPosition() * 100);
 
                         }
-                        Thread.sleep(50);
+                        if (this.isFocused()) {
+                            Thread.sleep(UI.getUpdateRate());
+                        } else {
+                            Thread.sleep(200);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

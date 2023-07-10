@@ -3,6 +3,7 @@ package com.darwish.nppsim;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ public class SteamTables {
     private HashMap<Integer, Double> steamPressureByDensityMap = new HashMap<>();
     private HashMap<Integer, Double> steamDensityByPressureMap = new HashMap<>();
     private HashMap<Integer, Double> waterTemperatureByEnthalpyMap = new HashMap<>();
+    private boolean error = false;
     
     public SteamTables() {
         try {
@@ -92,6 +94,17 @@ public class SteamTables {
             double perDensity = higherValue - lowerValue;
             return lowerValue + ((pressure * 10000.0 - lower) * perDensity); 
         }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
+        }
         return 0;
     }
 
@@ -103,6 +116,17 @@ public class SteamTables {
             double higherValue = steamPressureByTempMap.get(higher);  
             double perDegree = higherValue - lowerValue;
             return lowerValue + ((tempC - lower) * perDegree); 
+        }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
         }
         return 0;
     }
@@ -116,6 +140,17 @@ public class SteamTables {
             double perDensity = higherValue - lowerValue;
             return lowerValue + ((density * 10000.0 - lower) * perDensity); 
         }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
+        }
         return 0;
     }
 
@@ -127,6 +162,17 @@ public class SteamTables {
             double higherValue = steamDensityByPressureMap.get(higher);  
             double perDensity = higherValue - lowerValue;
             return lowerValue + ((pressure * 10000.0 - lower) * perDensity); 
+        }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
         }
         return 0;
     }
@@ -140,6 +186,17 @@ public class SteamTables {
             double perDegree = higherValue - lowerValue;
             return lowerValue + ((tempC - lower) * perDegree); 
         }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
+        }
         return 0;
     }
 
@@ -151,6 +208,17 @@ public class SteamTables {
             double higherValue = vaporizationEnthalpyByTempMap.get(higher);  
             double perDegree = higherValue - lowerValue;
             return lowerValue + ((tempC - lower) * perDegree); 
+        }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
         }
         return 0;
     }
@@ -164,6 +232,17 @@ public class SteamTables {
             double perDegree = higherValue - lowerValue;
             return lowerValue + ((tempC - lower) * perDegree); 
         }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
+        }
         return 0;
     }
 
@@ -176,6 +255,17 @@ public class SteamTables {
             double perDegree = higherValue - lowerValue;
             return lowerValue + ((tempC - lower) * perDegree); 
         }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
+        }
         return 0;
     }
 
@@ -187,6 +277,17 @@ public class SteamTables {
             double higherValue = waterTemperatureByEnthalpyMap.get(higher);  
             double perDegree = higherValue - lowerValue;
             return lowerValue + ((enthalpy * 10.0 - lower) * perDegree); 
+        }
+        if (!error) {
+            error = !error;
+            NPPSim.endSimulation();
+            StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+            StringBuilder strBuilder = new StringBuilder();
+            for (StackTraceElement stack1 : stack) {
+                strBuilder.append(stack1.toString());
+                strBuilder.append("\n");
+            }
+            new ErrorWindow("A component has been damaged beyond repair", strBuilder.toString(), true).setVisible(true);
         }
         return 0;
     }

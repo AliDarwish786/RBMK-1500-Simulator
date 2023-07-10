@@ -23,6 +23,7 @@ public class CoreMap extends javax.swing.JFrame implements UIUpdateable {
 
     public CoreMap() {
         initComponents();
+        this.setTitle("Core Map");
         while (rowNumber != 50) {
             createRow();
         }
@@ -82,11 +83,13 @@ public class CoreMap extends javax.swing.JFrame implements UIUpdateable {
 
     @Override
     public void update() {
-        openWindowArray.forEach(binding -> {
-            for (int i = 0; i < binding.channel.uiData.tableData.length; i++) {
-                binding.table.getModel().setValueAt(binding.channel.uiData.tableData[i][1], i, 1);
-            }
-        });
+        if (this.isVisible()) {
+            openWindowArray.forEach(binding -> {
+                for (int i = 0; i < binding.channel.uiData.tableData.length; i++) {
+                    binding.table.getModel().setValueAt(binding.channel.uiData.tableData[i][1], i, 1);
+                }
+            });
+        }
     }
     
     @Override

@@ -1,5 +1,6 @@
 package com.darwish.nppsim;
 
+import static com.darwish.nppsim.NPPSim.autoControl;
 import java.awt.Color;
 import java.io.Serializable;
 
@@ -125,7 +126,7 @@ abstract class ControlRodChannel extends CPSChannel {
         } else {
             position = NPPMath.updatePositionFromState(state, autoState, position, speed);
         }
-        thermalUtilizationFactor = 0.95 - (0.9 * position);
+        thermalUtilizationFactor = 0.95 - (0.75 * position);
     }
     
     public float getPosition() {
@@ -369,12 +370,15 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
         waterInflow = 0;
 
         resonanceEscapeProb = resonanceEscapeProbInitial - thermalPower / 4.25 * 0.03 - (waterTemperature / 300 * 0.005); //greatly simplified for simple core model
-        resonanceEscapeProb -= (voidFraction * 0.05);
+        resonanceEscapeProb -= (voidFraction * 0.04);
         thermalUtilizationFactor = thermalUtilizationFactorInitial + voidFraction * 0.08;
         thermalUtilizationFactor += 0.025 - Loader.tables.getWaterDensityByTemp(20) / Loader.tables.getWaterDensityByTemp(waterTemperature) * 0.025;
         thermalPower = (this.getNeutronPopulation()[0] / 29986861831.1868724665) * 2.8898254064; // simple mapping of neutron count to thermal power per channel for 4800 MWt
         if (thermalPower < 0.000001) {
             thermalPower = 0;
+        }
+        if (thermalPower > 5) {
+            autoControl.az1Control.trip("High Fuel Channel Power");
         }
     }
 

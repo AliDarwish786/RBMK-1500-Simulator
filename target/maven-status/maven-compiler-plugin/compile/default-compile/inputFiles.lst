@@ -1,3 +1,4 @@
+/mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/SoundProvider.java
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/PCSUI.java
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/TG.java
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/Channels.java
@@ -21,6 +22,7 @@
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/oldUI.java
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/Annunciator.java
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/LoadDialog.java
+/mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/LogWindow.java
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/Core.java
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/SteamTables.java
 /mnt/Storage/Projects/Java/RBMK-1500-Simulator/src/main/java/com/darwish/nppsim/FeedwaterUI.java

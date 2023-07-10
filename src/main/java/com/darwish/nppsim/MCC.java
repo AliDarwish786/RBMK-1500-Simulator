@@ -23,9 +23,9 @@ public class MCC extends Component {
             for (int i = 0; i < x.size(); i++) {
                 if (x.get(i) instanceof FuelChannel) {
                     if (i < 28) {
-                        fuelChannels1.add((FuelChannel)x.get(i));
+                        fuelChannels2.add((FuelChannel)x.get(i)); 
                     } else {
-                        fuelChannels2.add((FuelChannel)x.get(i));
+                        fuelChannels1.add((FuelChannel)x.get(i));
                     }
                 }
             }
@@ -184,7 +184,7 @@ public class MCC extends Component {
 
         @Override
         public void updateWaterInflow(double flow, double tempC) {
-            if (flow < 0) {
+            if (flow < 0 || waterInflow < 0) {
                 waterInflow += flow;
             } else {
                 double[] inflowData = NPPMath.mixWater(waterInflow, waterInflowTemperature, flow, tempC);

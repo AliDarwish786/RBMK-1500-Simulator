@@ -23,7 +23,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
      */
     public FeedwaterUI() {
         initComponents();
-        
+        this.setTitle("Feedwater Control");
         annunciator = new Annunciator(annunciatorPanel);
         
         ((JSpinner.DefaultEditor)mFWPSpinner.getEditor()).getTextField().setEditable(false);
@@ -121,25 +121,27 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     
     @Override
     public void update() {
-        Pump selectedMain = mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1);
-        Pump selectedAux = auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1);
-
-        rpm1A.setLcdValue(selectedMain.getRPM());
-        flow1A.setLcdValue(selectedMain.getFlowRate());
-        amps1A.setLcdValue(selectedMain.getPowerUsage());
-        rpm2A.setLcdValue(selectedAux.getRPM());
-        flow2A.setLcdValue(selectedAux.getFlowRate());
-        amps2A.setLcdValue(selectedAux.getPowerUsage());
-        
-        flow1.setLcdValue(mainFeederValves.get(0).timestepFlow * 20);
-        flow2.setLcdValue(mainFeederValves.get(1).timestepFlow * 20);
-        flow3.setLcdValue(mainFeederValves.get(2).timestepFlow * 20);
-        flow4.setLcdValue(mainFeederValves.get(3).timestepFlow * 20);
-        flow5.setLcdValue(mainFeederValves.get(4).timestepFlow * 20);
-        flow6.setLcdValue(mainFeederValves.get(5).timestepFlow * 20);
-        auxFlow1.setLcdValue(auxFeederValves.get(0).timestepFlow * 20);
-        auxFlow2.setLcdValue(auxFeederValves.get(1).timestepFlow * 20);
         checkAlarms();
+        if (this.isVisible()) {
+            Pump selectedMain = mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1);
+            Pump selectedAux = auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1);
+
+            rpm1A.setLcdValue(selectedMain.getRPM());
+            flow1A.setLcdValue(selectedMain.getFlowRate());
+            amps1A.setLcdValue(selectedMain.getPowerUsage());
+            rpm2A.setLcdValue(selectedAux.getRPM());
+            flow2A.setLcdValue(selectedAux.getFlowRate());
+            amps2A.setLcdValue(selectedAux.getPowerUsage());
+
+            flow1.setLcdValue(mainFeederValves.get(0).timestepFlow * 20);
+            flow2.setLcdValue(mainFeederValves.get(1).timestepFlow * 20);
+            flow3.setLcdValue(mainFeederValves.get(2).timestepFlow * 20);
+            flow4.setLcdValue(mainFeederValves.get(3).timestepFlow * 20);
+            flow5.setLcdValue(mainFeederValves.get(4).timestepFlow * 20);
+            flow6.setLcdValue(mainFeederValves.get(5).timestepFlow * 20);
+            auxFlow1.setLcdValue(auxFeederValves.get(0).timestepFlow * 20);
+            auxFlow2.setLcdValue(auxFeederValves.get(1).timestepFlow * 20);
+        }
     }
 
     @Override
@@ -147,8 +149,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         UI.uiThreads.add(new Thread(() -> {
                 try {
                     while (true) {
-                        if (this.isFocused()) {
-                            annunciator.update();
+                        annunciator.update();
+                        if (this.isVisible()) { 
                             var mfwFlows = new double[] {0.0, 0.0};
                             for (int i = 0; i < 3; i++) {
                                 mfwFlows[0] += mainFeederValves.get(i).timestepFlow * 20;
@@ -173,7 +175,12 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
                             fwPos6.setValue(mainFeederValves.get(5).getPosition() * 100);
                             aFWPos1.setValue(auxFeederValves.get(0).getPosition() * 100);
                             aFWPos2.setValue(auxFeederValves.get(1).getPosition() * 100);
-                            Thread.sleep(50);
+                            
+                        }
+                        if (this.isFocused()) {
+                            Thread.sleep(UI.getUpdateRate());
+                        } else {
+                            Thread.sleep(200);
                         }
                     }
                 } catch (Exception e) {
@@ -657,7 +664,6 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField10.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         jTextField10.setForeground(new java.awt.Color(0, 0, 0));
         jTextField10.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField10.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.jTextField10.text")); // NOI18N
         jTextField10.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jTextField10.setPreferredSize(new java.awt.Dimension(100, 30));
         jTextField10.addActionListener(new java.awt.event.ActionListener() {
