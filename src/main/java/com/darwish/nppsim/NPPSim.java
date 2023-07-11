@@ -1,6 +1,5 @@
 package com.darwish.nppsim;
 
-import static com.darwish.nppsim.Loader.soundProvider;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.sound.sampled.LineListener;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class NPPSim {
@@ -443,7 +441,7 @@ public class NPPSim {
                         Thread.sleep(100);
                     }
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
@@ -484,21 +482,25 @@ public class NPPSim {
     }
 
     public static void save(File file) {
-        try (
+        var wasPaused = isPaused();
+        try {
             FileOutputStream fout = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
-        ) {
+            
+            setPaused(false);
             while(updating) {
                 Thread.sleep(5);
             }
             setPaused(true);
             oos.writeObject(stateArray);
-            setPaused(false);
+            setPaused(wasPaused);
+            oos.flush();
+            fout.flush();
             oos.close();
             fout.close();
         } catch (Exception e) {
             new ErrorWindow("Error Saving IC", ExceptionUtils.getStackTrace(e), true).setVisible(true);
-            setPaused(false);
+            setPaused(wasPaused);
         }
     }
     

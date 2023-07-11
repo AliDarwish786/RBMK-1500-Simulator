@@ -73,7 +73,6 @@ public class SaveDialog extends javax.swing.JFrame implements UIUpdateable {
     private void jFileChooser1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFileChooser1ActionPerformed
         String command = evt.getActionCommand();
         if (command.equals("ApproveSelection")) {
-            jFileChooser1.setApproveButtonText("Saving...");
             File file = jFileChooser1.getSelectedFile();
             NPPSim.save(file);
             UI.elementsToUpdate.remove(this);

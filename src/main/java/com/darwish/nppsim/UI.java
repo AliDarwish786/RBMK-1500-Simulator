@@ -27,14 +27,16 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.MetalLookAndFeel; //TODO
 import org.netbeans.swing.laf.dark.*;
 import static com.darwish.nppsim.NPPSim.mcc;
+import javax.swing.JFrame;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import javax.swing.plaf.metal.MetalToggleButtonUI;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class UI extends javax.swing.JFrame implements Serializable {
     static Color BACKGROUND = new Color(180, 140, 40);
-    static final ArrayList<ControlRodChannel> selectedControlRods = new ArrayList<>();
-    static final ArrayList<UIUpdateable> elementsToUpdate = new ArrayList<>();
+    static ArrayList<ControlRodChannel> selectedControlRods;
+    static ArrayList<UIUpdateable> elementsToUpdate; 
     static final ArrayList<Thread> uiThreads = new ArrayList<>();
     final Annunciator annunciator;
     private double previousNeutronFlux = 0;
@@ -50,6 +52,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
             e.printStackTrace();
         }
         initComponents();
+        selectedControlRods = new ArrayList<>();
+        elementsToUpdate = new ArrayList<>();
         annunciator = new Annunciator(annunciatorPanel);
         this.setVisible(true);
         initializeDialUpdateThread();
@@ -403,18 +407,19 @@ public class UI extends javax.swing.JFrame implements Serializable {
         for (UIUpdateable i: elementsToUpdate) {
             if (i.getClass() == element) {
                 i.setVisibility(true);
+                ((JFrame)i).toFront();
                 return;
             }
         }
         try {
             Object newElement = element.getDeclaredConstructor().newInstance();
             if (fullscreen) {
-                ((javax.swing.JFrame)newElement).setSize(2000, 2000);
+                ((javax.swing.JFrame)newElement).setSize(1366, 768); //2000,2000
             }
             ((UIUpdateable)newElement).setVisibility(true);
             elementsToUpdate.add((UIUpdateable)newElement);
         } catch (Exception e) {
-            e.printStackTrace();
+            new ErrorWindow("Error loading UI element class" , ExceptionUtils.getStackTrace(e), false).setVisible(true);
         }
     }
     
@@ -584,13 +589,14 @@ public class UI extends javax.swing.JFrame implements Serializable {
         twentyfive = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setBackground(new java.awt.Color(157, 109, 34));
+        setBackground(UI.BACKGROUND);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);
             }
         });
 
+        jScrollPane1.setBackground(UI.BACKGROUND);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(1366, 768));
 
         jPanel3.setBackground(BACKGROUND);

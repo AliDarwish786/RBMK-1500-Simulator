@@ -4,12 +4,10 @@ import java.awt.Color;
 import java.util.HashMap;
 import javax.swing.JTextField;
 
-
 public class MTK extends javax.swing.JPanel {
     static Color CPSONCOLOR = new SARChannel().uiData.UISelectedColor;
     static Color CPSOFFCOLOR = new SARChannel().uiData.UIBackgroundColor.darker();
     static Color CHANNELOFFCOLOR; 
-    static Color TESTCOLOR = new Color(229, 229, 149);
     private short rowNumber = 0;
     private int[] fuelCPSCount = {0, 0};
     private HashMap<Channel, JTextField> channelMtkBinding;
@@ -93,9 +91,9 @@ public class MTK extends javax.swing.JPanel {
     private javax.swing.JPanel createRow() {
         javax.swing.JPanel row = new javax.swing.JPanel();
         row.setBackground(UI.BACKGROUND.darker());
-        row.setMaximumSize(new java.awt.Dimension(1000, 40));
-        row.setMinimumSize(new java.awt.Dimension(5, 5));
-        row.setPreferredSize(new java.awt.Dimension(7, 7));
+        row.setMaximumSize(new java.awt.Dimension(1000, 7));
+        row.setMinimumSize(new java.awt.Dimension(8, 7));
+        row.setPreferredSize(new java.awt.Dimension(8, 7));
         row.setRequestFocusEnabled(false);
         row.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
         for (short i = 50; i > 0; i--) {
@@ -104,8 +102,8 @@ public class MTK extends javax.swing.JPanel {
                 javax.swing.JTextField button = new javax.swing.JTextField();
                 channelMtkBinding.put(currentChannel, button);
                 button.setBorder(javax.swing.BorderFactory.createLineBorder(CHANNELOFFCOLOR.darker(), 1));
-                button.setMaximumSize(new java.awt.Dimension(35, 35));
-                button.setMinimumSize(new java.awt.Dimension(5, 5));
+                button.setMaximumSize(new java.awt.Dimension(8, 7));
+                button.setMinimumSize(new java.awt.Dimension(8, 7));
                 button.setPreferredSize(new java.awt.Dimension(8, 7));
                 if (currentChannel instanceof FuelChannel) {
                     button.setBackground(currentChannel.uiData.UIBackgroundColor);
@@ -117,8 +115,8 @@ public class MTK extends javax.swing.JPanel {
             } else {
                 javax.swing.JPanel button = new javax.swing.JPanel();
                 button.setBackground(UI.BACKGROUND.darker());
-                button.setMaximumSize(new java.awt.Dimension(35, 35));
-                button.setMinimumSize(new java.awt.Dimension(5, 5));
+                button.setMaximumSize(new java.awt.Dimension(8, 7));
+                button.setMinimumSize(new java.awt.Dimension(8, 7));
                 button.setPreferredSize(new java.awt.Dimension(8, 7));
                 row.add(button);
             }
