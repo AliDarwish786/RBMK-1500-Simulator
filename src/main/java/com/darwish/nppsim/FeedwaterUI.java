@@ -123,24 +123,26 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     public void update() {
         checkAlarms();
         if (this.isVisible()) {
-            Pump selectedMain = mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1);
-            Pump selectedAux = auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1);
+            java.awt.EventQueue.invokeLater(() -> {
+                Pump selectedMain = mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1);
+                Pump selectedAux = auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1);
 
-            rpm1A.setLcdValue(selectedMain.getRPM());
-            flow1A.setLcdValue(selectedMain.getFlowRate());
-            amps1A.setLcdValue(selectedMain.getPowerUsage());
-            rpm2A.setLcdValue(selectedAux.getRPM());
-            flow2A.setLcdValue(selectedAux.getFlowRate());
-            amps2A.setLcdValue(selectedAux.getPowerUsage());
+                rpm1A.setLcdValue(selectedMain.getRPM());
+                flow1A.setLcdValue(selectedMain.getFlowRate());
+                amps1A.setLcdValue(selectedMain.getPowerUsage());
+                rpm2A.setLcdValue(selectedAux.getRPM());
+                flow2A.setLcdValue(selectedAux.getFlowRate());
+                amps2A.setLcdValue(selectedAux.getPowerUsage());
 
-            flow1.setLcdValue(mainFeederValves.get(0).timestepFlow * 20);
-            flow2.setLcdValue(mainFeederValves.get(1).timestepFlow * 20);
-            flow3.setLcdValue(mainFeederValves.get(2).timestepFlow * 20);
-            flow4.setLcdValue(mainFeederValves.get(3).timestepFlow * 20);
-            flow5.setLcdValue(mainFeederValves.get(4).timestepFlow * 20);
-            flow6.setLcdValue(mainFeederValves.get(5).timestepFlow * 20);
-            auxFlow1.setLcdValue(auxFeederValves.get(0).timestepFlow * 20);
-            auxFlow2.setLcdValue(auxFeederValves.get(1).timestepFlow * 20);
+                flow1.setLcdValue(mainFeederValves.get(0).timestepFlow * 20);
+                flow2.setLcdValue(mainFeederValves.get(1).timestepFlow * 20);
+                flow3.setLcdValue(mainFeederValves.get(2).timestepFlow * 20);
+                flow4.setLcdValue(mainFeederValves.get(3).timestepFlow * 20);
+                flow5.setLcdValue(mainFeederValves.get(4).timestepFlow * 20);
+                flow6.setLcdValue(mainFeederValves.get(5).timestepFlow * 20);
+                auxFlow1.setLcdValue(auxFeederValves.get(0).timestepFlow * 20);
+                auxFlow2.setLcdValue(auxFeederValves.get(1).timestepFlow * 20);
+            });
         }
     }
 
@@ -151,31 +153,32 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
                     while (true) {
                         annunciator.update();
                         if (this.isVisible()) { 
-                            var mfwFlows = new double[] {0.0, 0.0};
-                            for (int i = 0; i < 3; i++) {
-                                mfwFlows[0] += mainFeederValves.get(i).timestepFlow * 20;
-                            }
-                            for (int i = 3; i < 6; i++) {
-                                mfwFlows[1] += mainFeederValves.get(i).timestepFlow * 20;
-                            }
-                            drumLevel1.setValue(mcc.drum1.getWaterLevel());
-                            drumLevel2.setValue(mcc.drum2.getWaterLevel());
-                            mainFWFlow1.setValue(mfwFlows[0]);
-                            mainFWFlow2.setValue(mfwFlows[1]);
-                            auxFWFlow1.setValue(auxFeederValves.get(0).timestepFlow * 20);
-                            auxFWFlow2.setValue(auxFeederValves.get(1).timestepFlow * 20);
-                            fwTemp1.setValue(feedwaterMixer1.getWaterTemperature());
-                            fwTemp2.setValue(feedwaterMixer2.getWaterTemperature());
+                            java.awt.EventQueue.invokeLater(() -> {
+                                var mfwFlows = new double[] {0.0, 0.0};
+                                for (int i = 0; i < 3; i++) {
+                                    mfwFlows[0] += mainFeederValves.get(i).timestepFlow * 20;
+                                }
+                                for (int i = 3; i < 6; i++) {
+                                    mfwFlows[1] += mainFeederValves.get(i).timestepFlow * 20;
+                                }
+                                drumLevel1.setValue(mcc.drum1.getWaterLevel());
+                                drumLevel2.setValue(mcc.drum2.getWaterLevel());
+                                mainFWFlow1.setValue(mfwFlows[0]);
+                                mainFWFlow2.setValue(mfwFlows[1]);
+                                auxFWFlow1.setValue(auxFeederValves.get(0).timestepFlow * 20);
+                                auxFWFlow2.setValue(auxFeederValves.get(1).timestepFlow * 20);
+                                fwTemp1.setValue(feedwaterMixer1.getWaterTemperature());
+                                fwTemp2.setValue(feedwaterMixer2.getWaterTemperature());
 
-                            fwPos1.setValue(mainFeederValves.get(0).getPosition() * 100);
-                            fwPos2.setValue(mainFeederValves.get(1).getPosition() * 100);
-                            fwPos3.setValue(mainFeederValves.get(2).getPosition() * 100);
-                            fwPos4.setValue(mainFeederValves.get(3).getPosition() * 100);
-                            fwPos5.setValue(mainFeederValves.get(4).getPosition() * 100);
-                            fwPos6.setValue(mainFeederValves.get(5).getPosition() * 100);
-                            aFWPos1.setValue(auxFeederValves.get(0).getPosition() * 100);
-                            aFWPos2.setValue(auxFeederValves.get(1).getPosition() * 100);
-                            
+                                fwPos1.setValue(mainFeederValves.get(0).getPosition() * 100);
+                                fwPos2.setValue(mainFeederValves.get(1).getPosition() * 100);
+                                fwPos3.setValue(mainFeederValves.get(2).getPosition() * 100);
+                                fwPos4.setValue(mainFeederValves.get(3).getPosition() * 100);
+                                fwPos5.setValue(mainFeederValves.get(4).getPosition() * 100);
+                                fwPos6.setValue(mainFeederValves.get(5).getPosition() * 100);
+                                aFWPos1.setValue(auxFeederValves.get(0).getPosition() * 100);
+                                aFWPos2.setValue(auxFeederValves.get(1).getPosition() * 100);
+                            });
                         }
                         if (this.isFocused()) {
                             Thread.sleep(UI.getUpdateRate());
@@ -356,7 +359,9 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
@@ -1258,7 +1263,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
                     .addComponent(fwPos6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fwPos5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fwPos4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel25.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
@@ -1675,9 +1680,9 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
                             .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel25, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(8, 8, 8)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel26, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(88, Short.MAX_VALUE))
         );
@@ -1686,6 +1691,14 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
 
         org.openide.awt.Mnemonics.setLocalizedText(jMenu1, org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.jMenu1.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem6, org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.jMenuItem6.text")); // NOI18N
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem6);
+
         org.openide.awt.Mnemonics.setLocalizedText(jMenuItem3, "Core Map");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1693,6 +1706,14 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
             }
         });
         jMenu1.add(jMenuItem3);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem10, org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.jMenuItem10.text")); // NOI18N
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem10);
 
         org.openide.awt.Mnemonics.setLocalizedText(jMenuItem1, "Turbine-Generators");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -2089,6 +2110,14 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         UI.createOrContinue(PCSUI.class, true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        UI.createOrContinue(SelsynPanel.class, false);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        NPPSim.ui.toFront();
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField FWTemp;
@@ -2164,10 +2193,12 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel20;

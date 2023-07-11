@@ -410,7 +410,7 @@ public class NPPSim {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (Exception e) {
-                new ErrorWindow("A component has been damaged beyond repair", ExceptionUtils.getStackTrace(e), false).setVisible(true);
+                new ErrorWindow("A fatal error occured", ExceptionUtils.getStackTrace(e), false).setVisible(true);
             }
         });
         updateThread.start();

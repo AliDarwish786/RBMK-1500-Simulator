@@ -98,59 +98,61 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     public void update() {
         checkAlarms();
         if (this.isVisible()) {
-            Pump coolingPump = pcs.coolingPump;
-            Pump selected1A1 = pcs.admsPumps.get((int)spinner1A1.getValue() - 1);
-            Pump selected1A;
-            if ((int)spinner1A.getValue() == 1) {
-                selected1A = pcs.pcsPump1;
-            } else {
-                selected1A = pcs.pcsPump2;
-            }
-            operationalLed.setLedOn(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected() && pcs.pcsPressureHeader.getWaterInflowRate() > 50));
-            filterInletTemp.setLcdValue(pcs.pcsFilterPressureHeader.getWaterTemperature());
+            java.awt.EventQueue.invokeLater(() -> {
+                Pump coolingPump = pcs.coolingPump;
+                Pump selected1A1 = pcs.admsPumps.get((int)spinner1A1.getValue() - 1);
+                Pump selected1A;
+                if ((int)spinner1A.getValue() == 1) {
+                    selected1A = pcs.pcsPump1;
+                } else {
+                    selected1A = pcs.pcsPump2;
+                }
+                operationalLed.setLedOn(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected() && pcs.pcsPressureHeader.getWaterInflowRate() > 50));
+                filterInletTemp.setLcdValue(pcs.pcsFilterPressureHeader.getWaterTemperature());
 
-            rpm1A.setLcdValue(selected1A.getRPM());
-            flow1A.setLcdValue(selected1A.timestepFlow * 20);
-            amps1A.setLcdValue(selected1A.getPowerUsage());
-            rpm1A2.setLcdValue(coolingPump.getRPM());
-            flow1A2.setLcdValue(coolingPump.timestepFlow * 20);
-            amps1A2.setLcdValue(coolingPump.getPowerUsage());
-            rpm1A1.setLcdValue(selected1A1.getRPM());
-            flow1A1.setLcdValue(selected1A1.getFlowRate());
-            amps1A1.setLcdValue(selected1A1.getPowerUsage());
+                rpm1A.setLcdValue(selected1A.getRPM());
+                flow1A.setLcdValue(selected1A.timestepFlow * 20);
+                amps1A.setLcdValue(selected1A.getPowerUsage());
+                rpm1A2.setLcdValue(coolingPump.getRPM());
+                flow1A2.setLcdValue(coolingPump.timestepFlow * 20);
+                amps1A2.setLcdValue(coolingPump.getPowerUsage());
+                rpm1A1.setLcdValue(selected1A1.getRPM());
+                flow1A1.setLcdValue(selected1A1.getFlowRate());
+                amps1A1.setLcdValue(selected1A1.getPowerUsage());
 
-            flow1A4.setLcdValue(pcs.dearatorMakeupValves.get((int)spinner1A2.getValue() - 1).timestepFlow * 20);
+                flow1A4.setLcdValue(pcs.dearatorMakeupValves.get((int)spinner1A2.getValue() - 1).timestepFlow * 20);
 
-            regen1InTemp1.setLcdValue(pcs.regenerator1.getWaterInflow1Temp());
-            regen1InTemp2.setLcdValue(pcs.regenerator1.getWaterInflow2Temp());
-            regen2InTemp1.setLcdValue(pcs.regenerator2.getWaterInflow1Temp());
-            regen2InTemp2.setLcdValue(pcs.regenerator2.getWaterInflow2Temp());
-            regen1OutTemp1.setLcdValue(pcs.regenerator1.getWaterOutflow1Temp());
-            regen1OutTemp2.setLcdValue(pcs.regenerator1.getWaterOutflow2Temp());
-            regen2OutTemp1.setLcdValue(pcs.regenerator2.getWaterOutflow1Temp());
-            regen2OutTemp2.setLcdValue(pcs.regenerator2.getWaterOutflow2Temp());
-            regen1Inflow1.setLcdValue(pcs.regenerator1.getWaterFlowRate1());
-            regen1Inflow2.setLcdValue(pcs.regenerator1.getWaterFlowRate2());
-            regen2Inflow1.setLcdValue(pcs.regenerator2.getWaterFlowRate1());
-            regen2Inflow2.setLcdValue(pcs.regenerator2.getWaterFlowRate2());
+                regen1InTemp1.setLcdValue(pcs.regenerator1.getWaterInflow1Temp());
+                regen1InTemp2.setLcdValue(pcs.regenerator1.getWaterInflow2Temp());
+                regen2InTemp1.setLcdValue(pcs.regenerator2.getWaterInflow1Temp());
+                regen2InTemp2.setLcdValue(pcs.regenerator2.getWaterInflow2Temp());
+                regen1OutTemp1.setLcdValue(pcs.regenerator1.getWaterOutflow1Temp());
+                regen1OutTemp2.setLcdValue(pcs.regenerator1.getWaterOutflow2Temp());
+                regen2OutTemp1.setLcdValue(pcs.regenerator2.getWaterOutflow1Temp());
+                regen2OutTemp2.setLcdValue(pcs.regenerator2.getWaterOutflow2Temp());
+                regen1Inflow1.setLcdValue(pcs.regenerator1.getWaterFlowRate1());
+                regen1Inflow2.setLcdValue(pcs.regenerator1.getWaterFlowRate2());
+                regen2Inflow1.setLcdValue(pcs.regenerator2.getWaterFlowRate1());
+                regen2Inflow2.setLcdValue(pcs.regenerator2.getWaterFlowRate2());
 
-            cooler1InTemp1.setLcdValue(pcs.pcsCooler1.getWaterInflow1Temp());
-            cooler1InTemp2.setLcdValue(pcs.pcsCooler1.getWaterInflow2Temp());
-            cooler2InTemp1.setLcdValue(pcs.pcsCooler2.getWaterInflow1Temp());
-            cooler2InTemp2.setLcdValue(pcs.pcsCooler2.getWaterInflow2Temp());
-            cooler1OutTemp1.setLcdValue(pcs.pcsCooler1.getWaterOutflow1Temp());
-            cooler1OutTemp2.setLcdValue(pcs.pcsCooler1.getWaterOutflow2Temp());
-            cooler2OutTemp1.setLcdValue(pcs.pcsCooler2.getWaterOutflow1Temp());
-            cooler2OutTemp2.setLcdValue(pcs.pcsCooler2.getWaterOutflow2Temp());
-            cooler1Inflow1.setLcdValue(pcs.pcsCooler1.getWaterFlowRate1());
-            cooler1Inflow2.setLcdValue(pcs.pcsCooler1.getWaterFlowRate2());
-            cooler2Inflow1.setLcdValue(pcs.pcsCooler2.getWaterFlowRate1());
-            cooler2Inflow2.setLcdValue(pcs.pcsCooler2.getWaterFlowRate2());
+                cooler1InTemp1.setLcdValue(pcs.pcsCooler1.getWaterInflow1Temp());
+                cooler1InTemp2.setLcdValue(pcs.pcsCooler1.getWaterInflow2Temp());
+                cooler2InTemp1.setLcdValue(pcs.pcsCooler2.getWaterInflow1Temp());
+                cooler2InTemp2.setLcdValue(pcs.pcsCooler2.getWaterInflow2Temp());
+                cooler1OutTemp1.setLcdValue(pcs.pcsCooler1.getWaterOutflow1Temp());
+                cooler1OutTemp2.setLcdValue(pcs.pcsCooler1.getWaterOutflow2Temp());
+                cooler2OutTemp1.setLcdValue(pcs.pcsCooler2.getWaterOutflow1Temp());
+                cooler2OutTemp2.setLcdValue(pcs.pcsCooler2.getWaterOutflow2Temp());
+                cooler1Inflow1.setLcdValue(pcs.pcsCooler1.getWaterFlowRate1());
+                cooler1Inflow2.setLcdValue(pcs.pcsCooler1.getWaterFlowRate2());
+                cooler2Inflow1.setLcdValue(pcs.pcsCooler2.getWaterFlowRate1());
+                cooler2Inflow2.setLcdValue(pcs.pcsCooler2.getWaterFlowRate2());
 
-            dwTank.setValue(pcs.demineralizedWaterTank.getWaterLevel() * 10 + 1000);
-            dwTemp.setLcdValue(pcs.demineralizedWaterTank.getWaterTemperature());
-            dwInflow.setLcdValue(pcs.demineralizedWaterTank.getWaterInflowRate());
-            dwOutflow.setLcdValue(pcs.demineralizedWaterTank.getWaterOutflowRate());
+                dwTank.setValue(pcs.demineralizedWaterTank.getWaterLevel() * 10 + 1000);
+                dwTemp.setLcdValue(pcs.demineralizedWaterTank.getWaterTemperature());
+                dwInflow.setLcdValue(pcs.demineralizedWaterTank.getWaterInflowRate());
+                dwOutflow.setLcdValue(pcs.demineralizedWaterTank.getWaterOutflowRate());
+            });
         }
     }
 
@@ -162,8 +164,10 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
                     while (true) {
                         annunciator.update();
                         if (this.isVisible()) {
-                            valvePos3.setValue(pcs.pcsValve.getPosition() * 100);
-                            valvePos4.setValue(pcs.coolingPump.outletValve.getPosition() * 100);
+                            java.awt.EventQueue.invokeLater(() -> {
+                                valvePos3.setValue(pcs.pcsValve.getPosition() * 100);
+                                valvePos4.setValue(pcs.coolingPump.outletValve.getPosition() * 100);
+                            });
                         }
                         if (this.isFocused()) {
                             Thread.sleep(UI.getUpdateRate());
@@ -363,7 +367,9 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         admsAC = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -2095,6 +2101,14 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
 
         org.openide.awt.Mnemonics.setLocalizedText(jMenu1, "Window");
 
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem5, org.openide.util.NbBundle.getMessage(PCSUI.class, "PCSUI.jMenuItem5.text")); // NOI18N
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+
         org.openide.awt.Mnemonics.setLocalizedText(jMenuItem3, "Core Map");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2102,6 +2116,14 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
             }
         });
         jMenu1.add(jMenuItem3);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem10, org.openide.util.NbBundle.getMessage(PCSUI.class, "PCSUI.jMenuItem10.text")); // NOI18N
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem10);
 
         org.openide.awt.Mnemonics.setLocalizedText(jMenuItem4, org.openide.util.NbBundle.getMessage(PCSUI.class, "PCSUI.jMenuItem4.text")); // NOI18N
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -2475,6 +2497,14 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         autoControl.dearatorMakeupControl.get((int)spinner1A2.getValue() - 1).setEnabled(admsAC.isSelected());
     }//GEN-LAST:event_admsACActionPerformed
 
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        UI.createOrContinue(SelsynPanel.class, false);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        NPPSim.ui.toFront();
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField INOP;
     private javax.swing.JCheckBox admsAC;
@@ -2568,9 +2598,11 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;

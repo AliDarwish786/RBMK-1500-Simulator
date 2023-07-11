@@ -50,6 +50,7 @@ public class Loader extends javax.swing.JFrame {
             tables = new SteamTables();
             soundProvider = new SoundProvider();
             loader.setLoading(false);
+            
         }).start();
         loader.pack();
         loader.setLocationRelativeTo(null);
@@ -151,7 +152,7 @@ public class Loader extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Dialog", 2, 12)); // NOI18N
-        jLabel2.setText("Version 1.1.0 Alpha");
+        jLabel2.setText("Version 1.1.1 Alpha");
 
         jButton5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jButton5.setText("Load Standard IC");

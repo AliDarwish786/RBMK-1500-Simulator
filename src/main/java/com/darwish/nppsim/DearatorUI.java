@@ -102,47 +102,49 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
                 while (true) {
                     annunciator.update();
                     if (this.isVisible()) {
-                        var waterInV1Pos = dearatorValves.get(0).getPosition() * 100;
-                        var waterInV2Pos = dearatorValves.get(1).getPosition() * 100;
-                        var waterInV3Pos = dearatorValves.get(2).getPosition() * 100;
-                        var waterInV4Pos = dearatorValves.get(3).getPosition() * 100;
-                        var steamInV1Pos = dearators.get(0).steamInlet.getPosition() * 100;
-                        var steamInV2Pos = dearators.get(1).steamInlet.getPosition() * 100;
-                        var steamInV3Pos = dearators.get(2).steamInlet.getPosition() * 100;
-                        var steamInV4Pos = dearators.get(3).steamInlet.getPosition() * 100;
-                        var steamOutV1Pos = dearators.get(0).steamOutlet.getPosition() * 100;
-                        var steamOutV2Pos = dearators.get(1).steamOutlet.getPosition() * 100;
-                        var steamOutV3Pos = dearators.get(2).steamOutlet.getPosition() * 100;
-                        var steamOutV4Pos = dearators.get(3).steamOutlet.getPosition() * 100;
+                        java.awt.EventQueue.invokeLater(() -> {
+                            var waterInV1Pos = dearatorValves.get(0).getPosition() * 100;
+                            var waterInV2Pos = dearatorValves.get(1).getPosition() * 100;
+                            var waterInV3Pos = dearatorValves.get(2).getPosition() * 100;
+                            var waterInV4Pos = dearatorValves.get(3).getPosition() * 100;
+                            var steamInV1Pos = dearators.get(0).steamInlet.getPosition() * 100;
+                            var steamInV2Pos = dearators.get(1).steamInlet.getPosition() * 100;
+                            var steamInV3Pos = dearators.get(2).steamInlet.getPosition() * 100;
+                            var steamInV4Pos = dearators.get(3).steamInlet.getPosition() * 100;
+                            var steamOutV1Pos = dearators.get(0).steamOutlet.getPosition() * 100;
+                            var steamOutV2Pos = dearators.get(1).steamOutlet.getPosition() * 100;
+                            var steamOutV3Pos = dearators.get(2).steamOutlet.getPosition() * 100;
+                            var steamOutV4Pos = dearators.get(3).steamOutlet.getPosition() * 100;
 
-                        press1.setValue(da1.getPressure());
-                        press2.setValue(da2.getPressure());
-                        press3.setValue(da3.getPressure());
-                        press4.setValue(da4.getPressure());
-                        waterIn1.setValue(da1.getActualWaterInflow());
-                        waterIn2.setValue(da2.getActualWaterInflow());
-                        waterIn3.setValue(da3.getActualWaterInflow());
-                        waterIn4.setValue(da4.getActualWaterInflow());
-                        waterOut1.setValue(da1.getActualWaterOutflow());
-                        waterOut2.setValue(da2.getActualWaterOutflow());
-                        waterOut3.setValue(da3.getActualWaterOutflow());
-                        waterOut4.setValue(da4.getActualWaterOutflow());
-                        level1.setValue(da1.getWaterLevel());
-                        level2.setValue(da2.getWaterLevel());
-                        level3.setValue(da3.getWaterLevel());
-                        level4.setValue(da4.getWaterLevel());
-                        waterInV1.setValue(waterInV1Pos);
-                        waterInV2.setValue(waterInV2Pos);
-                        waterInV3.setValue(waterInV3Pos);
-                        waterInV4.setValue(waterInV4Pos);
-                        steamInV1.setValue(steamInV1Pos);
-                        steamInV2.setValue(steamInV2Pos);
-                        steamInV3.setValue(steamInV3Pos);
-                        steamInV4.setValue(steamInV4Pos);
-                        steamOutV1.setValue(steamOutV1Pos);
-                        steamOutV2.setValue(steamOutV2Pos);
-                        steamOutV3.setValue(steamOutV3Pos);
-                        steamOutV4.setValue(steamOutV4Pos);
+                            press1.setValue(da1.getPressure());
+                            press2.setValue(da2.getPressure());
+                            press3.setValue(da3.getPressure());
+                            press4.setValue(da4.getPressure());
+                            waterIn1.setValue(da1.getActualWaterInflow());
+                            waterIn2.setValue(da2.getActualWaterInflow());
+                            waterIn3.setValue(da3.getActualWaterInflow());
+                            waterIn4.setValue(da4.getActualWaterInflow());
+                            waterOut1.setValue(da1.getActualWaterOutflow());
+                            waterOut2.setValue(da2.getActualWaterOutflow());
+                            waterOut3.setValue(da3.getActualWaterOutflow());
+                            waterOut4.setValue(da4.getActualWaterOutflow());
+                            level1.setValue(da1.getWaterLevel());
+                            level2.setValue(da2.getWaterLevel());
+                            level3.setValue(da3.getWaterLevel());
+                            level4.setValue(da4.getWaterLevel());
+                            waterInV1.setValue(waterInV1Pos);
+                            waterInV2.setValue(waterInV2Pos);
+                            waterInV3.setValue(waterInV3Pos);
+                            waterInV4.setValue(waterInV4Pos);
+                            steamInV1.setValue(steamInV1Pos);
+                            steamInV2.setValue(steamInV2Pos);
+                            steamInV3.setValue(steamInV3Pos);
+                            steamInV4.setValue(steamInV4Pos);
+                            steamOutV1.setValue(steamOutV1Pos);
+                            steamOutV2.setValue(steamOutV2Pos);
+                            steamOutV3.setValue(steamOutV3Pos);
+                            steamOutV4.setValue(steamOutV4Pos);
+                        });
                     }
                     if (this.isFocused()) {
                             Thread.sleep(UI.getUpdateRate());
@@ -422,7 +424,9 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
@@ -3233,6 +3237,14 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
 
         jMenu1.setText("Window");
 
+        jMenuItem5.setText(org.openide.util.NbBundle.getMessage(DearatorUI.class, "TGUI.jMenuItem5.text")); // NOI18N
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+
         jMenuItem3.setText("Core Map");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3240,6 +3252,14 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
             }
         });
         jMenu1.add(jMenuItem3);
+
+        jMenuItem10.setText("Selsyns");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem10);
 
         jMenuItem1.setText("Turbine-Generators");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -3815,6 +3835,14 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         annunciator.acknowledge();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        UI.createOrContinue(SelsynPanel.class, false);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        NPPSim.ui.toFront();
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel annunciatorPanel;
     private javax.swing.JRadioButton autoSteamPressure1Off;
@@ -3921,9 +3949,11 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;

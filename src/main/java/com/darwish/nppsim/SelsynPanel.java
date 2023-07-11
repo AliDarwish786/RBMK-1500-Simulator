@@ -31,8 +31,10 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
     @Override
     public void update() {
         if (this.isVisible()) {
-            selsynBinding.forEach((channel, selsyn) -> {
+            java.awt.EventQueue.invokeLater(() -> {
+                selsynBinding.forEach((channel, selsyn) -> {
                 selsyn.setValue(channel.getPosition() * 7);
+                });
             });
         }
     }
@@ -44,28 +46,30 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
                 try {
                     while (true) {
                         if (this.isVisible()) {
-                            if (!autoControl.automaticRodController.linkedChannels.isEmpty()) {
-                                for (ControlRodChannel i: autoControl.automaticRodController.linkedChannels) {
-                                    selsynBinding.get(i).setValue(i.getPosition() * 7);
+                            java.awt.EventQueue.invokeLater(() -> {
+                                if (!autoControl.automaticRodController.linkedChannels.isEmpty()) {
+                                    for (ControlRodChannel i: autoControl.automaticRodController.linkedChannels) {
+                                        selsynBinding.get(i).setValue(i.getPosition() * 7);
+                                    }
                                 }
-                            }
-                            if (NPPSim.autoControl.az1Control.isTripped()) {
-                                selsynBinding.forEach((channel, selsyn) -> {
-                                    selsyn.setValue(channel.getPosition() * 7);
-                                });
-                            }
-                            UI.selectedControlRods.forEach(channel -> {
-                                selsynBinding.get(channel).setValue(channel.getPosition() * 7);
-                                selsynBinding.get(channel).setDialColor(dialLightColor);
+                                if (NPPSim.autoControl.az1Control.isTripped()) {
+                                    selsynBinding.forEach((channel, selsyn) -> {
+                                        selsyn.setValue(channel.getPosition() * 7);
+                                    });
+                                }
+                                UI.selectedControlRods.forEach(channel -> {
+                                    selsynBinding.get(channel).setValue(channel.getPosition() * 7);
+                                    selsynBinding.get(channel).setDialColor(dialLightColor);
 
+                                });
+                                previousSelectedRods.forEach(channel -> {
+                                    if (!UI.selectedControlRods.contains(channel)) {
+                                        selsynBinding.get(channel).setDialColor(Color.LIGHT_GRAY);
+                                    }
+                                });
+                                previousSelectedRods.clear();
+                                previousSelectedRods.addAll(UI.selectedControlRods);
                             });
-                            previousSelectedRods.forEach(channel -> {
-                                if (!UI.selectedControlRods.contains(channel)) {
-                                    selsynBinding.get(channel).setDialColor(Color.LIGHT_GRAY);
-                                }
-                            });
-                            previousSelectedRods.clear();
-                            previousSelectedRods.addAll(UI.selectedControlRods);
                         }
                         Thread.sleep(UI.getUpdateRate());
                     }

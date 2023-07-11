@@ -6,16 +6,16 @@
 
   <groupId>com.darwish.nppsim</groupId>
   <artifactId>RBMK-1500-Simulator</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
 
-  <name>nppsimulator</name>
+  <name>RBMK-1500-Simulator</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.target>8</maven.compiler.target>
   </properties>
 
   <dependencies>

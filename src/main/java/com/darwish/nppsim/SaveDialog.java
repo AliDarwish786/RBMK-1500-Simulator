@@ -2,6 +2,7 @@ package com.darwish.nppsim;
 
 import java.io.File;
 import java.net.URI;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class SaveDialog extends javax.swing.JFrame implements UIUpdateable {
 
@@ -17,7 +18,7 @@ public class SaveDialog extends javax.swing.JFrame implements UIUpdateable {
             try {
                 jFileChooser1.setCurrentDirectory(new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                new ErrorWindow("Error while setting directory for saving IC", ExceptionUtils.getStackTrace(ex), false).setVisible(true);
             }
         } 
     }

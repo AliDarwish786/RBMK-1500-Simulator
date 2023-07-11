@@ -221,7 +221,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Dialog" size="12" style="2"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Version 1.0.0 Alpha"/>
+            <Property name="text" type="java.lang.String" value="Version 1.1.1 Alpha"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton5">

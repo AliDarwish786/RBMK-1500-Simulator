@@ -25,7 +25,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
      */
     public CondensateUI() {
         initComponents();
-        
+        this.setTitle("Condensate Control");
         annunciator = new Annunciator(annunciatorPanel);
         
         ((JSpinner.DefaultEditor)spinner1A.getEditor()).getTextField().setEditable(false);
@@ -135,35 +135,37 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     public void update() {
         checkAlarms();
         if (this.isVisible()) {
-            Pump selected1A = condensate1A.get((int)spinner1A.getValue() - 1);
-            Pump selected2A = condensate2A.get((int)spinner2A.getValue() - 1);;
-            Ejector selected1Ejector = ejectors.get((int)ejector1Spinner.getValue() - 1);
-            Ejector selected2Ejector = ejectors.get((int)ejector2Spinner.getValue() - 1);
-            Pump con1 = tg1.condenser.condenserPump;
-            Pump con2 = tg2.condenser.condenserPump;
+            java.awt.EventQueue.invokeLater(() -> {
+                Pump selected1A = condensate1A.get((int)spinner1A.getValue() - 1);
+                Pump selected2A = condensate2A.get((int)spinner2A.getValue() - 1);;
+                Ejector selected1Ejector = ejectors.get((int)ejector1Spinner.getValue() - 1);
+                Ejector selected2Ejector = ejectors.get((int)ejector2Spinner.getValue() - 1);
+                Pump con1 = tg1.condenser.condenserPump;
+                Pump con2 = tg2.condenser.condenserPump;
 
-            rpm1A.setLcdValue(selected1A.getRPM());
-            flow1A.setLcdValue(selected1A.getFlowRate());
-            amps1A.setLcdValue(selected1A.getPowerUsage());
-            rpm2A.setLcdValue(selected2A.getRPM());
-            flow2A.setLcdValue(selected2A.getFlowRate());
-            amps2A.setLcdValue(selected2A.getPowerUsage());
+                rpm1A.setLcdValue(selected1A.getRPM());
+                flow1A.setLcdValue(selected1A.getFlowRate());
+                amps1A.setLcdValue(selected1A.getPowerUsage());
+                rpm2A.setLcdValue(selected2A.getRPM());
+                flow2A.setLcdValue(selected2A.getFlowRate());
+                amps2A.setLcdValue(selected2A.getPowerUsage());
 
-            con1RPM.setLcdValue(con1.getRPM());
-            con1Flow.setLcdValue(con1.getFlow() * 20);
-            con1A.setLcdValue(con1.getPowerUsage());
-            con1Inlet.setLcdValue(con1.source.getWaterTemperature());
-            con1Outlet.setLcdValue(tg1.condenser.getCondenserWaterTemperature());
-            con2RPM.setLcdValue(con2.getRPM());
-            con2Flow.setLcdValue(con2.getFlow() * 20);
-            con2A.setLcdValue(con2.getPowerUsage());
-            con2Inlet.setLcdValue(con2.source.getWaterTemperature());
-            con2Outlet.setLcdValue(tg2.condenser.getCondenserWaterTemperature());
+                con1RPM.setLcdValue(con1.getRPM());
+                con1Flow.setLcdValue(con1.getFlow() * 20);
+                con1A.setLcdValue(con1.getPowerUsage());
+                con1Inlet.setLcdValue(con1.source.getWaterTemperature());
+                con1Outlet.setLcdValue(tg1.condenser.getCondenserWaterTemperature());
+                con2RPM.setLcdValue(con2.getRPM());
+                con2Flow.setLcdValue(con2.getFlow() * 20);
+                con2A.setLcdValue(con2.getPowerUsage());
+                con2Inlet.setLcdValue(con2.source.getWaterTemperature());
+                con2Outlet.setLcdValue(tg2.condenser.getCondenserWaterTemperature());
 
-            ejectorFlow1.setLcdValue(selected1Ejector.getFlowRate());
-            SGAMFlow1.setLcdValue(selected1Ejector.getEjectorFlowRate());
-            ejectorFlow2.setLcdValue(selected2Ejector.getFlowRate());
-            SGAMFlow2.setLcdValue(selected2Ejector.getEjectorFlowRate());
+                ejectorFlow1.setLcdValue(selected1Ejector.getFlowRate());
+                SGAMFlow1.setLcdValue(selected1Ejector.getEjectorFlowRate());
+                ejectorFlow2.setLcdValue(selected2Ejector.getFlowRate());
+                SGAMFlow2.setLcdValue(selected2Ejector.getEjectorFlowRate());
+            });
         }
     }
 
@@ -175,23 +177,25 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
                     while (true) {
                         annunciator.update();
                         if (this.isVisible()) {
-                            final double[] hotwellFlows = {0.0, 0.0};
-                            condensate1A.forEach(pump -> {
-                                hotwellFlows[0] += pump.getActualFlow();
+                            java.awt.EventQueue.invokeLater(() -> {
+                                final double[] hotwellFlows = {0.0, 0.0};
+                                condensate1A.forEach(pump -> {
+                                    hotwellFlows[0] += pump.getActualFlow();
+                                });
+                                condensate2A.forEach(pump -> {
+                                    hotwellFlows[1] += pump.getActualFlow();
+                                });
+                                totalFlow1.setValue(hotwellFlows[0]);
+                                totalFlow2.setValue(hotwellFlows[1]);
+                                totalInflow1.setValue(tg1.condenser.getCondensationRate());
+                                totalInflow2.setValue(tg2.condenser.getCondensationRate());
+                                hotwellLevel1.setValue(tg1.condenser.getWaterLevel());
+                                hotwellLevel2.setValue(tg2.condenser.getWaterLevel());
+                                vacuum1.setValue(tg1.condenser.getPressure() * 1000);
+                                vacuum2.setValue(tg2.condenser.getPressure() * 1000);
+                                condTemp1.setValue(tg1.condenser.getWaterTemperature());
+                                condTemp2.setValue(tg2.condenser.getWaterTemperature());
                             });
-                            condensate2A.forEach(pump -> {
-                                hotwellFlows[1] += pump.getActualFlow();
-                            });
-                            totalFlow1.setValue(hotwellFlows[0]);
-                            totalFlow2.setValue(hotwellFlows[1]);
-                            totalInflow1.setValue(tg1.condenser.getCondensationRate());
-                            totalInflow2.setValue(tg2.condenser.getCondensationRate());
-                            hotwellLevel1.setValue(tg1.condenser.getWaterLevel());
-                            hotwellLevel2.setValue(tg2.condenser.getWaterLevel());
-                            vacuum1.setValue(tg1.condenser.getPressure() * 1000);
-                            vacuum2.setValue(tg2.condenser.getPressure() * 1000);
-                            condTemp1.setValue(tg1.condenser.getWaterTemperature());
-                            condTemp2.setValue(tg2.condenser.getWaterTemperature());
                         }
                         if (this.isFocused()) {
                             Thread.sleep(UI.getUpdateRate());
@@ -415,11 +419,13 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         jButton1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(1366, 768));
 
@@ -1948,6 +1954,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
 
         org.openide.awt.Mnemonics.setLocalizedText(jMenu1, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jMenu1.text")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem6, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jMenuItem6.text")); // NOI18N
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem6);
+
         org.openide.awt.Mnemonics.setLocalizedText(jMenuItem3, "Core Map");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1987,6 +2001,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
             }
         });
         jMenu1.add(jMenuItem5);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem10, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jMenuItem10.text")); // NOI18N
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem10);
 
         jMenuBar1.add(jMenu1);
 
@@ -2238,6 +2260,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField12ActionPerformed
 
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        UI.createOrContinue(SelsynPanel.class, false);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+        NPPSim.ui.toFront();
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private eu.hansolo.steelseries.gauges.DisplaySingle SGAMFlow1;
@@ -2326,9 +2356,11 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;

@@ -6,6 +6,7 @@ package com.darwish.nppsim;
 
 import java.io.File;
 import java.net.URI;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class LoadDialog extends javax.swing.JFrame {
 
@@ -21,7 +22,7 @@ public class LoadDialog extends javax.swing.JFrame {
             try {
                 jFileChooser1.setCurrentDirectory(new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI()));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                new ErrorWindow("Error while setting directory for loading IC", ExceptionUtils.getStackTrace(ex), false).setVisible(true);
             }
         } 
     }

@@ -119,20 +119,22 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
     public void update() {
         checkAlarms();
         if (this.isVisible()) {
-            var totalFlow1 = 0.0;
-            var totalFlow2 = 0.0;
-            for (int i = 0; i < 4; i++) {
-                totalFlow1 += sdv_c.get(i).getFlowRate();
-            }
-            for (int i = 4; i < 8; i++) {
-                totalFlow2 += sdv_c.get(i).getFlowRate();
-            }
-            interlockLed1.setLedOn(sdv_c.get(0).isLocked());
-            interlockLed2.setLedOn(sdv_c.get(4).isLocked());
-            sdvcFlow1.setLcdValue(sdv_c.get((int)sdvcSpinner1.getValue() - 1).getFlowRate());
-            sdvcFlow2.setLcdValue(sdv_c.get((int)sdvcSpinner2.getValue() - 1).getFlowRate());
-            sdvcTotal1.setLcdValue(totalFlow1);
-            sdvcTotal2.setLcdValue(totalFlow2);
+            java.awt.EventQueue.invokeLater(() -> {
+                var totalFlow1 = 0.0;
+                var totalFlow2 = 0.0;
+                for (int i = 0; i < 4; i++) {
+                    totalFlow1 += sdv_c.get(i).getFlowRate();
+                }
+                for (int i = 4; i < 8; i++) {
+                    totalFlow2 += sdv_c.get(i).getFlowRate();
+                }
+                interlockLed1.setLedOn(sdv_c.get(0).isLocked());
+                interlockLed2.setLedOn(sdv_c.get(4).isLocked());
+                sdvcFlow1.setLcdValue(sdv_c.get((int)sdvcSpinner1.getValue() - 1).getFlowRate());
+                sdvcFlow2.setLcdValue(sdv_c.get((int)sdvcSpinner2.getValue() - 1).getFlowRate());
+                sdvcTotal1.setLcdValue(totalFlow1);
+                sdvcTotal2.setLcdValue(totalFlow2);
+            });
         }
     }
 
@@ -144,41 +146,42 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
                     while (true) {
                         annunciator.update();
                         if (this.isVisible()) {
-                            var alignment1 = tg1.getGenAligmnent();
-                            var rpm1 = tg1.getRpm();
-                            var alignment2 = tg2.getGenAligmnent();
-                            var rpm2 = tg2.getRpm();
+                            java.awt.EventQueue.invokeLater(() -> {
+                                var alignment1 = tg1.getGenAligmnent();
+                                var rpm1 = tg1.getRpm();
+                                var alignment2 = tg2.getGenAligmnent();
+                                var rpm2 = tg2.getRpm();
 
-                            if (rpm1 > 2800) {
-                                radial1.setValue(alignment1);
-                            }
-                            radial2.setValue(tg1.getRpm());
-                            if (rpm2 > 2800) {
-                                radial4.setValue(alignment2);
-                            }
-                            radial1.setUserLedOn(alignment1 > 48.5 && alignment1 < 51.5 && rpm1 >= 2997.5 && rpm1 <= 3002.5);
-                            radial4.setUserLedOn(alignment2 > 48.5 && alignment2 < 51.5 && rpm2 >= 2997.5 && rpm2 <= 3002.5);
-                            radial3.setValue(tg2.getRpm());
-                            radial2Top1.setValue(TG1InletValves.get(0).getPosition() * 100);
-                            radial2Top2.setValue(TG2InletValves.get(0).getPosition() * 100);
+                                if (rpm1 > 2800) {
+                                    radial1.setValue(alignment1);
+                                }
+                                radial2.setValue(tg1.getRpm());
+                                if (rpm2 > 2800) {
+                                    radial4.setValue(alignment2);
+                                }
+                                radial1.setUserLedOn(alignment1 > 48.5 && alignment1 < 51.5 && rpm1 >= 2997.5 && rpm1 <= 3002.5);
+                                radial4.setUserLedOn(alignment2 > 48.5 && alignment2 < 51.5 && rpm2 >= 2997.5 && rpm2 <= 3002.5);
+                                radial3.setValue(tg2.getRpm());
+                                radial2Top1.setValue(TG1InletValves.get(0).getPosition() * 100);
+                                radial2Top2.setValue(TG2InletValves.get(0).getPosition() * 100);
 
-                            linear1.setValue(tg1.getGeneratorLoad());
-                            linear2.setValue(tg1.getSteamInflow() * 20);
-                            linear3.setValue(tg2.getGeneratorLoad());
-                            linear4.setValue(tg2.getSteamInflow() * 20);
-                            
-                            pressure1.setValue(mcc.drum1.getPressure());
-                            pressure2.setValue(mcc.drum2.getPressure());
+                                linear1.setValue(tg1.getGeneratorLoad());
+                                linear2.setValue(tg1.getSteamInflow() * 20);
+                                linear3.setValue(tg2.getGeneratorLoad());
+                                linear4.setValue(tg2.getSteamInflow() * 20);
 
-                            valvePos1.setValue(sdv_c.get(0).getPosition() * 100);
-                            valvePos2.setValue(sdv_c.get(1).getPosition() * 100);
-                            valvePos3.setValue(sdv_c.get(2).getPosition() * 100);
-                            valvePos4.setValue(sdv_c.get(3).getPosition() * 100);
-                            valvePos5.setValue(sdv_c.get(4).getPosition() * 100);
-                            valvePos6.setValue(sdv_c.get(5).getPosition() * 100);
-                            valvePos7.setValue(sdv_c.get(6).getPosition() * 100);
-                            valvePos8.setValue(sdv_c.get(7).getPosition() * 100);
+                                pressure1.setValue(mcc.drum1.getPressure());
+                                pressure2.setValue(mcc.drum2.getPressure());
 
+                                valvePos1.setValue(sdv_c.get(0).getPosition() * 100);
+                                valvePos2.setValue(sdv_c.get(1).getPosition() * 100);
+                                valvePos3.setValue(sdv_c.get(2).getPosition() * 100);
+                                valvePos4.setValue(sdv_c.get(3).getPosition() * 100);
+                                valvePos5.setValue(sdv_c.get(4).getPosition() * 100);
+                                valvePos6.setValue(sdv_c.get(5).getPosition() * 100);
+                                valvePos7.setValue(sdv_c.get(6).getPosition() * 100);
+                                valvePos8.setValue(sdv_c.get(7).getPosition() * 100);
+                            });
                         }
                         if (this.isFocused()) {
                             Thread.sleep(UI.getUpdateRate());
@@ -426,7 +429,9 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         pressure2 = new eu.hansolo.steelseries.gauges.Linear();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
@@ -2197,6 +2202,14 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
 
         org.openide.awt.Mnemonics.setLocalizedText(jMenu1, "Window");
 
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem5, org.openide.util.NbBundle.getMessage(TGUI.class, "TGUI.jMenuItem5.text")); // NOI18N
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+
         org.openide.awt.Mnemonics.setLocalizedText(jMenuItem3, "Core Map");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2204,6 +2217,14 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
             }
         });
         jMenu1.add(jMenuItem3);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem10, org.openide.util.NbBundle.getMessage(TGUI.class, "TGUI.jMenuItem10.text")); // NOI18N
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem10);
 
         org.openide.awt.Mnemonics.setLocalizedText(jMenuItem2, "Condensate");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -2652,6 +2673,14 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         UI.createOrContinue(PCSUI.class, true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        UI.createOrContinue(SelsynPanel.class, false);
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        NPPSim.ui.toFront();
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel annunciatorPanel;
     private javax.swing.JRadioButton autoSteamPressure1Off;
@@ -2704,9 +2733,11 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
