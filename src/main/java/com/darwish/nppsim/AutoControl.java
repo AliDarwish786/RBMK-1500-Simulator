@@ -654,9 +654,12 @@ public class AutoControl extends Component {
                         checkError[i] = true;
                     }
                 }
-                for (ControlRodChannel channel: linkedChannels) {
-                    if (channel.getNeutronPopulation()[0] < averagePower * 0.99) {
-                        toControl.remove(channel);
+                if (!(limit[0] || limit[1] || limit[2])) {
+                    for (ControlRodChannel channel: linkedChannels) {
+                        if (channel.getNeutronPopulation()[0] < averagePower * 0.99) {
+                            toControl.remove(channel);
+                            channel.setAutoState(1);
+                        }
                     }
                 }
                 if (toControl.isEmpty()) {
@@ -696,9 +699,12 @@ public class AutoControl extends Component {
                     }
                     return;
                 }
-                for (ControlRodChannel channel: linkedChannels) {
-                    if (channel.getNeutronPopulation()[0] > averagePower * 1.01) {
-                        toControl.remove(channel);
+                if (!(limit[0] || limit[1] || limit[2])) {
+                    for (ControlRodChannel channel: linkedChannels) {
+                        if (channel.getNeutronPopulation()[0] > averagePower * 1.01) {
+                            toControl.remove(channel);
+                            channel.setAutoState(1);
+                        }
                     }
                 }
                 if (toControl.isEmpty()) {
@@ -772,6 +778,9 @@ public class AutoControl extends Component {
             if(!enabled[0]) {
                 return;
             }
+            lar.forEach(channel -> {
+                channel.setAutoState(1);
+            });
             linkedChannels.removeAll(lar);
             enabled[0] = false;
         }
@@ -788,6 +797,9 @@ public class AutoControl extends Component {
             if (!enabled[1]) {
                 return;
             }
+            ar1.forEach(channel -> {
+                channel.setAutoState(1);
+            });
             linkedChannels.removeAll(ar1);
             enabled[1] = false;
         }
@@ -804,6 +816,9 @@ public class AutoControl extends Component {
             if (!enabled[2]) {
                 return;
             }
+            ar2.forEach(channel -> {
+                channel.setAutoState(1);
+            });
             linkedChannels.removeAll(ar2);
             enabled[2] = false;
         }

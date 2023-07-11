@@ -354,7 +354,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -389,26 +392,21 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="manualRodControl1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="216" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="213" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
                                       <Component id="jPanel16" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="jPanel26" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="214" max="-2" attributes="0"/>
-                                      <Component id="jPanel9" min="-2" pref="426" max="-2" attributes="0"/>
                                       <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="jPanel26" min="-2" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="jPanel9" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -440,9 +438,9 @@
                               </Group>
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Component id="mTK1" min="-2" pref="427" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -450,21 +448,21 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="mTK1" alignment="0" min="-2" pref="325" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="thermalPower1" min="-2" pref="96" max="-2" attributes="0"/>
                                   <Component id="jButton1" alignment="0" min="-2" pref="51" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="electric1" min="-2" pref="41" max="-2" attributes="0"/>
                                   <Component id="electric2" min="-2" pref="41" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="mTK1" alignment="0" min="-2" pref="325" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="annunciatorPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
@@ -478,20 +476,25 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jPanel9" min="-2" pref="128" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="jPanel9" max="-2" attributes="0"/>
+                              <EmptySpace pref="0" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="jPanel16" max="32767" attributes="0"/>
                                   <Component id="jPanel26" max="32767" attributes="0"/>
                               </Group>
+                              <EmptySpace min="30" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
-                          <Component id="manualRodControl1" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
+                                  <Component id="manualRodControl1" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace pref="30" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1917,7 +1920,7 @@
                                   <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="45" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

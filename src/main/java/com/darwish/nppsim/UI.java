@@ -123,6 +123,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         for (UIUpdateable i: elementsToUpdate) {
             i.update();
         }
+        
         mTK1.update();
         final double[] totalThermalPower = {0};
         double currentNeutronFlux = core.getNeutronCount();
@@ -130,38 +131,38 @@ public class UI extends javax.swing.JFrame implements Serializable {
         double reactivity = (kEffective - 1) / kEffective;
         double reactorPeriod = 0.1 / (kEffective - 1);
         previousNeutronFlux = currentNeutronFlux;
-        
         mcc.fuelChannels1.forEach(channel -> {
             totalThermalPower[0] += channel.getThermalPower();
         });
         mcc.fuelChannels2.forEach(channel -> {
             totalThermalPower[0] += channel.getThermalPower();
         });
-        
-        thermalPower1.setLcdValue(totalThermalPower[0]);
-        neutronFlux.setLcdValue(currentNeutronFlux / 4.9808177502E13);
-        keff.setLcdValue(reactivity);
-        period.setLcdValue(reactorPeriod < -9999 || reactorPeriod > 9999 ? Double.POSITIVE_INFINITY : reactorPeriod);
-        deltaKeff.setValue(reactivity * 100);
-        if (autoControl.az1Control.isTripped()) {
-            rodLimit1.setBackground(Annunciator.REDON_COLOR);
-        } else {
-            rodLimit1.setBackground(Annunciator.REDOFF_COLOR);
-        }
-        var selectedMCP1 = mcc.mcp.get((int)mcp1Spinner.getValue() - 1);
-        var selectedMCP2 = mcc.mcp.get((int)mcp2Spinner.getValue() - 1);
-        rmp1.setLcdValue(selectedMCP1.getRPM());
-        amps1.setLcdValue(selectedMCP1.getPowerUsage());
-        flow1.setLcdValue(selectedMCP1.getFlow());
-        rpm2.setLcdValue(selectedMCP2.getRPM());
-        apms2.setLcdValue(selectedMCP2.getPowerUsage());
-        flow2.setLcdValue(selectedMCP2.getFlow());
-        drumTemp.setLcdValue(mcc.drum1.getWaterTemperature());
-        drumTemp1.setLcdValue(mcc.drum2.getWaterTemperature());
-        headerTemp.setLcdValue(mcc.pHeader1.getWaterTemperature());
-        headerTemp1.setLcdValue(mcc.pHeader2.getWaterTemperature());
-        electric1.setLcdValue(tg1.getGeneratorLoad());
-        electric2.setLcdValue(tg2.getGeneratorLoad());
+        java.awt.EventQueue.invokeLater(() -> {
+            thermalPower1.setLcdValue(totalThermalPower[0]);
+            neutronFlux.setLcdValue(currentNeutronFlux / 4.9808177502E13);
+            keff.setLcdValue(reactivity);
+            period.setLcdValue(reactorPeriod < -9999 || reactorPeriod > 9999 ? Double.POSITIVE_INFINITY : reactorPeriod);
+            deltaKeff.setValue(reactivity * 100);
+            if (autoControl.az1Control.isTripped()) {
+                rodLimit1.setBackground(Annunciator.REDON_COLOR);
+            } else {
+                rodLimit1.setBackground(Annunciator.REDOFF_COLOR);
+            }
+            var selectedMCP1 = mcc.mcp.get((int)mcp1Spinner.getValue() - 1);
+            var selectedMCP2 = mcc.mcp.get((int)mcp2Spinner.getValue() - 1);
+            rmp1.setLcdValue(selectedMCP1.getRPM());
+            amps1.setLcdValue(selectedMCP1.getPowerUsage());
+            flow1.setLcdValue(selectedMCP1.getFlow());
+            rpm2.setLcdValue(selectedMCP2.getRPM());
+            apms2.setLcdValue(selectedMCP2.getPowerUsage());
+            flow2.setLcdValue(selectedMCP2.getFlow());
+            drumTemp.setLcdValue(mcc.drum1.getWaterTemperature());
+            drumTemp1.setLcdValue(mcc.drum2.getWaterTemperature());
+            headerTemp.setLcdValue(mcc.pHeader1.getWaterTemperature());
+            headerTemp1.setLcdValue(mcc.pHeader2.getWaterTemperature());
+            electric1.setLcdValue(tg1.getGeneratorLoad());
+            electric2.setLcdValue(tg2.getGeneratorLoad());
+        });
         
         checkAlarms();
         //reset flow rates for all elements that implement the UIUpdateable interface
@@ -223,60 +224,62 @@ public class UI extends javax.swing.JFrame implements Serializable {
                     while (true) {
                         annunciator.update();
                         if (this.isFocused()) {
-                            annunciator.update();
-                            if (autoControl.automaticRodController.isEnabled()[0]) {
-                                if (autoControl.automaticRodController.onLimit()[0]) {
-                                    limitLAC.setBackground(Annunciator.YELLOWON_COLOR);
-                                } else {
-                                    limitLAC.setBackground(Annunciator.YELLOWOFF_COLOR);
+                            manualRodControl1.update();
+                            java.awt.EventQueue.invokeLater(() -> {
+                                if (autoControl.automaticRodController.isEnabled()[0]) {
+                                    if (autoControl.automaticRodController.onLimit()[0]) {
+                                        limitLAC.setBackground(Annunciator.YELLOWON_COLOR);
+                                    } else {
+                                        limitLAC.setBackground(Annunciator.YELLOWOFF_COLOR);
+                                    }
+                                    if (autoControl.automaticRodController.hasError()[0]) {
+                                        errorLAC.setBackground(Annunciator.YELLOWON_COLOR);
+                                    } else {
+                                        errorLAC.setBackground(Annunciator.YELLOWOFF_COLOR);
+                                    }
+                                    if (autoControl.automaticRodController.isBusy()[0]) {
+                                        busyLAC.setBackground(Annunciator.GREENON_COLOR);
+                                    } else {
+                                        busyLAC.setBackground(Annunciator.GREENOFF_COLOR);
+                                    }
                                 }
-                                if (autoControl.automaticRodController.hasError()[0]) {
-                                    errorLAC.setBackground(Annunciator.YELLOWON_COLOR);
-                                } else {
-                                    errorLAC.setBackground(Annunciator.YELLOWOFF_COLOR);
+                                if (autoControl.automaticRodController.isEnabled()[1]) {
+                                    if (autoControl.automaticRodController.onLimit()[1]) {
+                                        limit1AR.setBackground(Annunciator.YELLOWON_COLOR);
+                                    } else {
+                                        limit1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
+                                    }
+                                    if (autoControl.automaticRodController.hasError()[1]) {
+                                        error1AR.setBackground(Annunciator.YELLOWON_COLOR);
+                                    } else {
+                                        error1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
+                                    }
+                                    if (autoControl.automaticRodController.isBusy()[1]) {
+                                        busy1AR.setBackground(Annunciator.GREENON_COLOR);
+                                    } else {
+                                        busy1AR.setBackground(Annunciator.GREENOFF_COLOR);
+                                    }
                                 }
-                                if (autoControl.automaticRodController.isBusy()[0]) {
-                                    busyLAC.setBackground(Annunciator.GREENON_COLOR);
-                                } else {
-                                    busyLAC.setBackground(Annunciator.GREENOFF_COLOR);
+                                if (autoControl.automaticRodController.isEnabled()[2]) {
+                                    if (autoControl.automaticRodController.onLimit()[2]) {
+                                        limit2AR.setBackground(Annunciator.YELLOWON_COLOR);
+                                    } else {
+                                        limit2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
+                                    }
+                                    if (autoControl.automaticRodController.hasError()[2]) {
+                                        error2AR.setBackground(Annunciator.YELLOWON_COLOR);
+                                    } else {
+                                        error2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
+                                    }
+                                    if (autoControl.automaticRodController.isBusy()[2]) {
+                                        busy2AR.setBackground(Annunciator.GREENON_COLOR);
+                                    } else {
+                                        busy2AR.setBackground(Annunciator.GREENOFF_COLOR);
+                                    }
                                 }
-                            }
-                            if (autoControl.automaticRodController.isEnabled()[1]) {
-                                if (autoControl.automaticRodController.onLimit()[1]) {
-                                    limit1AR.setBackground(Annunciator.YELLOWON_COLOR);
-                                } else {
-                                    limit1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-                                }
-                                if (autoControl.automaticRodController.hasError()[1]) {
-                                    error1AR.setBackground(Annunciator.YELLOWON_COLOR);
-                                } else {
-                                    error1AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-                                }
-                                if (autoControl.automaticRodController.isBusy()[1]) {
-                                    busy1AR.setBackground(Annunciator.GREENON_COLOR);
-                                } else {
-                                    busy1AR.setBackground(Annunciator.GREENOFF_COLOR);
-                                }
-                            }
-                            if (autoControl.automaticRodController.isEnabled()[2]) {
-                                if (autoControl.automaticRodController.onLimit()[2]) {
-                                    limit2AR.setBackground(Annunciator.YELLOWON_COLOR);
-                                } else {
-                                    limit2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-                                }
-                                if (autoControl.automaticRodController.hasError()[2]) {
-                                    error2AR.setBackground(Annunciator.YELLOWON_COLOR);
-                                } else {
-                                    error2AR.setBackground(Annunciator.YELLOWOFF_COLOR);
-                                }
-                                if (autoControl.automaticRodController.isBusy()[2]) {
-                                    busy2AR.setBackground(Annunciator.GREENON_COLOR);
-                                } else {
-                                    busy2AR.setBackground(Annunciator.GREENOFF_COLOR);
-                                }
-                            }
-                            Thread.sleep(50);
+                            });
                         }
+                        Thread.sleep(50);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1348,7 +1351,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGap(62, 62, 62)
                         .addComponent(jLabel11)))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1699,22 +1702,18 @@ public class UI extends javax.swing.JFrame implements Serializable {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(manualRodControl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(216, 216, 216)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(213, 213, 213)
                                 .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(214, 214, 214)
-                                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(annunciatorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1737,25 +1736,25 @@ public class UI extends javax.swing.JFrame implements Serializable {
                                 .addComponent(electric2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10)
-                        .addComponent(mTK1, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(mTK1, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mTK1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(thermalPower1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(12, 12, 12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(electric1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(electric2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mTK1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(annunciatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(17, 17, 17)
@@ -1768,14 +1767,17 @@ public class UI extends javax.swing.JFrame implements Serializable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 0, Short.MAX_VALUE)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel26, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(manualRodControl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30))
+                            .addComponent(jPanel26, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(manualRodControl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(30, Short.MAX_VALUE))))
         );
 
         jScrollPane1.setViewportView(jPanel3);
@@ -2039,7 +2041,9 @@ public class UI extends javax.swing.JFrame implements Serializable {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
