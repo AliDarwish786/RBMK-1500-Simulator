@@ -484,7 +484,7 @@ public class NPPSim {
     }
 
     public static void save(File file) {
-        var wasPaused = isPaused();
+        boolean wasPaused = isPaused();
         try {
             FileOutputStream fout = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fout);

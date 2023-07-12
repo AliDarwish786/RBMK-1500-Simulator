@@ -147,8 +147,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
             } else {
                 rodLimit1.setBackground(Annunciator.REDOFF_COLOR);
             }
-            var selectedMCP1 = mcc.mcp.get((int)mcp1Spinner.getValue() - 1);
-            var selectedMCP2 = mcc.mcp.get((int)mcp2Spinner.getValue() - 1);
+            Pump selectedMCP1 = mcc.mcp.get((int)mcp1Spinner.getValue() - 1);
+            Pump selectedMCP2 = mcc.mcp.get((int)mcp2Spinner.getValue() - 1);
             rmp1.setLcdValue(selectedMCP1.getRPM());
             amps1.setLcdValue(selectedMCP1.getPowerUsage());
             flow1.setLcdValue(selectedMCP1.getFlow());
@@ -289,10 +289,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
     }
     
     private void checkAlarms() { 
-        var sdvA = false;
-        var msvI = false;
-        var msvII = false;
-        var msvIII = false;
+        boolean sdvA = false;
+        boolean msvI = false;
+        boolean msvII = false;
+        boolean msvIII = false;
         for (int i = 0; i < sdv_a.size(); i++) {
             if (sdv_a.get(i).getPosition() != 0.0f) {
                 sdvA= true;

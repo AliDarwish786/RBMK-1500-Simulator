@@ -163,13 +163,13 @@ class SimplifiedCondensateHeader extends PressureHeader { //greatly simplified f
     
     @Override
     public void update() {
-        var oldWaterTemp = waterTemperature;
-        var tg1SteamTemp = tg1.getSteamTemperature() / 1.45;
-        var tg2SteamTemp = tg2.getSteamTemperature() / 1.45;
-        var highestSteamTemp = tg1SteamTemp < tg2SteamTemp ? tg2SteamTemp : tg1SteamTemp;
+        double oldWaterTemp = waterTemperature;
+        double tg1SteamTemp = tg1.getSteamTemperature() / 1.45;
+        double tg2SteamTemp = tg2.getSteamTemperature() / 1.45;
+        double highestSteamTemp = tg1SteamTemp < tg2SteamTemp ? tg2SteamTemp : tg1SteamTemp;
         thermalPower += (tg1.getSteamInflow() / 600.0) * 10000 * (tg1SteamTemp / 196.82) * ((tg1SteamTemp - waterTemperature) / 170.0);
         thermalPower += (tg2.getSteamInflow() / 600.0) * 10000 * (tg2SteamTemp / 196.82) * ((tg2SteamTemp - waterTemperature) / 170.0);
-        var deltaWaterTemp = thermalPower * 50 / (NPPMath.calculateSpecificHeatWater(waterTemperature) * waterMass);
+        double deltaWaterTemp = thermalPower * 50 / (NPPMath.calculateSpecificHeatWater(waterTemperature) * waterMass);
         waterTemperature += Double.isNaN(deltaWaterTemp) || Double.isInfinite(deltaWaterTemp) ? 0.0 : deltaWaterTemp;
         if (waterTemperature > highestSteamTemp && waterTemperature > oldWaterTemp) {
             waterTemperature = highestSteamTemp * 0.9;
@@ -489,7 +489,7 @@ class WaterMixer extends Component implements Connectable, UIReadable {
     
     @Override
     public void updateWaterInflow(double flow, double tempC) {
-        var inflowData = NPPMath.mixWater(waterInflow, waterTemperature, flow, tempC);
+        double[] inflowData = NPPMath.mixWater(waterInflow, waterTemperature, flow, tempC);
         waterInflow = inflowData[0];
         waterTemperature = inflowData[1];
         waterInflowRate += flow;

@@ -154,7 +154,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
                         annunciator.update();
                         if (this.isVisible()) { 
                             java.awt.EventQueue.invokeLater(() -> {
-                                var mfwFlows = new double[] {0.0, 0.0};
+                                double[] mfwFlows = new double[] {0.0, 0.0};
                                 for (int i = 0; i < 3; i++) {
                                     mfwFlows[0] += mainFeederValves.get(i).timestepFlow * 20;
                                 }

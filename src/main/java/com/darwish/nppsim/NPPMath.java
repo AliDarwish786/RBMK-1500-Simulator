@@ -8,8 +8,8 @@ public class NPPMath {
      * @return specific heat in kJ/kg
     */
     public static double calculateSpecificHeatWater(double tempC) {
-        var vA = tempC;
-        var result = 0.0;
+        double vA = tempC;
+        double result = 0.0;
         if (vA < 0) {
             return result;
         } else if (vA > 370) {
@@ -31,8 +31,8 @@ public class NPPMath {
      * @return dynamic viscosity pa*s
     */
     public static double calculateDynamicviscosity(double tempC) {
-        var vA = tempC;
-        var result = 0.0;
+        double vA = tempC;
+        double result = 0.0;
 
         if (vA < 0){
             return result;
@@ -192,14 +192,14 @@ public class NPPMath {
     }
     
     public static String formatSecondsToDaysAndTime(long timeSeconds, boolean longFormat) {
-        var days = timeSeconds / 86400;
-        var hours = timeSeconds % 86400 / 3600;
-        var minutes = timeSeconds % 3600 / 60;
-        var seconds = timeSeconds % 60;
-        var hoursZero = "";
-        var minutesZero = "";
-        var secondsZero = "";
-        var longFormatString = " ";
+        long days = timeSeconds / 86400;
+        long hours = timeSeconds % 86400 / 3600;
+        long minutes = timeSeconds % 3600 / 60;
+        long seconds = timeSeconds % 60;
+        String hoursZero = "";
+        String minutesZero = "";
+        String secondsZero = "";
+        String longFormatString = " ";
         if (hours < 10) {
             hoursZero = "0";
         }

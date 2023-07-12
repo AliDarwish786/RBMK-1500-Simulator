@@ -36,10 +36,10 @@ public class ManualRodControl extends javax.swing.JPanel {
             for (Component b: ((JPanel)i).getComponents()) {
                 if (b instanceof JToggleButton) {
                     found = false;
-                    var button = (JToggleButton)b;
+                    JToggleButton button = (JToggleButton)b;
                     for (int x = 55; x > 0; x--) {
                         for (int y = 55; y > 0; y--) {
-                            var channel = core.get(y).get(x);
+                            Channel channel = core.get(y).get(x);
                             if (channel instanceof ControlRodChannel && !rodButtonBinding.containsKey((ControlRodChannel)channel)) {
                                 rodButtonBinding.put((ControlRodChannel)channel, button);
                                 button.setText(channel.uiData.positionString);

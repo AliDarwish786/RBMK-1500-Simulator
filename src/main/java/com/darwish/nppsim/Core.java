@@ -41,25 +41,25 @@ public class Core extends Component {
                     numberArray[1] = 0.0;
                 });
             });
-            for (int x = 0; x < coreArray.size(); x++) {
-                for (int y = 0; y < coreArray.get(x).size(); y++) {
+            for (short x = 0; x < coreArray.size(); x++) {
+                for (short y = 0; y < coreArray.get(x).size(); y++) {
                     Channel channel = coreArray.get(x).get(y);
                     
-                    var fastNeutronCount = channel.getNeutronPopulation()[0];
-                    var thermalNeutronCount = channel.getNeutronPopulation()[1];
+                    Double fastNeutronCount = channel.getNeutronPopulation()[0];
+                    Double thermalNeutronCount = channel.getNeutronPopulation()[1];
                     neutronCount += fastNeutronCount;
                     if (channel instanceof FuelChannel) {
                         fcNeutronCount += fastNeutronCount;
                     }
-                    var propagatedFastNeutrons = fastNeutronCount;
-                    var propagatedThermalNeutrons = thermalNeutronCount;
-                    var neighborChannels = new Double[8][2]; // an array of neighboring positions in a 9x9 grid omitting the 'self' position at the center starting clockwise from upper left
-                    var neighborCount = 0;
+                    Double propagatedFastNeutrons = fastNeutronCount;
+                    Double propagatedThermalNeutrons = thermalNeutronCount;
+                    Double[][] neighborChannels = new Double[8][2]; // an array of neighboring positions in a 9x9 grid omitting the 'self' position at the center starting clockwise from upper left
+                    short neighborCount = 0;
                     if (coreArray.get(x).get(y) instanceof VoidChannel) {
                         continue;
                     }
-                    for (int c = 0; c < 8; c++) {
-                        var neighborXY = getNeighborCoordinates(x, y, c);
+                    for (short c = 0; c < 8; c++) {
+                        short[] neighborXY = getNeighborCoordinates(x, y, c);
                         if (neighborXY[0] < 0 || neighborXY[0] > 55 || neighborXY[1] < 0 || neighborXY[1] > 55) { //continue if a neighboring channel would be outside of the core array or is VoidChannel
                             continue;
                         }
@@ -102,9 +102,9 @@ public class Core extends Component {
          * @param c relative position
          * @return coordinates {x, y} for neighboring channel depending on relative position
          */
-        private int[] getNeighborCoordinates (int x, int y, int c) {
-            var neighborX = x;
-            var neighborY = y;
+        private short[] getNeighborCoordinates (short x, short y, short c) {
+            short neighborX = x;
+            short neighborY = y;
             switch (c) {
                 case 0:
                     neighborX--;
@@ -135,7 +135,7 @@ public class Core extends Component {
                     neighborY++;
                     break;
             }
-            return new int[] {neighborX, neighborY};
+            return new short[] {neighborX, neighborY};
         }
         
         private Channel initializeChannelByIdentifier(String channelIdentifier) {

@@ -486,10 +486,10 @@ public class AutoControl extends Component {
             toControl.clear();
             toControl.addAll(Arrays.asList(linkedChannels));
             averagePower = 0;
-            var upperLimit = false;
-            var lowerLimit = false;
-            var checkError = false;
-            var checkBusy = false;
+            boolean upperLimit = false;
+            boolean lowerLimit = false;
+            boolean checkError = false;
+            boolean checkBusy = false;
             for (ControlRodChannel channel: linkedChannels) {
                 averagePower += channel.getNeutronPopulation()[0];
                 if (channel.getPosition() == 0) {

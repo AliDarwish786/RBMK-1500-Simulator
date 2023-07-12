@@ -103,18 +103,18 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
                     annunciator.update();
                     if (this.isVisible()) {
                         java.awt.EventQueue.invokeLater(() -> {
-                            var waterInV1Pos = dearatorValves.get(0).getPosition() * 100;
-                            var waterInV2Pos = dearatorValves.get(1).getPosition() * 100;
-                            var waterInV3Pos = dearatorValves.get(2).getPosition() * 100;
-                            var waterInV4Pos = dearatorValves.get(3).getPosition() * 100;
-                            var steamInV1Pos = dearators.get(0).steamInlet.getPosition() * 100;
-                            var steamInV2Pos = dearators.get(1).steamInlet.getPosition() * 100;
-                            var steamInV3Pos = dearators.get(2).steamInlet.getPosition() * 100;
-                            var steamInV4Pos = dearators.get(3).steamInlet.getPosition() * 100;
-                            var steamOutV1Pos = dearators.get(0).steamOutlet.getPosition() * 100;
-                            var steamOutV2Pos = dearators.get(1).steamOutlet.getPosition() * 100;
-                            var steamOutV3Pos = dearators.get(2).steamOutlet.getPosition() * 100;
-                            var steamOutV4Pos = dearators.get(3).steamOutlet.getPosition() * 100;
+                            float waterInV1Pos = dearatorValves.get(0).getPosition() * 100;
+                            float waterInV2Pos = dearatorValves.get(1).getPosition() * 100;
+                            float waterInV3Pos = dearatorValves.get(2).getPosition() * 100;
+                            float waterInV4Pos = dearatorValves.get(3).getPosition() * 100;
+                            float steamInV1Pos = dearators.get(0).steamInlet.getPosition() * 100;
+                            float steamInV2Pos = dearators.get(1).steamInlet.getPosition() * 100;
+                            float steamInV3Pos = dearators.get(2).steamInlet.getPosition() * 100;
+                            float steamInV4Pos = dearators.get(3).steamInlet.getPosition() * 100;
+                            float steamOutV1Pos = dearators.get(0).steamOutlet.getPosition() * 100;
+                            float steamOutV2Pos = dearators.get(1).steamOutlet.getPosition() * 100;
+                            float steamOutV3Pos = dearators.get(2).steamOutlet.getPosition() * 100;
+                            float steamOutV4Pos = dearators.get(3).steamOutlet.getPosition() * 100;
 
                             press1.setValue(da1.getPressure());
                             press2.setValue(da2.getPressure());
@@ -3368,7 +3368,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_steamInVopen3ItemStateChanged
 
     private void precisionIncrement3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionIncrement3ActionPerformed
-        var currentValue = setpoint3.getLcdValue();
+        double currentValue = setpoint3.getLcdValue();
         if (currentValue > 1.4) {
             return;
         }
@@ -3377,7 +3377,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_precisionIncrement3ActionPerformed
 
     private void precisionDecrement3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionDecrement3ActionPerformed
-        var currentValue = setpoint3.getLcdValue();
+        double currentValue = setpoint3.getLcdValue();
         if (currentValue < 0.10142) {
             return;
         }
@@ -3478,7 +3478,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_steamInVopen2ItemStateChanged
 
     private void precisionIncrement2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionIncrement2ActionPerformed
-        var currentValue = setpoint2.getLcdValue();
+        double currentValue = setpoint2.getLcdValue();
         if (currentValue > 1.4) {
             return;
         }
@@ -3487,7 +3487,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_precisionIncrement2ActionPerformed
 
     private void precisionDecrement2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionDecrement2ActionPerformed
-        var currentValue = setpoint2.getLcdValue();
+        double currentValue = setpoint2.getLcdValue();
         if (currentValue < 0.10142) {
             return;
         }
@@ -3588,7 +3588,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_steamInVopen4ItemStateChanged
 
     private void precisionIncrement4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionIncrement4ActionPerformed
-        var currentValue = setpoint4.getLcdValue();
+        double currentValue = setpoint4.getLcdValue();
         if (currentValue > 1.4) {
             return;
         }
@@ -3597,7 +3597,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_precisionIncrement4ActionPerformed
 
     private void precisionDecrement4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionDecrement4ActionPerformed
-        var currentValue = setpoint4.getLcdValue();
+        double currentValue = setpoint4.getLcdValue();
         if (currentValue < 0.10142) {
             return;
         }
@@ -3698,7 +3698,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_steamInVOpen1ItemStateChanged
 
     private void precisionIncrement1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionIncrement1ActionPerformed
-        var currentValue = setpoint1.getLcdValue();
+        double currentValue = setpoint1.getLcdValue();
         if (currentValue > 1.4) {
             return;
         }
@@ -3707,7 +3707,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_precisionIncrement1ActionPerformed
 
     private void precisionDecrement1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_precisionDecrement1ActionPerformed
-        var currentValue = setpoint1.getLcdValue();
+        double currentValue = setpoint1.getLcdValue();
         if (currentValue < 0.10142) {
             return;
         }

@@ -92,8 +92,8 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
     }
     
     private javax.swing.JPanel createRow() {
-        var fuelchannelIteratorActive = false;
-        var fuelchannelIterator = 0;
+        boolean fuelchannelIteratorActive = false;
+        int fuelchannelIterator = 0;
         javax.swing.JPanel row = new javax.swing.JPanel();
         row.setBackground(UI.BACKGROUND);
         row.setMaximumSize(new java.awt.Dimension(50, 1300));

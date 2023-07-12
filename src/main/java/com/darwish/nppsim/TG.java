@@ -97,7 +97,7 @@ class TG extends Component implements Connectable {
             load = ((steamInflow - 7.0) / (61.1 - 7.0)) * 750.0;
         } else {
             load = 0;
-            var benchmark = steamInflow / 7.0 * 3000;
+            double benchmark = steamInflow / 7.0 * 3000;
             if (rpm < benchmark) {
                 rpm += (benchmark - rpm) / 1000;
             } else {

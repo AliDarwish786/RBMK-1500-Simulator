@@ -342,8 +342,8 @@ class MCCPump extends Pump { //TODO will need refactoring after MCC water flow g
         flow = ((rpm / ratedRPM) * ratedFlow) / source.getWaterDensity();
         if (drain.getBypassState()) {   //if bypasses are open calculate thermal driving head and derive natural ciculation flow
             drain.drains.forEach(channel -> {
-                var tHead = NPPMath.calculateThermalDrivingHead(1 / source.getWaterDensity(), (1 / channel.getWaterDensity()), 14.1) / 1000; 
-                var dVisc = NPPMath.calculateDynamicviscosity(source.getWaterTemperature());
+                double tHead = NPPMath.calculateThermalDrivingHead(1 / source.getWaterDensity(), (1 / channel.getWaterDensity()), 14.1) / 1000; 
+                double dVisc = NPPMath.calculateDynamicviscosity(source.getWaterTemperature());
                 bypassFlow += source.getWaterDensity() * NPPMath.calculateVolumeFlowRate(1 + tHead, 1, 0.025, 7, dVisc);
             });
             if (bypassFlow > flow) {
@@ -731,13 +731,13 @@ class pcsMockupValve extends WaterValve { //will be obsolete when mcp is reworke
         }
         
         for (int i = 0; i < 4; i++) {
-            var flow = mcc.mcp.get(i).getActualFlow();
+            double flow = mcc.mcp.get(i).getActualFlow();
             if (flow > flow1) {
                 flow1 = flow;
             }
         }
         for (int i = 4; i < 8; i++) {
-            var flow = mcc.mcp.get(i).getActualFlow();
+            double flow = mcc.mcp.get(i).getActualFlow();
             if (flow > flow2) {
                 flow2 = flow;
             }

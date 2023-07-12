@@ -107,7 +107,7 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         precisionController();
         
         //set initial values
-        var setpoint = autoControl.tgValveControl.get(0).getSetpoint();
+        double setpoint = autoControl.tgValveControl.get(0).getSetpoint();
         rpm1B.setLcdValue(setpoint);
         rpm1B1.setLcdValue(setpoint);
         sdvcManual.setSelected(!autoControl.sdv_cControl.get(0).isEnabled());
@@ -120,8 +120,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         checkAlarms();
         if (this.isVisible()) {
             java.awt.EventQueue.invokeLater(() -> {
-                var totalFlow1 = 0.0;
-                var totalFlow2 = 0.0;
+                double totalFlow1 = 0.0;
+                double totalFlow2 = 0.0;
                 for (int i = 0; i < 4; i++) {
                     totalFlow1 += sdv_c.get(i).getFlowRate();
                 }
@@ -147,10 +147,10 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
                         annunciator.update();
                         if (this.isVisible()) {
                             java.awt.EventQueue.invokeLater(() -> {
-                                var alignment1 = tg1.getGenAligmnent();
-                                var rpm1 = tg1.getRpm();
-                                var alignment2 = tg2.getGenAligmnent();
-                                var rpm2 = tg2.getRpm();
+                                float alignment1 = tg1.getGenAligmnent();
+                                float rpm1 = tg1.getRpm();
+                                float alignment2 = tg2.getGenAligmnent();
+                                float rpm2 = tg2.getRpm();
 
                                 if (rpm1 > 2800) {
                                     radial1.setValue(alignment1);
@@ -2638,7 +2638,7 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
             return;
         }
         debounce = true;
-        var currentValue = rpm1B.getLcdValue();
+        double currentValue = rpm1B.getLcdValue();
         if (currentValue < 5.89) {
             return;
         }
@@ -2654,7 +2654,7 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
             return;
         }
         debounce = true;
-        var currentValue = rpm1B.getLcdValue();
+        double currentValue = rpm1B.getLcdValue();
         if (currentValue > 6.96) {
             return;
         }
