@@ -1456,6 +1456,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
         );
 
         jPanel9.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
+        jPanel9.setMaximumSize(new java.awt.Dimension(9999, 9999));
+        jPanel9.setMinimumSize(new java.awt.Dimension(30, 30));
+        jPanel9.setName(""); // NOI18N
+        jPanel9.setPreferredSize(new java.awt.Dimension(426, 128));
 
         drumTemp.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         drumTemp.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
@@ -1704,13 +1708,14 @@ public class UI extends javax.swing.JFrame implements Serializable {
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
+                .addGap(0, 0, 0)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createSequentialGroup()
                         .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, 0))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2256,94 +2261,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         NPPSim.ui.mTK1.setThresHold(0.25f);
     }//GEN-LAST:event_twentyfiveActionPerformed
 
-    private void start1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start1ItemStateChanged
-        //TODO
-    }//GEN-LAST:event_start1ItemStateChanged
-
-    private void start1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start1ActionPerformed
-        mcc.mcp.get((int)mcp1Spinner.getValue() - 1).setActive(true);
-        switch((int)mcp1Spinner.getValue()) {
-            case 1:
-            power2A1.setLedOn(true);
-            break;
-            case 2:
-            power2A2.setLedOn(true);
-            break;
-            case 3:
-            power2A3.setLedOn(true);
-            break;
-            case 4:
-            power2A4.setLedOn(true);
-            break;
-        }
-    }//GEN-LAST:event_start1ActionPerformed
-
-    private void stop1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop1ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_stop1ItemStateChanged
-
-    private void stop1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop1ActionPerformed
-        mcc.mcp.get((int)mcp1Spinner.getValue() - 1).setActive(false);
-        switch((int)mcp1Spinner.getValue()) {
-            case 1:
-            power2A1.setLedOn(false);
-            break;
-            case 2:
-            power2A2.setLedOn(false);
-            break;
-            case 3:
-            power2A3.setLedOn(false);
-            break;
-            case 4:
-            power2A4.setLedOn(false);
-            break;
-        }
-    }//GEN-LAST:event_stop1ActionPerformed
-
-    private void start2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start2ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_start2ItemStateChanged
-
-    private void start2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start2ActionPerformed
-        mcc.mcp.get((int)mcp2Spinner.getValue() - 1).setActive(true);
-        switch((int)mcp2Spinner.getValue()) {
-            case 5:
-            power2A5.setLedOn(true);
-            break;
-            case 6:
-            power2A6.setLedOn(true);
-            break;
-            case 7:
-            power2A7.setLedOn(true);
-            break;
-            case 8:
-            power2A8.setLedOn(true);
-            break;
-        }
-    }//GEN-LAST:event_start2ActionPerformed
-
-    private void stop2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop2ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_stop2ItemStateChanged
-
-    private void stop2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop2ActionPerformed
-        mcc.mcp.get((int)mcp2Spinner.getValue() - 1).setActive(false);
-        switch((int)mcp2Spinner.getValue()) {
-            case 5:
-            power2A5.setLedOn(false);
-            break;
-            case 6:
-            power2A6.setLedOn(false);
-            break;
-            case 7:
-            power2A7.setLedOn(false);
-            break;
-            case 8:
-            power2A8.setLedOn(false);
-            break;
-        }
-    }//GEN-LAST:event_stop2ActionPerformed
-
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         createOrContinue(LogWindow.class, false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
@@ -2367,6 +2284,94 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private void jRadioButtonMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem4ActionPerformed
         uiUpdateRate = 200;
     }//GEN-LAST:event_jRadioButtonMenuItem4ActionPerformed
+
+    private void stop2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop2ActionPerformed
+        mcc.mcp.get((int)mcp2Spinner.getValue() - 1).setActive(false);
+        switch((int)mcp2Spinner.getValue()) {
+            case 5:
+            power2A5.setLedOn(false);
+            break;
+            case 6:
+            power2A6.setLedOn(false);
+            break;
+            case 7:
+            power2A7.setLedOn(false);
+            break;
+            case 8:
+            power2A8.setLedOn(false);
+            break;
+        }
+    }//GEN-LAST:event_stop2ActionPerformed
+
+    private void stop2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop2ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stop2ItemStateChanged
+
+    private void start2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start2ActionPerformed
+        mcc.mcp.get((int)mcp2Spinner.getValue() - 1).setActive(true);
+        switch((int)mcp2Spinner.getValue()) {
+            case 5:
+            power2A5.setLedOn(true);
+            break;
+            case 6:
+            power2A6.setLedOn(true);
+            break;
+            case 7:
+            power2A7.setLedOn(true);
+            break;
+            case 8:
+            power2A8.setLedOn(true);
+            break;
+        }
+    }//GEN-LAST:event_start2ActionPerformed
+
+    private void start2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start2ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_start2ItemStateChanged
+
+    private void stop1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop1ActionPerformed
+        mcc.mcp.get((int)mcp1Spinner.getValue() - 1).setActive(false);
+        switch((int)mcp1Spinner.getValue()) {
+            case 1:
+            power2A1.setLedOn(false);
+            break;
+            case 2:
+            power2A2.setLedOn(false);
+            break;
+            case 3:
+            power2A3.setLedOn(false);
+            break;
+            case 4:
+            power2A4.setLedOn(false);
+            break;
+        }
+    }//GEN-LAST:event_stop1ActionPerformed
+
+    private void stop1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop1ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stop1ItemStateChanged
+
+    private void start1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start1ActionPerformed
+        mcc.mcp.get((int)mcp1Spinner.getValue() - 1).setActive(true);
+        switch((int)mcp1Spinner.getValue()) {
+            case 1:
+            power2A1.setLedOn(true);
+            break;
+            case 2:
+            power2A2.setLedOn(true);
+            break;
+            case 3:
+            power2A3.setLedOn(true);
+            break;
+            case 4:
+            power2A4.setLedOn(true);
+            break;
+        }
+    }//GEN-LAST:event_start1ActionPerformed
+
+    private void start1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start1ItemStateChanged
+        //TODO
+    }//GEN-LAST:event_start1ItemStateChanged
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         createOrContinue(CoreMap.class, false);

@@ -309,8 +309,10 @@ public class NPPSim {
             try {
                 while(run) {
                     while (simPaused) {
+                        updating = false;
                         Thread.sleep(100);
                     }
+                    updating = true;
                     long start = System.nanoTime();
                     //all simulation components's update methods go here. 
                     //RULE OF THUMB: objects from "Components" file should be updated before their sources/drains if possible
@@ -486,12 +488,10 @@ public class NPPSim {
         try {
             FileOutputStream fout = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
-            
-            setPaused(false);
+            setPaused(true);
             while(updating) {
                 Thread.sleep(5);
             }
-            setPaused(true);
             oos.writeObject(stateArray);
             setPaused(wasPaused);
             oos.flush();
