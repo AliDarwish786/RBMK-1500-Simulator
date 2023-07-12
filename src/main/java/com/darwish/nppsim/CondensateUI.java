@@ -723,7 +723,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         hw1Low.setForeground(new java.awt.Color(0, 0, 0));
         hw1Low.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hw1Low.setText("Hotwell 1 low");
-        hw1Low.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hw1Low.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hw1Low.setFocusable(false);
         annunciatorPanel.add(hw1Low);
 
         hw1High.setEditable(false);
@@ -732,7 +733,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         hw1High.setForeground(new java.awt.Color(0, 0, 0));
         hw1High.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hw1High.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.hw1High.text")); // NOI18N
-        hw1High.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hw1High.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hw1High.setFocusable(false);
         annunciatorPanel.add(hw1High);
 
         jTextField2.setEditable(false);
@@ -741,7 +743,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         jTextField2.setForeground(new java.awt.Color(0, 0, 0));
         jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField2.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jTextField2.text")); // NOI18N
-        jTextField2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField2.setFocusable(false);
         jTextField2.setPreferredSize(new java.awt.Dimension(100, 30));
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -756,7 +759,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         jTextField3.setForeground(new java.awt.Color(0, 0, 0));
         jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField3.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jTextField3.text")); // NOI18N
-        jTextField3.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField3.setFocusable(false);
         annunciatorPanel.add(jTextField3);
 
         hw2Low.setEditable(false);
@@ -765,7 +769,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         hw2Low.setForeground(new java.awt.Color(0, 0, 0));
         hw2Low.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hw2Low.setText("Hotwell 2 low");
-        hw2Low.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hw2Low.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hw2Low.setFocusable(false);
         hw2Low.setPreferredSize(new java.awt.Dimension(100, 30));
         hw2Low.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -780,7 +785,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         hw2High.setForeground(new java.awt.Color(0, 0, 0));
         hw2High.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hw2High.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.hw2High.text")); // NOI18N
-        hw2High.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hw2High.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hw2High.setFocusable(false);
         annunciatorPanel.add(hw2High);
 
         lowVacuum1.setEditable(false);
@@ -789,7 +795,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         lowVacuum1.setForeground(new java.awt.Color(0, 0, 0));
         lowVacuum1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         lowVacuum1.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.lowVacuum1.text")); // NOI18N
-        lowVacuum1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        lowVacuum1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lowVacuum1.setFocusable(false);
         annunciatorPanel.add(lowVacuum1);
 
         trip1A.setEditable(false);
@@ -798,7 +805,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         trip1A.setForeground(new java.awt.Color(0, 0, 0));
         trip1A.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         trip1A.setText("1A trip");
-        trip1A.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        trip1A.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        trip1A.setFocusable(false);
         annunciatorPanel.add(trip1A);
 
         jTextField9.setEditable(false);
@@ -807,7 +815,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         jTextField9.setForeground(new java.awt.Color(0, 0, 0));
         jTextField9.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField9.setText("1B Cavitation");
-        jTextField9.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField9.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField9.setFocusable(false);
         jTextField9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField9ActionPerformed(evt);
@@ -821,7 +830,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         jTextField16.setForeground(new java.awt.Color(0, 0, 0));
         jTextField16.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField16.setText("2B Cavitation");
-        jTextField16.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField16.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField16.setFocusable(false);
         annunciatorPanel.add(jTextField16);
 
         trip2A.setEditable(false);
@@ -830,7 +840,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         trip2A.setForeground(new java.awt.Color(0, 0, 0));
         trip2A.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         trip2A.setText("2A trip");
-        trip2A.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        trip2A.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        trip2A.setFocusable(false);
         annunciatorPanel.add(trip2A);
 
         lowVacuum2.setEditable(false);
@@ -839,7 +850,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         lowVacuum2.setForeground(new java.awt.Color(0, 0, 0));
         lowVacuum2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         lowVacuum2.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.lowVacuum2.text")); // NOI18N
-        lowVacuum2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        lowVacuum2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lowVacuum2.setFocusable(false);
         annunciatorPanel.add(lowVacuum2);
 
         relief1.setEditable(false);
@@ -848,7 +860,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         relief1.setForeground(new java.awt.Color(0, 0, 0));
         relief1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         relief1.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.relief1.text")); // NOI18N
-        relief1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        relief1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        relief1.setFocusable(false);
         relief1.setPreferredSize(new java.awt.Dimension(100, 30));
         relief1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -863,7 +876,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         trip1B.setForeground(new java.awt.Color(0, 0, 0));
         trip1B.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         trip1B.setText("1B trip");
-        trip1B.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        trip1B.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        trip1B.setFocusable(false);
         annunciatorPanel.add(trip1B);
 
         jTextField11.setEditable(false);
@@ -872,7 +886,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         jTextField11.setForeground(new java.awt.Color(0, 0, 0));
         jTextField11.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField11.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jTextField11.text")); // NOI18N
-        jTextField11.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField11.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField11.setFocusable(false);
         jTextField11.setPreferredSize(new java.awt.Dimension(100, 30));
         jTextField11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -887,7 +902,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         jTextField12.setForeground(new java.awt.Color(0, 0, 0));
         jTextField12.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField12.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jTextField12.text")); // NOI18N
-        jTextField12.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField12.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField12.setFocusable(false);
         jTextField12.setPreferredSize(new java.awt.Dimension(100, 30));
         jTextField12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -902,7 +918,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         trip2B.setForeground(new java.awt.Color(0, 0, 0));
         trip2B.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         trip2B.setText("2B trip");
-        trip2B.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        trip2B.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        trip2B.setFocusable(false);
         trip2B.setPreferredSize(new java.awt.Dimension(100, 30));
         trip2B.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -917,7 +934,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         relief2.setForeground(new java.awt.Color(0, 0, 0));
         relief2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         relief2.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.relief2.text")); // NOI18N
-        relief2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        relief2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        relief2.setFocusable(false);
         relief2.setPreferredSize(new java.awt.Dimension(100, 30));
         relief2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

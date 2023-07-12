@@ -1294,7 +1294,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         tg1Trip.setForeground(new java.awt.Color(0, 0, 0));
         tg1Trip.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tg1Trip.setText("TG-1 Trip");
-        tg1Trip.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        tg1Trip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tg1Trip.setFocusable(false);
         tg1Trip.setPreferredSize(new java.awt.Dimension(100, 30));
         tg1Trip.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1309,7 +1310,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         tg2Trip.setForeground(new java.awt.Color(0, 0, 0));
         tg2Trip.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tg2Trip.setText("TG-2 Trip");
-        tg2Trip.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        tg2Trip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tg2Trip.setFocusable(false);
         tg2Trip.setPreferredSize(new java.awt.Dimension(100, 30));
         tg2Trip.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1324,7 +1326,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField3.setForeground(new java.awt.Color(0, 0, 0));
         jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField3.setText("TG-1 Vibration");
-        jTextField3.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField3.setFocusable(false);
         annunciatorPanel.add(jTextField3);
 
         jTextField8.setEditable(false);
@@ -1333,7 +1336,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField8.setForeground(new java.awt.Color(0, 0, 0));
         jTextField8.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField8.setText("TG-2 Vibration");
-        jTextField8.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField8.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField8.setFocusable(false);
         annunciatorPanel.add(jTextField8);
 
         steamTemp.setEditable(false);
@@ -1342,7 +1346,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         steamTemp.setForeground(new java.awt.Color(0, 0, 0));
         steamTemp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         steamTemp.setText("Low steam temp");
-        steamTemp.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        steamTemp.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        steamTemp.setFocusable(false);
         annunciatorPanel.add(steamTemp);
 
         steamPress.setEditable(false);
@@ -1351,7 +1356,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         steamPress.setForeground(new java.awt.Color(0, 0, 0));
         steamPress.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         steamPress.setText("Low steam press.");
-        steamPress.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        steamPress.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        steamPress.setFocusable(false);
         annunciatorPanel.add(steamPress);
 
         tg1Rev.setEditable(false);
@@ -1360,7 +1366,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         tg1Rev.setForeground(new java.awt.Color(0, 0, 0));
         tg1Rev.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tg1Rev.setText("TG-1 Rev. Power");
-        tg1Rev.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        tg1Rev.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tg1Rev.setFocusable(false);
         annunciatorPanel.add(tg1Rev);
 
         tg2Rev.setEditable(false);
@@ -1369,7 +1376,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         tg2Rev.setForeground(new java.awt.Color(0, 0, 0));
         tg2Rev.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tg2Rev.setText("TG-2 Rev. Power");
-        tg2Rev.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        tg2Rev.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tg2Rev.setFocusable(false);
         tg2Rev.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tg2RevActionPerformed(evt);
@@ -1383,7 +1391,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField16.setForeground(new java.awt.Color(0, 0, 0));
         jTextField16.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField16.setText("TG-1 Diff. Exp");
-        jTextField16.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField16.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField16.setFocusable(false);
         annunciatorPanel.add(jTextField16);
 
         jTextField18.setEditable(false);
@@ -1392,7 +1401,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField18.setForeground(new java.awt.Color(0, 0, 0));
         jTextField18.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField18.setText("TG-1 Diff. Exp");
-        jTextField18.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField18.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField18.setFocusable(false);
         annunciatorPanel.add(jTextField18);
 
         lowVacuum1.setEditable(false);
@@ -1401,7 +1411,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         lowVacuum1.setForeground(new java.awt.Color(0, 0, 0));
         lowVacuum1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         lowVacuum1.setText("Vacuum 1 Low");
-        lowVacuum1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        lowVacuum1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lowVacuum1.setFocusable(false);
         lowVacuum1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lowVacuum1ActionPerformed(evt);
@@ -1415,7 +1426,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         lowVacuum2.setForeground(new java.awt.Color(0, 0, 0));
         lowVacuum2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         lowVacuum2.setText("Vacuum 2 Low");
-        lowVacuum2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        lowVacuum2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lowVacuum2.setFocusable(false);
         annunciatorPanel.add(lowVacuum2);
 
         tg1Speed.setEditable(false);
@@ -1424,7 +1436,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         tg1Speed.setForeground(new java.awt.Color(0, 0, 0));
         tg1Speed.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tg1Speed.setText("TG-1 Speed");
-        tg1Speed.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        tg1Speed.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tg1Speed.setFocusable(false);
         tg1Speed.setPreferredSize(new java.awt.Dimension(100, 30));
         tg1Speed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1439,7 +1452,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         tg2Speed.setForeground(new java.awt.Color(0, 0, 0));
         tg2Speed.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tg2Speed.setText("TG-2 Speed");
-        tg2Speed.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        tg2Speed.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        tg2Speed.setFocusable(false);
         tg2Speed.setPreferredSize(new java.awt.Dimension(100, 30));
         tg2Speed.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1454,7 +1468,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField11.setForeground(new java.awt.Color(0, 0, 0));
         jTextField11.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField11.setText("TG-1 oil press.");
-        jTextField11.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField11.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField11.setFocusable(false);
         jTextField11.setPreferredSize(new java.awt.Dimension(100, 30));
         jTextField11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1469,7 +1484,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField14.setForeground(new java.awt.Color(0, 0, 0));
         jTextField14.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField14.setText("TG-1 oil press.");
-        jTextField14.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField14.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField14.setFocusable(false);
         jTextField14.setPreferredSize(new java.awt.Dimension(100, 30));
         jTextField14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1484,7 +1500,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         noVacuum1.setForeground(new java.awt.Color(0, 0, 0));
         noVacuum1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         noVacuum1.setText("Vacuum 1");
-        noVacuum1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        noVacuum1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        noVacuum1.setFocusable(false);
         noVacuum1.setPreferredSize(new java.awt.Dimension(100, 30));
         noVacuum1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1499,7 +1516,8 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         noVacuum2.setForeground(new java.awt.Color(0, 0, 0));
         noVacuum2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         noVacuum2.setText("Vacuum 2");
-        noVacuum2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        noVacuum2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        noVacuum2.setFocusable(false);
         annunciatorPanel.add(noVacuum2);
 
         jButton1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
@@ -2150,24 +2168,25 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(annunciatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(linear2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(linear4, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(linear1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(pressure1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(linear1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(pressure1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(pressure2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(linear3, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(annunciatorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(pressure2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(linear3, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

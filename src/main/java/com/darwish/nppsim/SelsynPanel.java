@@ -150,7 +150,7 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
         button.setMaximumSize(new java.awt.Dimension(50, height));
         button.setMinimumSize(new java.awt.Dimension(50, height));
         button.setPreferredSize(new java.awt.Dimension(50, height));
-        JLabel label = new JLabel("    " + text);
+        JLabel label = new JLabel("      " + text);
         label.setFont(new Font("ubuntu", 0, 8));
         label.setForeground(Color.DARK_GRAY);
         button.add(label);

@@ -389,7 +389,8 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         waterTemp.setForeground(new java.awt.Color(0, 0, 0));
         waterTemp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         waterTemp.setText("Water Temp High");
-        waterTemp.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        waterTemp.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        waterTemp.setFocusable(false);
         waterTemp.setPreferredSize(new java.awt.Dimension(100, 30));
         waterTemp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -404,7 +405,8 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         dwLow.setForeground(new java.awt.Color(0, 0, 0));
         dwLow.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         dwLow.setText("DW Tank Level Low");
-        dwLow.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        dwLow.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        dwLow.setFocusable(false);
         dwLow.setPreferredSize(new java.awt.Dimension(100, 30));
         dwLow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -419,7 +421,8 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         dwHigh.setForeground(new java.awt.Color(0, 0, 0));
         dwHigh.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         dwHigh.setText(org.openide.util.NbBundle.getMessage(PCSUI.class, "PCSUI.dwHigh.text")); // NOI18N
-        dwHigh.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        dwHigh.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        dwHigh.setFocusable(false);
         dwHigh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dwHighActionPerformed(evt);
@@ -433,7 +436,8 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         coolingCavit.setForeground(new java.awt.Color(0, 0, 0));
         coolingCavit.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         coolingCavit.setText("Cooling Pump Cavit.");
-        coolingCavit.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        coolingCavit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        coolingCavit.setFocusable(false);
         coolingCavit.setPreferredSize(new java.awt.Dimension(100, 30));
         coolingCavit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -448,7 +452,8 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         dwTankTemp.setForeground(new java.awt.Color(0, 0, 0));
         dwTankTemp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         dwTankTemp.setText(org.openide.util.NbBundle.getMessage(PCSUI.class, "PCSUI.dwTankTemp.text")); // NOI18N
-        dwTankTemp.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        dwTankTemp.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        dwTankTemp.setFocusable(false);
         dwTankTemp.setPreferredSize(new java.awt.Dimension(100, 30));
         dwTankTemp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -463,7 +468,8 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         INOP.setForeground(new java.awt.Color(0, 0, 0));
         INOP.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         INOP.setText(org.openide.util.NbBundle.getMessage(PCSUI.class, "PCSUI.INOP.text")); // NOI18N
-        INOP.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        INOP.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        INOP.setFocusable(false);
         annunciatorPanel.add(INOP);
 
         circCavit.setEditable(false);
@@ -472,7 +478,8 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         circCavit.setForeground(new java.awt.Color(0, 0, 0));
         circCavit.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         circCavit.setText("Circ Pump Cavit.");
-        circCavit.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        circCavit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        circCavit.setFocusable(false);
         annunciatorPanel.add(circCavit);
 
         jButton1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N

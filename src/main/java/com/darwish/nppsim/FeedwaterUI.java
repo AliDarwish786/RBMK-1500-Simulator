@@ -557,7 +557,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         drum1Low.setForeground(new java.awt.Color(0, 0, 0));
         drum1Low.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         drum1Low.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.drum1Low.text")); // NOI18N
-        drum1Low.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        drum1Low.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        drum1Low.setFocusable(false);
         annunciatorPanel.add(drum1Low);
 
         drum2Low.setEditable(false);
@@ -566,7 +567,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         drum2Low.setForeground(new java.awt.Color(0, 0, 0));
         drum2Low.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         drum2Low.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.drum2Low.text")); // NOI18N
-        drum2Low.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        drum2Low.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        drum2Low.setFocusable(false);
         drum2Low.setPreferredSize(new java.awt.Dimension(100, 30));
         drum2Low.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -581,7 +583,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         mainCavit.setForeground(new java.awt.Color(0, 0, 0));
         mainCavit.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         mainCavit.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.jTextField2.text")); // NOI18N
-        mainCavit.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        mainCavit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        mainCavit.setFocusable(false);
         mainCavit.setPreferredSize(new java.awt.Dimension(100, 30));
         mainCavit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -596,7 +599,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         auxCavit.setForeground(new java.awt.Color(0, 0, 0));
         auxCavit.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         auxCavit.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.jTextField3.text")); // NOI18N
-        auxCavit.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        auxCavit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        auxCavit.setFocusable(false);
         annunciatorPanel.add(auxCavit);
 
         drum1High.setEditable(false);
@@ -605,7 +609,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         drum1High.setForeground(new java.awt.Color(0, 0, 0));
         drum1High.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         drum1High.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.drum1High.text")); // NOI18N
-        drum1High.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        drum1High.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        drum1High.setFocusable(false);
         annunciatorPanel.add(drum1High);
 
         drum2High.setEditable(false);
@@ -614,7 +619,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         drum2High.setForeground(new java.awt.Color(0, 0, 0));
         drum2High.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         drum2High.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.drum2High.text")); // NOI18N
-        drum2High.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        drum2High.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        drum2High.setFocusable(false);
         annunciatorPanel.add(drum2High);
 
         mainTrip.setEditable(false);
@@ -623,7 +629,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         mainTrip.setForeground(new java.awt.Color(0, 0, 0));
         mainTrip.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         mainTrip.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.mainTrip.text")); // NOI18N
-        mainTrip.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        mainTrip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        mainTrip.setFocusable(false);
         mainTrip.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mainTripActionPerformed(evt);
@@ -637,7 +644,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         auxTrip.setForeground(new java.awt.Color(0, 0, 0));
         auxTrip.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         auxTrip.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.auxTrip.text")); // NOI18N
-        auxTrip.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        auxTrip.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        auxTrip.setFocusable(false);
         annunciatorPanel.add(auxTrip);
 
         FWTemp.setEditable(false);
@@ -646,7 +654,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         FWTemp.setForeground(new java.awt.Color(0, 0, 0));
         FWTemp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         FWTemp.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.FWTemp.text")); // NOI18N
-        FWTemp.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        FWTemp.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        FWTemp.setFocusable(false);
         annunciatorPanel.add(FWTemp);
 
         trip2B.setEditable(false);
@@ -655,7 +664,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         trip2B.setForeground(new java.awt.Color(0, 0, 0));
         trip2B.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         trip2B.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "FeedwaterUI.trip2B.text")); // NOI18N
-        trip2B.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        trip2B.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        trip2B.setFocusable(false);
         trip2B.setPreferredSize(new java.awt.Dimension(100, 30));
         trip2B.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -669,7 +679,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField10.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         jTextField10.setForeground(new java.awt.Color(0, 0, 0));
         jTextField10.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField10.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField10.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField10.setFocusable(false);
         jTextField10.setPreferredSize(new java.awt.Dimension(100, 30));
         jTextField10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -684,7 +695,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         jTextField11.setForeground(new java.awt.Color(0, 0, 0));
         jTextField11.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField11.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.jTextField11.text")); // NOI18N
-        jTextField11.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        jTextField11.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTextField11.setFocusable(false);
         jTextField11.setPreferredSize(new java.awt.Dimension(100, 30));
         jTextField11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

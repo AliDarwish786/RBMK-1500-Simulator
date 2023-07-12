@@ -9,8 +9,7 @@
   <version>1.1.2</version>
 
   <name>RBMK-1500-Simulator</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <url>https://github.com/AliDarwish786/RBMK-1500-Simulator</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

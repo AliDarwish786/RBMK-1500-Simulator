@@ -442,7 +442,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         hLevel1.setForeground(new java.awt.Color(0, 0, 0));
         hLevel1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hLevel1.setText("Water level 1");
-        hLevel1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hLevel1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hLevel1.setFocusable(false);
         hLevel1.setPreferredSize(new java.awt.Dimension(100, 30));
         hLevel1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -457,7 +458,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         hLevel2.setForeground(new java.awt.Color(0, 0, 0));
         hLevel2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hLevel2.setText("Water level 2");
-        hLevel2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hLevel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hLevel2.setFocusable(false);
         hLevel2.setPreferredSize(new java.awt.Dimension(100, 30));
         hLevel2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -472,7 +474,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         hLevel3.setForeground(new java.awt.Color(0, 0, 0));
         hLevel3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hLevel3.setText("Water level 3");
-        hLevel3.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hLevel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hLevel3.setFocusable(false);
         annunciatorPanel.add(hLevel3);
 
         hLevel4.setEditable(false);
@@ -481,7 +484,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         hLevel4.setForeground(new java.awt.Color(0, 0, 0));
         hLevel4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hLevel4.setText("Water level 4");
-        hLevel4.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hLevel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hLevel4.setFocusable(false);
         annunciatorPanel.add(hLevel4);
 
         hPress1.setEditable(false);
@@ -490,7 +494,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         hPress1.setForeground(new java.awt.Color(0, 0, 0));
         hPress1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hPress1.setText("High press. 1");
-        hPress1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hPress1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hPress1.setFocusable(false);
         annunciatorPanel.add(hPress1);
 
         hPress2.setEditable(false);
@@ -499,7 +504,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         hPress2.setForeground(new java.awt.Color(0, 0, 0));
         hPress2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hPress2.setText("High press. 2");
-        hPress2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hPress2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hPress2.setFocusable(false);
         hPress2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 hPress2ActionPerformed(evt);
@@ -513,7 +519,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         hPress3.setForeground(new java.awt.Color(0, 0, 0));
         hPress3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hPress3.setText("High press. 3");
-        hPress3.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hPress3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hPress3.setFocusable(false);
         annunciatorPanel.add(hPress3);
 
         hPress4.setEditable(false);
@@ -522,7 +529,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         hPress4.setForeground(new java.awt.Color(0, 0, 0));
         hPress4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         hPress4.setText("High press. 4");
-        hPress4.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        hPress4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        hPress4.setFocusable(false);
         annunciatorPanel.add(hPress4);
 
         overflow1.setEditable(false);
@@ -531,7 +539,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         overflow1.setForeground(new java.awt.Color(0, 0, 0));
         overflow1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         overflow1.setText("Overflow 1");
-        overflow1.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        overflow1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        overflow1.setFocusable(false);
         overflow1.setPreferredSize(new java.awt.Dimension(100, 30));
         overflow1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -546,7 +555,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         overflow2.setForeground(new java.awt.Color(0, 0, 0));
         overflow2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         overflow2.setText("Overflow 2");
-        overflow2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        overflow2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        overflow2.setFocusable(false);
         overflow2.setPreferredSize(new java.awt.Dimension(100, 30));
         overflow2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -561,7 +571,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         overflow3.setForeground(new java.awt.Color(0, 0, 0));
         overflow3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         overflow3.setText("Overflow 3");
-        overflow3.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        overflow3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        overflow3.setFocusable(false);
         overflow3.setPreferredSize(new java.awt.Dimension(100, 30));
         overflow3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -576,7 +587,8 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         overflow4.setForeground(new java.awt.Color(0, 0, 0));
         overflow4.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         overflow4.setText("Overflow 4");
-        overflow4.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        overflow4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        overflow4.setFocusable(false);
         overflow4.setPreferredSize(new java.awt.Dimension(100, 30));
         overflow4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
