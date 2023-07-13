@@ -7,11 +7,17 @@ package com.darwish.nppsim;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Image;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URI;
 import javax.imageio.ImageIO;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.netbeans.swing.laf.dark.*;
+import org.openide.util.Exceptions;
 
 public class Loader extends javax.swing.JFrame {
     static Color BACKGROUND = new Color(180, 140, 40);
@@ -40,6 +46,20 @@ public class Loader extends javax.swing.JFrame {
             jXImagePanel1.setPreferredSize(jXImagePanel1.getPreferredSize());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        try {
+            String uriString = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().toString();
+            PrintStream logStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(new File(new URI(uriString.substring(0, uriString.lastIndexOf("RBMK-1500-Simulator.jar")) + "/log.txt")))), true);
+            System.setErr(logStream);
+            System.setOut(logStream);
+        } catch (Exception e) {
+            try {
+                PrintStream logStream = new PrintStream(new BufferedOutputStream(new FileOutputStream("log.txt")), true);
+            System.setErr(logStream);
+            System.setOut(logStream);
+            } catch (Exception ex) {
+                new ErrorWindow("Warning: Failed to redirect stdout", ExceptionUtils.getStackTrace(ex), false).setVisible(true);
+            }
         }
 
     }

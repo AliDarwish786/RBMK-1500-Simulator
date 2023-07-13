@@ -386,7 +386,7 @@ public class NPPSim {
                     });
                     
                     pcs.update();
-                    NPPSim.core1 = true;
+                    NPPSim.core1 = true; //this value is read by the MTK so it won't update while the core is updating
                     core.update();
                     NPPSim.core1 = false;
                     mcc.update();
@@ -418,13 +418,15 @@ public class NPPSim {
 
     private void printTimer() {
         final long timeToSleep[] = {900};
-        //long start[] =  {0, 0};
         printThread = new Thread(() -> {
             try {
                 while(run) {
                     Thread.sleep(timeToSleep[0]);
                     while (updateCount < 20 ) {
                         Thread.sleep(10);
+                    }
+                    if (timeStepLengthCumulative / updateCount > 50000000) {
+                        System.out.println("WARNING: Average timeStep = " + timeStepLengthCumulative / updateCount);
                     }
                     //System.out.println("Average time step: " + timeStepLengthCumulative / updateCount + " " + updateCount); //used sometimes for debugging
                     if (updateCount > 20) {
@@ -435,7 +437,6 @@ public class NPPSim {
                     }
                     updateCount = 0;
                     timeStepLengthCumulative = 0;
-                    
                     autoControl.updateSimulationTime();
                     ui.update();
                     while (simPaused) {

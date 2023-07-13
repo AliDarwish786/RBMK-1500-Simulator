@@ -151,6 +151,7 @@ public class CoreMap extends javax.swing.JFrame implements UIUpdateable {
                             data.setCellSelectionEnabled(false);
                             data.setDefaultEditor(Object.class, null);
                             data.packAll();
+                            panel.setTitle(currentChannel.uiData.positionString);
                             panel.setFocusable(false);
                             panel.setFocusableWindowState(false);
                             panel.add(data);
