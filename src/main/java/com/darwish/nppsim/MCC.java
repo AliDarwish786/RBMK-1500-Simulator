@@ -41,10 +41,10 @@ public class MCC extends Component {
         pHeader2 = new MCPPressureHeader(fuelChannels2);
         // add the eight MCP's, 4 per loop
         for (int i = 0; i < 4; i++) {
-            mcp.add(new MCCPump(1000, 2.2222f, 18, 200, 5600, drum1, pHeader1));
+            mcp.add(new MCCPump(1000, 2.2222f, 18, 200, 933, drum1, pHeader1));
         }
         for (int i = 0; i < 4; i++) {
-            mcp.add(new MCCPump(1000, 2.2222f, 18, 200, 5600, drum2, pHeader2));
+            mcp.add(new MCCPump(1000, 2.2222f, 18, 200, 933, drum2, pHeader2));
         }
     }
 

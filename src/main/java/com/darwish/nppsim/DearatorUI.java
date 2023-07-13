@@ -22,7 +22,6 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     public DearatorUI() {
         initComponents();
         this.setTitle("Dearators");
-        initializeDialUpdateThread();
         annunciator = new Annunciator(annunciatorPanel);
         level1.setTrackVisible(true);
         level1.setTrackStop(40);
@@ -52,6 +51,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         level4.setTrackSectionColor(new java.awt.Color(255, 0, 0));
         level4.setTrackStartColor(new java.awt.Color(255, 0, 0));
         level4.setTrackStopColor(new java.awt.Color(255, 0, 0));
+        initializeDialUpdateThread();
         
         //set variables
         isolate1.setSelected(fwSuctionHeader.isolationValveArray.get(0).getPosition() == 0);

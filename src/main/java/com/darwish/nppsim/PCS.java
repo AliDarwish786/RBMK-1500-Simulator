@@ -53,16 +53,16 @@ public class PCS extends Component {
             valve.setPosition(1.0f); //open header valves for both regenerators
         });
         pcsValve = new pcsMockupValve(pcsSuctionHeader, pcsPressureHeader); 
-        pcsPump1 = new SimplePump(2985, 0.1389f, 12.36, 20, 20, 224, pcsSuctionHeader, pcsPressureHeader);
-        pcsPump2 = new SimplePump(2985, 0.1389f, 12.36, 20, 20, 224, pcsSuctionHeader, pcsPressureHeader);
+        pcsPump1 = new SimplePump(2985, 0.1389f, 12.36, 20, 20, 83, pcsSuctionHeader, pcsPressureHeader);
+        pcsPump2 = new SimplePump(2985, 0.1389f, 12.36, 20, 20, 83, pcsSuctionHeader, pcsPressureHeader);
         pcsCoolingHeader = new SimplePressureHeader(new Connectable[] {pcsCooler1, pcsCooler2}, 0.5);
         pcsCoolingHeader.isolationValveArray.forEach(valve -> {
             valve.setPosition(1.0f); //open header valves for both regenerators
         });
-        coolingPump = new SimplePump(1000, 0.577f, 2.0, 20, 25, 1200, intermediateLoop, pcsCoolingHeader);
+        coolingPump = new SimplePump(1000, 0.577f, 2.0, 20, 25, 83, intermediateLoop, pcsCoolingHeader);
         admsHeader = new PressureHeader();
         for (int i = 0; i < 4; i++) {
-            admsPumps.add(new Pump(1480, 0.1389f, 2.157, 5, 35, 1200, demineralizedWaterTank, admsHeader));
+            admsPumps.add(new Pump(1480, 0.1389f, 2.157, 5, 35, 83, demineralizedWaterTank, admsHeader));
         }
         admsHeader.setSources(new Pump[] {admsPumps.get(0), admsPumps.get(1), admsPumps.get(2), admsPumps.get(3)});
         for (int i = 0; i < 4; i++) {

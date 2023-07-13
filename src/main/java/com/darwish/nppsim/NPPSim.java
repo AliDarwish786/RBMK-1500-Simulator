@@ -137,10 +137,10 @@ public class NPPSim {
         //initialize condensate pumps and dearators  TODO this is greatly simplified needs reworking
         condensateHeader = new SimplifiedCondensateHeader();
         for (int i = 0; i < 3; i++) {
-            condensate1A.add(new Pump(740, 0.417f, 2.766, 30, 40, 1600, tg1.condenser, condensateHeader)); //1.766 head is increased to emulate both stages in 1 pump
+            condensate1A.add(new Pump(740, 0.417f, 2.766, 30, 40, 167, tg1.condenser, condensateHeader)); //1.766 head is increased to emulate both stages in 1 pump
         }
         for (int i = 0; i < 3; i++) {
-            condensate2A.add(new Pump(740, 0.417f, 2.766, 30, 40, 1600, tg2.condenser, condensateHeader)); //1.766
+            condensate2A.add(new Pump(740, 0.417f, 2.766, 30, 40, 167, tg2.condenser, condensateHeader)); //1.766
         }
         condensateHeader.setSources(new Pump[] {condensate1A.get(0), condensate1A.get(1), condensate1A.get(2), condensate2A.get(0), condensate2A.get(1), condensate2A.get(2)});
         for (int i = 0; i < 4; i++) {
@@ -158,10 +158,10 @@ public class NPPSim {
         auxiliaryFWPressureHeader = new PressureHeader();
         mainFWPressureHeader = new PressureHeader();
         for (int i = 0; i < 7; i++) {
-            mainFeedWaterPumps.add(new Pump(2982, 0.458f, 8.9, 30, 40, 5000, fwSuctionHeader, mainFWPressureHeader));
+            mainFeedWaterPumps.add(new Pump(2982, 0.458f, 8.9, 30, 40, 833, fwSuctionHeader, mainFWPressureHeader));
         }
         for (int i = 0; i < 6; i++) {
-            auxFeedWaterPumps.add(new Pump(2970, 0.069f, 8.6, 30, 40, 800, fwSuctionHeader, auxiliaryFWPressureHeader));    
+            auxFeedWaterPumps.add(new Pump(2970, 0.069f, 8.6, 30, 40, 133, fwSuctionHeader, auxiliaryFWPressureHeader));    
         } 
         mainFWPressureHeader.setSources(new Pump[] {mainFeedWaterPumps.get(0), mainFeedWaterPumps.get(1), mainFeedWaterPumps.get(2), mainFeedWaterPumps.get(3), mainFeedWaterPumps.get(4), mainFeedWaterPumps.get(5), mainFeedWaterPumps.get(6)});
         auxiliaryFWPressureHeader.setSources(new Pump[] {auxFeedWaterPumps.get(0), auxFeedWaterPumps.get(1), auxFeedWaterPumps.get(2), auxFeedWaterPumps.get(3), auxFeedWaterPumps.get(4), auxFeedWaterPumps.get(5)});
@@ -418,18 +418,17 @@ public class NPPSim {
 
     private void printTimer() {
         final long timeToSleep[] = {900};
-        long start[] =  {0, 0};
+        //long start[] =  {0, 0};
         printThread = new Thread(() -> {
             try {
                 while(run) {
-                    
                     Thread.sleep(timeToSleep[0]);
                     while (updateCount < 20 ) {
                         Thread.sleep(10);
                     }
                     //System.out.println("Average time step: " + timeStepLengthCumulative / updateCount + " " + updateCount); //used sometimes for debugging
                     if (updateCount > 20) {
-                        if (timeToSleep[0] > 0) {
+                        if (timeToSleep[0] > 500) {
                             timeToSleep[0] -= 50;
                         }
                         System.out.println("WARNING: Timesteps = " + updateCount + ". UI Wait time will be " + timeToSleep[0]);

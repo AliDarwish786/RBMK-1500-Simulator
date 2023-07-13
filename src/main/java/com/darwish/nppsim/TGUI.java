@@ -1617,7 +1617,7 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         sdvcSpinner1.setModel(new javax.swing.SpinnerNumberModel(1, 1, 4, 1));
 
         jLabel40.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel40, org.openide.util.NbBundle.getMessage(TGUI.class, "TGUI.jLabel40.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel40, "Condenser 1");
 
         buttonGroup4.add(sdvcStop1);
         sdvcStop1.setSelected(true);

@@ -27,7 +27,6 @@ public class Core extends Component {
         }
 
         public void update() {
-            
             thermalPower = fcNeutronCount / 4.9808177502e13 * 4800;
             kEff = Math.pow(neutronCount / previousNeutronCount, 2.0); //to the power of 2 because 2 simulation cycles in 1 neuton lifetime cycle
             reactivity = (kEff - 1) / kEff;

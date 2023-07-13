@@ -31,7 +31,7 @@ public class AutoControl extends Component {
     ArrayList<OutletSteamPressureControl> msv2Control = new ArrayList<>();
     AZ1Control az1Control;
     FASRControl fasrControl;
-    FluidAutomaticRodController automaticRodController;
+    FluidAutomaticRodController automaticRodController, lepController;
     //AutomaticRodController ar1Control, ar2Control, ar12Control, larControl;
     ArrayList<ControlRodChannel> ar1 = new ArrayList<>();
     ArrayList<ControlRodChannel> ar2 = new ArrayList<>();
@@ -666,13 +666,16 @@ public class AutoControl extends Component {
                     toControl.addAll(linkedChannels);
                 }
                 for (ControlRodChannel rod: toControl) {
-                    if (fineControl) {
-                        rod.setAutoState(1);
-                        rod.setPosition(rod.getPosition() + 0.00025f);
-                    } else {
-                        rod.setAutoState(2);
-                    }
                     if (rod.getPosition() < 1) {
+                        if (fineControl) {
+                            rod.setAutoState(1);
+                            rod.setPosition(rod.getPosition() + 0.00025f);
+                            if (rod.getPosition() > 1) {
+                                rod.setPosition(1);
+                            }
+                        } else {
+                            rod.setAutoState(2);
+                        }
                         if (ar1.contains(rod)) {
                             checkBusy[1] = true;
                         } else if (ar2.contains(rod)) {
@@ -711,13 +714,16 @@ public class AutoControl extends Component {
                     toControl.addAll(linkedChannels);
                 }
                 for (ControlRodChannel rod: toControl) {
-                    if (fineControl) {
-                        rod.setAutoState(1);
-                        rod.setPosition(rod.getPosition() - 0.00025f);
-                    } else {
-                        rod.setAutoState(0);
-                    }
                     if (rod.getPosition() > 0) {
+                        if (fineControl) {
+                            rod.setAutoState(1);
+                            rod.setPosition(rod.getPosition() - 0.00025f);
+                            if (rod.getPosition() < 0) {
+                                rod.setPosition(0);
+                            }
+                        } else {
+                            rod.setAutoState(0);
+                        }
                         if (ar1.contains(rod)) {
                             checkBusy[1] = true;
                         } else if (ar2.contains(rod)) {
