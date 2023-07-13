@@ -7,12 +7,16 @@ What has been achieved so far:
 - Thermodynamic model of the main coolant circuit and steam supply;
 - Simplified simulation of turbines and condensers;
 - Simulation of the feedwater circuits;
-- Simplified Reactor Core Model including Manual Rod Control and Selsyns
+- Simplified Reactor Core Model including Automatic Rod Control;
+- Selsyn indicators;
 - MTK indicator;
 
 Roadmap (more things will be added to this over time):
 
 - Better Control and Safety Systems;
+- Simplified Xenon and decay heat simulation:
+- ECCS simulation;
+- Digital MTK with more functionality 
 - Rework of TG and Condensers;
 - Advanced Reactor Core Model;
 - Electrical systems
