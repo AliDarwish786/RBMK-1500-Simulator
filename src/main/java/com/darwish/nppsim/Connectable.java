@@ -138,7 +138,7 @@ class SteamValve extends Component {
         }
         flow /= 3600; // from kg/h to kg/s
         flow *= position * 0.05; // flow per time step: flow in kg/h / 3600 * 0.05
-        flowRate += flow;
+        flowRate = flow;
         steamTemp = source.getSteamTemperature();
         source.updateSteamOutflow(flow, steamTemp);
         drain.updateSteamInflow(flow, steamTemp);
@@ -161,11 +161,7 @@ class SteamValve extends Component {
     }
 
     public double getFlowRate() {
-        return flowRate;
-    }
-    
-    public void resetFlowRates() {
-        flowRate = 0;
+        return flowRate * 20;
     }
     
     public int getState() {
@@ -202,6 +198,7 @@ class SteamValve extends Component {
 }
 
 class Pump extends Component { //TODO will need refactoring after water flow gets more realistic
+    WaterValve dischargeValve = new WaterValve(200, 20, atmosphere, atmosphere); //dummy valve 
     protected final float ratedRPM; // max rated rpm
     protected final float ratedFlow; // flow at max rpm m3/s
     protected final float maxPowerUsage; // at full rpm, kW
@@ -237,9 +234,11 @@ class Pump extends Component { //TODO will need refactoring after water flow get
         this.source = source;
         this.drain = drain;
         this.head = head;
+        //this.dischargeValve.setPosition(1.0f);
     }
 
     void update() {
+        dischargeValve.update();
         waterTemp = source.getWaterTemperature();
         powerUsage = active ? (rpm / ratedRPM) * maxPowerUsage : 0;
         if (active) {
@@ -257,8 +256,8 @@ class Pump extends Component { //TODO will need refactoring after water flow get
                 }
             }
         }
-        currentHead = Math.pow(rpm, 2) * (head / Math.pow(ratedRPM, 2)) + source.getPressure(); 
-        flow = ((rpm / ratedRPM) * ratedFlow) / source.getWaterDensity() * 0.05;
+        currentHead = (Math.pow(rpm, 2) * (head / Math.pow(ratedRPM, 2)) + (rpm == 0 ? 0 : source.getPressure())) * dischargeValve.position;
+        flow = ((rpm / ratedRPM) * ratedFlow) / source.getWaterDensity() * 0.05 * dischargeValve.position;
         if (Double.isNaN(flow)) {
             flow = 0.0;
         }
@@ -267,10 +266,16 @@ class Pump extends Component { //TODO will need refactoring after water flow get
         }
         source.updateWaterOutflow(timestepFlow, waterTemp);
         drain.updateWaterInflow(timestepFlow, waterTemp);
-        flowRate += timestepFlow;
     }
 
     void setActive(boolean active) {
+        if (this.active && !active) {
+            this.dischargeValve.setAutoState(0);
+        } else if (!this.active && active) {
+            this.dischargeValve.setAutoState(2);
+        } else {
+            this.dischargeValve.setAutoState(1);
+        }
         this.active = active;
     }
 
@@ -282,16 +287,8 @@ class Pump extends Component { //TODO will need refactoring after water flow get
         return flow;
     }
     
-    public double getActualFlow() {
-        return timestepFlow * 20;
-    }
-
     public double getFlowRate() {
-        return flowRate;
-    }
-    
-    public void resetFlowRate() {
-        flowRate = 0;
+        return timestepFlow * 20;
     }
 
     public float getRPM() {
@@ -360,8 +357,8 @@ class MCCPump extends Pump { //TODO will need refactoring after MCC water flow g
 /**
  * This is a special type of header where drains can be supplied by multiple sources without generating flow between sources
  **/
-class OneWaySteamHeader extends Component implements Connectable, UIReadable {
-    private double steamPressure = 0.1014, steamOutflow = 0, steamOutflowRate = 0, steamTemperature = 20, steamDensity = Loader.tables.getSteamDensityByPressure(steamPressure);
+class OneWaySteamHeader extends WaterSteamComponent implements Connectable, UIReadable {
+    private double steamDensity = Loader.tables.getSteamDensityByPressure(pressure);
     Connectable[] sources;
 
     public OneWaySteamHeader(Connectable[] sources) {
@@ -376,7 +373,7 @@ class OneWaySteamHeader extends Component implements Connectable, UIReadable {
             pressureSum += sourcePressure;
             highestPressure = sourcePressure > highestPressure ? sourcePressure : highestPressure;
         }
-        steamPressure = highestPressure;
+        pressure = highestPressure;
         for (int i = 0; i < sources.length; i++) {
             Connectable thisSource = sources[i];
             double steamMass = 0;
@@ -386,19 +383,14 @@ class OneWaySteamHeader extends Component implements Connectable, UIReadable {
             Double[] inflowData = NPPMath.mixSteam(steamMass, steamTemperature, sourceOutFlow, sourceSteamTemp);
             steamMass = inflowData[0];
             steamTemperature = inflowData[1];
-            steamDensity = Loader.tables.getSteamDensityByPressure(steamPressure);
+            steamDensity = Loader.tables.getSteamDensityByPressure(pressure);
         }
-        steamOutflow = 0;
+        resetFlows();
     }
 
     @Override
     public double getWaterLevel() {
         throw new UnsupportedOperationException("Unimplemented method 'getWaterLevel'");
-    }
-
-    @Override
-    public double getPressure() {
-        return steamPressure;
     }
 
     @Override
@@ -425,20 +417,8 @@ class OneWaySteamHeader extends Component implements Connectable, UIReadable {
     }
 
     @Override
-    public double getWaterTemperature() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterTemperature'");
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        return steamTemperature;
-    }
-
-    @Override
     public void updateSteamOutflow(double flow, double tempC) {
         steamOutflow += flow;
-        steamOutflowRate += flow;
     }
 
     @Override
@@ -458,34 +438,6 @@ class OneWaySteamHeader extends Component implements Connectable, UIReadable {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateWaterInFlow'");
     }
-
-    @Override
-    public double getSteamInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamInflowRate'");
-    }
-
-    @Override
-    public double getSteamOutflowRate() {
-        return steamOutflowRate;
-    }
-
-    @Override
-    public double getWaterOutflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterOutflowRate'");
-    }
-
-    @Override
-    public double getWaterInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterInflowRate'");
-    }
-
-    @Override
-    public void resetFlowRates() {
-        steamOutflowRate = 0;
-    }
 }
 
 class Ejector extends SteamValve {
@@ -504,17 +456,11 @@ class Ejector extends SteamValve {
         ejectorFlow = flow / 0.05275 * 0.003 * (ejectorSource.getPressure() / 0.00414); //0.06 / 20 = 0.003; 0.00414 = nominal vacuum in MPa
         this.ejectorSource.updateSteamOutflow(ejectorFlow, ejectorSource.getSteamTemperature());
         this.ejectorDrain.updateSteamInflow(ejectorFlow, source.getSteamTemperature());
-        ejectorFlowRate += ejectorFlow;
+        ejectorFlowRate = ejectorFlow;
     }
     
-    @Override 
-    public void resetFlowRates() {
-        super.resetFlowRates();
-        ejectorFlowRate = 0;
-    }
-
     public double getEjectorFlowRate() {
-        return ejectorFlowRate;
+        return ejectorFlowRate * 20;
     }
     
 }
@@ -527,7 +473,7 @@ class Ejector extends SteamValve {
  * source2 for tube side
  * a Boolean value is flipped each time the method is called to process the 2 inputs
  */
-class WaterWaterHeatExchanger extends Component implements Connectable {
+class WaterWaterHeatExchanger extends WaterSteamComponent implements Connectable {
     private final float efficiency;
     private final double ratedFlow1, ratedFlow2;
     private double waterInflowTemperature1 = 20.0, waterOutflowTemperature1 = 20.0, waterMass1 = 0.0;
@@ -607,11 +553,6 @@ class WaterWaterHeatExchanger extends Component implements Connectable {
     }
    
     @Override
-    public double getPressure() {
-        return 0.10142;
-    }
-
-    @Override
     public double getSteamDensity() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -628,21 +569,6 @@ class WaterWaterHeatExchanger extends Component implements Connectable {
 
     @Override
     public double getSteamVolume() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public double getWaterTemperature() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public double getWaterLevel() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -731,13 +657,13 @@ class pcsMockupValve extends WaterValve { //will be obsolete when mcp is reworke
         }
         
         for (int i = 0; i < 4; i++) {
-            double flow = mcc.mcp.get(i).getActualFlow();
+            double flow = mcc.mcp.get(i).getFlowRate();
             if (flow > flow1) {
                 flow1 = flow;
             }
         }
         for (int i = 4; i < 8; i++) {
-            double flow = mcc.mcp.get(i).getActualFlow();
+            double flow = mcc.mcp.get(i).getFlowRate();
             if (flow > flow2) {
                 flow2 = flow;
             }

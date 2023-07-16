@@ -1,15 +1,12 @@
 package com.darwish.nppsim;
 
-public class Dearator extends Component implements Connectable, UIReadable {
-    protected final SteamValve steamInlet, steamOutlet;
+public class Dearator extends WaterSteamComponent implements Connectable, UIReadable {
+    final SteamValve steamInlet, steamOutlet;
     private final double volume = 193.0;
     private final double nominalWaterVolume;
     private double initialSteamMass; // this would be air in reality
     private double steamMass = 0.0; // kg
     private double waterMass = 124000.0; // at 200C
-    private double pressure = 0.10142; // pressure in Mpa
-    private double waterTemperature = 20.0, steamTemperature = 20.0;
-    private double waterLevel = 0.0;
     private double thermalLoss = 0.0; // TODO conductive energy loss Mwt
 
     // calculated results from the update thread stored here for use in other
@@ -21,12 +18,7 @@ public class Dearator extends Component implements Connectable, UIReadable {
     private double waterVolume;
     private double steamVolume;
     private double deltaEnergy = 0.0, deltaHeatingEnergy = 0.0; // surplus/deficit energy from last time ste
-    private double waterInflow = 0.0, waterInflowRate = 0.0; // kg, kg/s
     private double waterInflowTemperature = 20.0; // c
-    private double waterOutflow = 0.0, waterOutflowRate = 0.0; // kg, kg/s
-    private double steamInflow = 0.0, steamInflowRate = 0.0; // kg, kg/s
-    private double steamOutflow = 0.0, steamOutflowRate = 0.0; // kg, kg/s
-    private double actualInflow = 0.0, actualOutFlow = 0.0;
 
     public double deltaSteamMass; // debug
 
@@ -42,9 +34,7 @@ public class Dearator extends Component implements Connectable, UIReadable {
     }
 
     public void update() {
-        //waterTemperature -= (0.5 * waterTemperature - 10) * 0.000005;
-        actualInflow = waterInflow;
-        actualOutFlow = waterOutflow;        
+        //waterTemperature -= (0.5 * waterTemperature - 10) * 0.000005;       
         double[] waterInflowData = NPPMath.mixWater(waterMass, waterTemperature, waterInflow, waterInflowTemperature);
         waterTemperature = waterInflowData[1];
         waterMass = waterInflowData[0];
@@ -136,12 +126,7 @@ public class Dearator extends Component implements Connectable, UIReadable {
         steamVolume = volume - waterVolume;
         steamDensity = steamVolume / (steamMass + initialSteamMass);
         pressure = NPPSim.tables.getSteamPressureByDensity(steamDensity);
-        waterInflow = 0;
-    }
-
-    @Override
-    public double getPressure() {
-        return pressure;
+        resetFlows();
     }
 
     @Override
@@ -167,32 +152,9 @@ public class Dearator extends Component implements Connectable, UIReadable {
         return 0;
     }
 
-    @Override
-    public double getWaterTemperature() {
-        return waterTemperature;
-    }
-    
     public double getWaterMass() {
         // TODO Auto-generated method stub
         return 0;
-    }
-
-    @Override
-    public double getWaterLevel() {
-        return waterLevel;
-    }
-
-    public double getSteamProduction() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-    
-    public double getActualWaterInflow() {
-        return actualInflow * 20;
-    }
-    
-    public double getActualWaterOutflow() {
-        return actualOutFlow * 20;
     }
 
     public void setWaterTemp(double tempC) {
@@ -200,19 +162,8 @@ public class Dearator extends Component implements Connectable, UIReadable {
     }
     
     @Override
-    public double getSteamOutflowRate() {
-        return steamOutflowRate;
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        return steamTemperature;
-    }
-
-    @Override
     public void updateSteamOutflow(double flow, double tempC) {
         steamOutflow = flow;
-        steamOutflowRate += flow;
     }
 
     @Override
@@ -221,14 +172,12 @@ public class Dearator extends Component implements Connectable, UIReadable {
         steamMass = inflowData[0];
         steamTemperature = inflowData[1];
         steamInflow = flow;
-        steamInflowRate += flow;
         
     }
 
     @Override
     public void updateWaterOutflow(double flow, double tempC) {
         waterOutflow = flow;
-        waterOutflowRate += flow;
     }
 
     @Override
@@ -236,30 +185,5 @@ public class Dearator extends Component implements Connectable, UIReadable {
         double[] waterInflowData = NPPMath.mixWater(waterInflow, waterInflowTemperature, flow, tempC);
         waterInflow = waterInflowData[0];
         waterInflowTemperature = waterInflowData[1];
-        waterInflowRate += flow;
     }
-
-    @Override
-    public double getWaterOutflowRate() {
-        return waterOutflowRate;
-    }
-
-    @Override
-    public double getWaterInflowRate() {
-        return waterInflowRate;
-    }
-
-    @Override
-    public double getSteamInflowRate() {
-        return steamInflowRate;
-    }
-
-    @Override
-    public void resetFlowRates() {
-        waterInflowRate = 0;
-        waterOutflowRate = 0;
-        steamInflowRate = 0;
-        steamOutflowRate = 0;
-    }
-    
 }

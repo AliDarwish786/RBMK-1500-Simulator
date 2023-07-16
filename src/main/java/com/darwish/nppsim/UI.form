@@ -458,10 +458,10 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jPanel9" alignment="0" pref="427" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jPanel16" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
                                       <Component id="jPanel26" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Component id="mTK1" max="-2" attributes="0"/>
@@ -1951,7 +1951,7 @@
                 <Property name="lcdColor" type="eu.hansolo.steelseries.tools.LcdColor" editor="org.netbeans.modules.form.editors.EnumEditor">
                   <Value id="BLACKRED_LCD"/>
                 </Property>
-                <Property name="lcdUnitString" type="java.lang.String" value="MWt"/>
+                <Property name="lcdUnitString" type="java.lang.String" value="Nt"/>
                 <Property name="lcdUnitStringVisible" type="boolean" value="true"/>
                 <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[170, 90]"/>

@@ -10,10 +10,8 @@ import static com.darwish.nppsim.NPPSim.tg1;
 import static com.darwish.nppsim.NPPSim.tg2;
 import java.io.Serializable;
 
-class TG extends Component implements Connectable {
+class TG extends WaterSteamComponent implements Connectable {
     final Condenser condenser;
-    private double steamOutFlow = 0.0, steamOutflowRate = 0.0; // kg, kg/s
-    private double steamInflow = 0.0, steamInflowRate = 0.0; // kg, kg/s
     private double lastStepSteamInflow = 0.0;
     private double casingTemp, turbineTemp, load;
     private double steamInletPressure = 0.0, steamOutLetPressure = 0.0;
@@ -125,15 +123,10 @@ class TG extends Component implements Connectable {
             reversePowerTrip();
         }
         lastStepSteamInflow = steamInflow;
-        steamOutFlow = steamInflow; //TODO
+        steamOutflow = steamInflow; //TODO
         steamOutflowTemperature = steamInflowTemperature * 0.92; //TODO
-        condenser.updateSteamInflow(steamOutFlow, steamOutflowTemperature);
-        steamInflow = 0;
-    }
-
-    @Override
-    public double getPressure() {
-        return 0.1014;
+        condenser.updateSteamInflow(steamOutflow, steamOutflowTemperature);
+        resetFlows();
     }
 
     @Override
@@ -161,12 +154,6 @@ class TG extends Component implements Connectable {
     }
 
     @Override
-    public double getWaterTemperature() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterTemperature'");
-    }
-
-    @Override
     public double getSteamTemperature() {
         return steamInflowTemperature;
     }
@@ -182,7 +169,6 @@ class TG extends Component implements Connectable {
         Double[] flowData = NPPMath.mixSteam(steamInflow, steamInflowTemperature, flow, tempC);
         steamInflow = flowData[0];
         steamInflowTemperature = flowData[1];
-        steamInflowRate = steamInflow;
     }
 
     @Override
@@ -195,17 +181,6 @@ class TG extends Component implements Connectable {
     public void updateWaterInflow(double flow, double tempC) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateWaterInFlow'");
-    }
-    
-    @Override
-    public double getWaterLevel() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterLevel'");
-    }
-    
-    public void resetFlowRates() {
-        steamInflowRate = 0;
-        steamOutflowRate = 0;
     }
     
     public float getRpm() {
@@ -264,7 +239,7 @@ class TG extends Component implements Connectable {
     }
 }
 
-class Condenser implements Connectable, UIReadable, Serializable {
+class Condenser extends WaterSteamSubComponent implements Connectable, UIReadable, Serializable {
     protected final Pump condenserPump;
     private final double volume;
     private double feedwaterOutflow = 0.0, feedwaterOutflowRate = 0.0; // kg kg/s
@@ -275,16 +250,11 @@ class Condenser implements Connectable, UIReadable, Serializable {
     private double waterMass = 0.0; 
     private double steamMass = 0.0; //initialSteamMass = mass equivalent of non-steam gasses
     double initialSteamMass;
-    private double steamPressure = 0.10142; // pressure in Mpa
-    private double waterTemperature = 20.0, steamTemperature = 20.0;
 
     // calculated results from the update thread stored here for use in other functions:
     private double steamVolume;
     private double deltaEnergy = 0.0, deltaSteamEnergy = 0.0;
     private double condensationRate = 0.0; //per tick, multiply by 20 for rate/s 
-    private double waterOutflow = 0.0; 
-    private double steamInflow = 0.0, steamInflowRate = 0.0;
-    private double steamOutflow = 0.0, steamOutflowRate = 0.0;
     private double steamInflowTemperature = 20.0; // c
     private double steamDensity;
 
@@ -317,8 +287,8 @@ class Condenser implements Connectable, UIReadable, Serializable {
             initialSteamMass -= steamOutflow;
         }
 
-        if (steamPressure > 0.10142) {
-            steamMass -= (steamPressure - 0.10142) * 6000; //atmospheric valves opened;
+        if (pressure > 0.10142) {
+            steamMass -= (pressure - 0.10142) * 6000; //atmospheric valves opened;
         }
 
         if (steamMass <= 0) {
@@ -329,7 +299,7 @@ class Condenser implements Connectable, UIReadable, Serializable {
         steamMass = steamInFlowData[0];
         steamTemperature = steamInFlowData[1];
 
-        initialSteamMass += (steamInflow / 60 * 0.06 + (0.10142 - steamPressure)) / 20; //non-steam gasses from feedwater and leakage into the condenser
+        initialSteamMass += (steamInflow / 60 * 0.06 + (0.10142 - pressure)) / 20; //non-steam gasses from feedwater and leakage into the condenser
         feedwaterMass -= feedwaterOutflow;
         
         double condensedSteamEnergy = Loader.tables.getSteamEnthalpyByTemperature(steamTemperature) * steamMass;
@@ -365,7 +335,7 @@ class Condenser implements Connectable, UIReadable, Serializable {
         feedwaterTemperature += energy / (NPPMath.calculateSpecificHeatWater(feedwaterTemperature) * feedwaterMass); //boiling condensate
 
         potentialPressure = Loader.tables.getSteamPressureByTemp(feedwaterTemperature);
-        if (potentialPressure > steamPressure) { //only let condensate boil if pressure < saturated but dont let steam condense if pressure > saturated
+        if (potentialPressure > pressure) { //only let condensate boil if pressure < saturated but dont let steam condense if pressure > saturated
             specificDensityFeedwater = Loader.tables.getWaterDensityByTemp(feedwaterTemperature);
             feedwaterVolume = feedwaterMass * specificDensityFeedwater;
             steamVolume = volume - feedwaterVolume;
@@ -387,15 +357,10 @@ class Condenser implements Connectable, UIReadable, Serializable {
         feedwaterLevel = (feedwaterVolume / nominalFeedwaterVolume - 1) * 100;
         steamVolume = volume - feedwaterVolume;
         steamDensity = steamVolume / (steamMass + initialSteamMass);
-        steamPressure = Loader.tables.getSteamPressureByDensity(steamDensity);
-        steamOutflow = 0; // reset lostSteam for next timeStep
-        steamInflow = 0;
+        pressure = Loader.tables.getSteamPressureByDensity(steamDensity);
+        feedwaterOutflowRate = feedwaterOutflow;
         feedwaterOutflow = 0;
-    }
-
-    @Override
-    public double getPressure() {
-        return steamPressure;
+        resetFlows();
     }
 
     @Override
@@ -419,19 +384,8 @@ class Condenser implements Connectable, UIReadable, Serializable {
     }
 
     @Override
-    public double getWaterTemperature() {
-        return feedwaterTemperature;
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        return steamTemperature;
-    }
-
-    @Override
     public void updateSteamOutflow(double flow, double tempC) {
         steamOutflow += flow;
-        steamOutflowRate += flow;
     }
 
     @Override
@@ -439,13 +393,11 @@ class Condenser implements Connectable, UIReadable, Serializable {
         Double[] flowData = NPPMath.mixSteam(steamInflow, steamInflowTemperature, flow, tempC);
         steamInflow = flowData[0];
         steamInflowTemperature = flowData[1];
-        steamInflowRate = steamInflow;
     }
 
     @Override
     public void updateWaterOutflow(double flow, double tempC) {
         feedwaterOutflow += flow;
-        feedwaterOutflowRate += flow;
     }
 
     @Override
@@ -455,36 +407,8 @@ class Condenser implements Connectable, UIReadable, Serializable {
     }
 
     @Override
-    public double getWaterLevel() {
-        return feedwaterLevel;
-    }
-
-    @Override
-    public double getSteamInflowRate() {
-        return steamInflowRate;
-    }
-
-    @Override
-    public double getSteamOutflowRate() {
-        return steamOutflowRate;
-    }
-
-    @Override
     public double getWaterOutflowRate() {
-        return feedwaterOutflowRate;
-    }
-
-    @Override
-    public double getWaterInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterInflowRate'");
-    }
-
-    @Override
-    public void resetFlowRates() {
-        feedwaterOutflowRate = 0;
-        steamInflowRate = 0;
-        steamOutflowRate = 0;
+        return feedwaterOutflowRate * 20;
     }
 
     public double getCondenserWaterTemperature() {

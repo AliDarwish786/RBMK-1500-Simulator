@@ -170,47 +170,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         });
         mcc.drum1.resetFlowRates();
         mcc.drum2.resetFlowRates();
-        mcc.pHeader1.resetFlowRates();
-        mcc.pHeader2.resetFlowRates();
-        tg1.resetFlowRates();
-        tg2.resetFlowRates();
-        condensateHeader.resetFlowRates();
-        condensate1A.forEach(pump -> {
-            pump.resetFlowRate();
-        });
-        condensate2A.forEach(pump -> {
-            pump.resetFlowRate();
-        });
-        condensate1B.forEach(pump -> {
-            pump.resetFlowRate();
-        });
-        condensate2B.forEach(pump -> {
-            pump.resetFlowRate();
-        });
-        auxFeedWaterPumps.forEach(pump -> {
-            pump.resetFlowRate();
-        });
-        mainFeedWaterPumps.forEach(pump -> {
-            pump.resetFlowRate();
-        });
-        dearators.forEach(dearator -> {
-            dearator.resetFlowRates();
-            dearator.steamInlet.resetFlowRates();
-            dearator.steamOutlet.resetFlowRates();
-        });
-        auxiliaryFWPressureHeader.resetFlowRates();
-        mainFWPressureHeader.resetFlowRates();
-        ejectors.forEach(ejector -> {
-            ejector.resetFlowRates();
-        });
-        sdv_c.forEach(valve -> {
-            valve.resetFlowRates();
-        });
-        pcs.demineralizedWaterTank.resetFlowRates();
-        pcs.pcsPressureHeader.resetFlowRates();
-        pcs.admsPumps.forEach(pump -> {
-            pump.resetFlowRate();
-        });
     }
     
     public void initializeDialUpdateThread() {
@@ -415,7 +374,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
             ((UIUpdateable)newElement).setVisibility(true);
             elementsToUpdate.add((UIUpdateable)newElement);
         } catch (Exception e) {
-            new ErrorWindow("Error loading UI element class" , ExceptionUtils.getStackTrace(e), false).setVisible(true);
+            e.printStackTrace();
+            //new ErrorWindow("Error loading UI element class" , ExceptionUtils.getStackTrace(e), false).setVisible(true);
         }
     }
     
@@ -1307,7 +1267,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         thermalPower1.setFrameDesign(eu.hansolo.steelseries.tools.FrameDesign.BLACK_METAL);
         thermalPower1.setFrameEffect(eu.hansolo.steelseries.tools.FrameEffect.EFFECT_BULGE);
         thermalPower1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.BLACKRED_LCD);
-        thermalPower1.setLcdUnitString("MWt");
+        thermalPower1.setLcdUnitString("Nt");
         thermalPower1.setLcdUnitStringVisible(true);
         thermalPower1.setSize(new java.awt.Dimension(170, 90));
 
@@ -1801,10 +1761,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(mTK1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))

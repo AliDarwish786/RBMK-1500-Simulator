@@ -8,10 +8,9 @@ import java.util.ArrayList;
 /**
  * This is a pressure header where one or multiple pumps supply one or multiple components
  **/
-class PressureHeader extends Component implements Connectable, UIReadable { //TODO will need refactoring after water flow gets more realistic
-    private double pressure = 0.10142, zeroHeadFlow = 0, zeroFlowHead = 0; 
-    private double waterOutflow = 0, waterOutflowRate = 0;
-    protected double waterTemperature = 20.0, waterMass = 0.0;
+class PressureHeader extends WaterSteamComponent implements Connectable, UIReadable { //TODO will need refactoring after water flow gets more realistic
+    private double zeroHeadFlow = 0, zeroFlowHead = 0; 
+    protected double waterMass = 0.0;
     private double waterDensity = Loader.tables.getWaterDensityByTemp(waterTemperature);
     Pump[] sources;
 
@@ -49,51 +48,12 @@ class PressureHeader extends Component implements Connectable, UIReadable { //TO
             calculatedPressure = 0.10142;
         }
         pressure = (pressure * 50 + calculatedPressure) / 51; //gradually change pressure to dampen fluctuations
-        waterOutflowRate = waterOutflow;
-        waterOutflow = 0;
+        resetFlows();
         waterMass = 0;
     }
 
     public void setSources(Pump[] sources) {
         this.sources = sources;
-    }
-
-    @Override
-    public double getWaterLevel() {
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterLevel'");
-    }
-
-    @Override
-    public double getSteamInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamInflowRate'");
-    }
-
-    @Override
-    public double getSteamOutflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamOutflowRate'");
-    }
-
-    @Override
-    public double getWaterOutflowRate() {
-        return waterOutflowRate * 20;
-    }
-
-    @Override
-    public double getWaterInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterInflowRate'");
-    }
-
-    @Override
-    public void resetFlowRates() {
-        waterOutflowRate = 0;
-    }
-
-    @Override
-    public double getPressure() {
-        return pressure;
     }
 
     @Override
@@ -121,17 +81,6 @@ class PressureHeader extends Component implements Connectable, UIReadable { //TO
     }
 
     @Override
-    public double getWaterTemperature() {
-        return waterTemperature;
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamTemperature'");
-    }
-
-    @Override
     public void updateSteamOutflow(double flow, double tempC) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateSteamOutFlow'");
@@ -146,7 +95,6 @@ class PressureHeader extends Component implements Connectable, UIReadable { //TO
     @Override
     public void updateWaterOutflow(double flow, double tempC) {
         waterOutflow += flow;
-        waterOutflowRate += flow;
     }
 
     @Override
@@ -189,8 +137,8 @@ class SimplifiedCondensateHeader extends PressureHeader { //greatly simplified f
  * a pressure header where drain.waterInflow is determined by this.waterInflow
  * drains can be isolated by their respective valve in isolationValveArray
  */
-class SimplePressureHeader extends Component implements Connectable, UIReadable {
-    protected double pressure = 0.10142, waterInflow= 0, waterInflowRate = 0, waterTemperature = 20, waterInflowTemperature = 20, waterDensity = Loader.tables.getWaterDensityByTemp(waterTemperature);
+class SimplePressureHeader extends WaterSteamComponent implements Connectable, UIReadable {
+    protected double waterInflowTemperature = 20, waterDensity = Loader.tables.getWaterDensityByTemp(waterTemperature);
     private float totalValvePositions = 0.0f;
     double initialWaterMass;
     Connectable[] drains;
@@ -225,18 +173,8 @@ class SimplePressureHeader extends Component implements Connectable, UIReadable 
             double drainInflow = (double)(isolationValveArray.get(i).getPosition() / totalValvePositions) * waterInflow; //waterInflow / sources.length;
             thisDrain.updateWaterInflow(drainInflow, waterTemperature);
         }
-        waterInflow = 0;
+        resetFlows();
         totalValvePositions = 0.0f;
-    }
-
-    @Override
-    public double getWaterLevel() {
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterLevel'");
-    }
-
-    @Override
-    public double getPressure() {
-        return pressure;
     }
 
     @Override
@@ -262,16 +200,6 @@ class SimplePressureHeader extends Component implements Connectable, UIReadable 
     }
 
     @Override
-    public double getWaterTemperature() {
-        return waterTemperature;
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamTemperature'");
-    }
-
-    @Override
     public void updateSteamOutflow(double flow, double tempC) {
         throw new UnsupportedOperationException("Unimplemented method 'updateSteamOutflow'");
     }
@@ -291,33 +219,6 @@ class SimplePressureHeader extends Component implements Connectable, UIReadable 
         double[] inflowData = NPPMath.mixWater(waterInflow, waterInflowTemperature, flow, tempC);
         waterInflow = inflowData[0];
         waterInflowTemperature = inflowData[1];
-        waterInflowRate += waterInflow;
-    }
-
-    @Override
-    public double getSteamInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamInflowRate'");
-    }
-
-    @Override
-    public double getSteamOutflowRate() {
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamOutflowRate'");
-    }
-
-    @Override
-    public double getWaterOutflowRate() {
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterOutflowRate'");
-    }
-
-    @Override
-    public double getWaterInflowRate() {
-        return waterInflowRate;
-    }
-
-    @Override
-    public void resetFlowRates() {
-        waterInflowRate = 0;
     }
 
     public void setIsolationValveState(int valveIndex, int state) {
@@ -329,8 +230,8 @@ class SimplePressureHeader extends Component implements Connectable, UIReadable 
  * a suction header where source.waterOutflow is determined by this.waterOutflow
  * sources can be isolated by their respective valve in isolationValveArray
  */
-class SimpleSuctionHeader extends Component implements Connectable, UIReadable {
-    protected double pressure = 0.10142, waterOutflow = 0, waterOutflowRate = 0, waterTemperature = 20, waterDensity = Loader.tables.getWaterDensityByTemp(waterTemperature);
+class SimpleSuctionHeader extends WaterSteamComponent implements Connectable, UIReadable {
+    protected double waterDensity = Loader.tables.getWaterDensityByTemp(waterTemperature);
     private float totalValvePositions = 0.0f;
     double initialWaterMass;
     Connectable[] sources;
@@ -369,18 +270,8 @@ class SimpleSuctionHeader extends Component implements Connectable, UIReadable {
             waterTemperature = inflowData[1];
             waterDensity = Loader.tables.getWaterDensityByTemp(waterTemperature);
         }
-        waterOutflow = 0;
+        resetFlows();
         totalValvePositions = 0.0f;
-    }
-
-    @Override
-    public double getWaterLevel() {
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterLevel'");
-    }
-
-    @Override
-    public double getPressure() {
-        return pressure;
     }
 
     @Override
@@ -406,16 +297,6 @@ class SimpleSuctionHeader extends Component implements Connectable, UIReadable {
     }
 
     @Override
-    public double getWaterTemperature() {
-        return waterTemperature;
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamTemperature'");
-    }
-
-    @Override
     public void updateSteamOutflow(double flow, double tempC) {
         throw new UnsupportedOperationException("Unimplemented method 'updateSteamOutflow'");
     }
@@ -428,40 +309,12 @@ class SimpleSuctionHeader extends Component implements Connectable, UIReadable {
     @Override
     public void updateWaterOutflow(double flow, double tempC) {
         waterOutflow += flow;
-        waterOutflowRate += flow;
     }
 
     @Override
     public void updateWaterInflow(double flow, double tempC) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateWaterInFlow'");
-    }
-
-    @Override
-    public double getSteamInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamInflowRate'");
-    }
-
-    @Override
-    public double getSteamOutflowRate() {
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamOutflowRate'");
-    }
-
-    @Override
-    public double getWaterOutflowRate() {
-        return waterOutflowRate;
-    }
-
-    @Override
-    public double getWaterInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterInflowRate'");
-    }
-
-    @Override
-    public void resetFlowRates() {
-        waterOutflowRate = 0;
     }
 
     public void setIsolationValveState(int valveIndex, int state) {
@@ -472,10 +325,7 @@ class SimpleSuctionHeader extends Component implements Connectable, UIReadable {
 /**
 *  A water component where multiple inputs are combined into a single output. pressure = drain.pressure
 **/
-class WaterMixer extends Component implements Connectable, UIReadable {
-    private double waterInflowRate = 0.0;
-    protected double waterInflow = 0.0;
-    protected double waterTemperature = 20.0;
+class WaterMixer extends WaterSteamComponent implements Connectable, UIReadable {
     Connectable drain;
         
     public WaterMixer(Connectable drain) {
@@ -484,7 +334,7 @@ class WaterMixer extends Component implements Connectable, UIReadable {
     
     public void update() {
         drain.updateWaterInflow(waterInflow, waterTemperature);
-        waterInflow = 0;
+        resetFlows();
     }
     
     @Override
@@ -492,22 +342,6 @@ class WaterMixer extends Component implements Connectable, UIReadable {
         double[] inflowData = NPPMath.mixWater(waterInflow, waterTemperature, flow, tempC);
         waterInflow = inflowData[0];
         waterTemperature = inflowData[1];
-        waterInflowRate += flow;
-    }
-    
-    @Override
-    public void resetFlowRates() {
-        waterInflowRate = 0;
-    }
-    
-    @Override
-    public double getWaterInflowRate() {
-        return waterInflowRate;
-    }
-
-    @Override
-    public double getWaterLevel() {
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterLevel'");
     }
 
     @Override
@@ -536,16 +370,6 @@ class WaterMixer extends Component implements Connectable, UIReadable {
     }
 
     @Override
-    public double getWaterTemperature() {
-        return waterTemperature;
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public void updateSteamOutflow(double flow, double tempC) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
@@ -559,36 +383,12 @@ class WaterMixer extends Component implements Connectable, UIReadable {
     public void updateWaterOutflow(double flow, double tempC) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-
-    @Override
-    public double getSteamInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamInflowRate'");
-    }
-
-    @Override
-    public double getSteamOutflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamOutflowRate'");
-    }
-
-    @Override
-    public double getWaterOutflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaterOutflowRate'");
-    }
-    
 }
 
-class Tank extends Component implements Connectable, UIReadable {
+class Tank extends WaterSteamComponent implements Connectable, UIReadable {
     private final double nominalWaterVolume;
-    private double waterInflow = 0.0, waterInflowRate = 0.0; // kg, kg/s
-    private double waterOutflow = 0.0, waterOutflowRate = 0.0; // kg, kg/s
     private double waterInflowTemperature = 20.0; // c
-    private double waterLevel;
     private double waterVolume, waterMass;
-    private double pressure = 0.10142; // pressure in Mpa
-    private double waterTemperature = 20.0;
     
     public Tank(double nominalWaterVolume) {
         this.nominalWaterVolume = nominalWaterVolume;
@@ -604,42 +404,7 @@ class Tank extends Component implements Connectable, UIReadable {
         waterMass -= waterOutflow;
         waterVolume = waterMass * Loader.tables.getWaterDensityByTemp(waterTemperature);
         waterLevel = (waterVolume / nominalWaterVolume - 1) * 100;
-
-        waterInflow = 0;
-        waterOutflow = 0;
-    }
-
-    @Override
-    public double getSteamInflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamInflowRate'");
-    }
-
-    @Override
-    public double getSteamOutflowRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamOutflowRate'");
-    }
-
-    @Override
-    public double getWaterOutflowRate() {
-        return waterOutflowRate;
-    }
-
-    @Override
-    public double getWaterInflowRate() {
-        return waterInflowRate;
-    }
-
-    @Override
-    public void resetFlowRates() {
-        waterInflowRate = 0;
-        waterOutflowRate = 0;
-    }
-
-    @Override
-    public double getPressure() {
-        return pressure;
+        resetFlows();
     }
 
     @Override
@@ -666,17 +431,6 @@ class Tank extends Component implements Connectable, UIReadable {
     }
 
     @Override
-    public double getWaterTemperature() {
-        return waterTemperature;
-    }
-
-    @Override
-    public double getSteamTemperature() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSteamTemperature'");
-    }
-
-    @Override
     public void updateSteamOutflow(double flow, double tempC) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateSteamOutflow'");
@@ -691,7 +445,6 @@ class Tank extends Component implements Connectable, UIReadable {
     @Override
     public void updateWaterOutflow(double flow, double tempC) {
         waterOutflow += flow;
-        waterOutflowRate += flow;
     }
 
     @Override
@@ -699,11 +452,5 @@ class Tank extends Component implements Connectable, UIReadable {
         double[] waterInflowData = NPPMath.mixWater(waterInflow, waterTemperature, flow, tempC);
         waterInflowTemperature = waterInflowData[1];
         waterInflow = waterInflowData[0];
-        waterInflowRate += flow;
-    }
-
-    @Override
-    public double getWaterLevel() {
-        return waterLevel;
     }
 }

@@ -4,6 +4,8 @@ import static com.darwish.nppsim.Loader.soundProvider;
 import static com.darwish.nppsim.NPPSim.TG1InletValves;
 import static com.darwish.nppsim.NPPSim.TG2InletValves;
 import static com.darwish.nppsim.NPPSim.auxFeederValves;
+import static com.darwish.nppsim.NPPSim.condensate1A;
+import static com.darwish.nppsim.NPPSim.condensate2A;
 import static com.darwish.nppsim.NPPSim.core;
 import static com.darwish.nppsim.NPPSim.dearatorValves;
 import static com.darwish.nppsim.NPPSim.mainFeederValves;
@@ -15,15 +17,18 @@ import static com.darwish.nppsim.NPPSim.sdv_c;
 import java.io.Serializable;
 import java.util.ArrayList;
 import static com.darwish.nppsim.NPPSim.mcc;
+import static com.darwish.nppsim.NPPSim.tg1;
+import static com.darwish.nppsim.NPPSim.tg2;
 import java.util.Arrays;
 
 public class AutoControl extends Component {
     ArrayList<String> eventLog = new ArrayList<>();
-    ArrayList<WaterLevelControl> dearatorWaterControl = new ArrayList<>();
-    ArrayList<WaterLevelControl> dearatorMakeupControl = new ArrayList<>();
+    ArrayList<OutflowWaterLevelControl> condenserWaterLevelControl = new ArrayList<>();
+    ArrayList<InflowWaterLevelControl> dearatorWaterControl = new ArrayList<>();
+    ArrayList<InflowWaterLevelControl> dearatorMakeupControl = new ArrayList<>();
     ArrayList<InletSteamPressureControl> dearatorPressureControl = new ArrayList<>();
-    ArrayList<WaterLevelControl> auxFeederControl = new ArrayList<>();
-    ArrayList<WaterLevelControl> mainFeederControl = new ArrayList<>();
+    ArrayList<InflowWaterLevelControl> auxFeederControl = new ArrayList<>();
+    ArrayList<InflowWaterLevelControl> mainFeederControl = new ArrayList<>();
     ArrayList<OutletSteamPressureControl> sdv_cControl = new ArrayList<>();
     ArrayList<OutletSteamPressureControl> sdv_aControl = new ArrayList<>();
     ArrayList<OutletSteamPressureControl> tgValveControl = new ArrayList<>();
@@ -39,22 +44,24 @@ public class AutoControl extends Component {
     private long simulationTime = 0; //simulation time in seconds
 
     public AutoControl() {
+        condenserWaterLevelControl.add(new OutflowWaterLevelControl(tg1.condenser, new WaterValve[] {condensate1A.get(0).dischargeValve, condensate1A.get(1).dischargeValve, condensate1A.get(2).dischargeValve}));
+        condenserWaterLevelControl.add(new OutflowWaterLevelControl(tg2.condenser, new WaterValve[] {condensate2A.get(0).dischargeValve, condensate2A.get(1).dischargeValve, condensate2A.get(2).dischargeValve}));
         dearatorValves.forEach(valve -> {
-            dearatorWaterControl.add(new WaterLevelControl(valve.drain, new WaterValve[] {valve}));
+            dearatorWaterControl.add(new InflowWaterLevelControl(valve.drain, new WaterValve[] {valve}));
             dearatorPressureControl.add(new InletSteamPressureControl(valve.drain, new SteamValve[] {((Dearator)valve.drain).steamInlet}));
         });
         pcs.dearatorMakeupValves.forEach(valve -> {
-            dearatorMakeupControl.add(new WaterLevelControl(valve.drain, new WaterValve[] {valve}));
+            dearatorMakeupControl.add(new InflowWaterLevelControl(valve.drain, new WaterValve[] {valve}));
         });
 
         auxFeederValves.forEach(valve -> {
-            auxFeederControl.add(new WaterLevelControl(((WaterMixer)valve.drain).drain, new WaterValve[] {valve}));
+            auxFeederControl.add(new InflowWaterLevelControl(((WaterMixer)valve.drain).drain, new WaterValve[] {valve}));
         });
-        mainFeederControl.add(new WaterLevelControl(
+        mainFeederControl.add(new InflowWaterLevelControl(
             mcc.drum1,
             new WaterValve[] {mainFeederValves.get(0), mainFeederValves.get(1), mainFeederValves.get(2)})
         );
-        mainFeederControl.add(new WaterLevelControl(
+        mainFeederControl.add(new InflowWaterLevelControl(
             mcc.drum2,
             new WaterValve[] {mainFeederValves.get(3), mainFeederValves.get(4), mainFeederValves.get(5)})
         );
@@ -146,6 +153,11 @@ public class AutoControl extends Component {
             Runnable controller = mcc.drum1.getPressure() > mcc.drum2.getPressure() ? tgValveControl.get(2)::update: tgValveControl.get(3)::update;
             controller.run();
         }
+        condenserWaterLevelControl.forEach(controller -> {
+            if(controller.isEnabled()) {
+                controller.update();
+            }
+        });
         dearatorWaterControl.forEach(controller -> {
             if (controller.isEnabled()) {
                 controller.update();
@@ -191,13 +203,13 @@ public class AutoControl extends Component {
         automaticRodController.update();
     }
 
-    class WaterLevelControl implements Serializable {
+    class InflowWaterLevelControl implements Serializable {
         WaterValve[] valveArray;
         Connectable target;
         private boolean enabled = false;
-        private double previousLevel, currentLevel, deltaLevel, deltaLevelSetpoint, setpoint = 0.0;
+        protected double previousLevel, currentLevel, deltaLevel, deltaLevelSetpoint, setpoint = 0.0;
     
-        public WaterLevelControl(Connectable target, WaterValve[] valveArray) {
+        public InflowWaterLevelControl(Connectable target, WaterValve[] valveArray) {
             this.valveArray = valveArray;
             this.target = target;
         }
@@ -228,7 +240,6 @@ public class AutoControl extends Component {
                 }
             }
             previousLevel = currentLevel;
-            //System.out.println(valveArray[0].getState() + " DL " + deltaLevel + " DLS " + deltaLevelSetpoint + " WL " + target.getWaterLevel());
         }
     
         public void setSetpoint(double setpoint) {
@@ -249,6 +260,35 @@ public class AutoControl extends Component {
         }
     }
     
+    class OutflowWaterLevelControl extends InflowWaterLevelControl implements Serializable {
+        
+        public OutflowWaterLevelControl(Connectable target, WaterValve[] valveArray) {
+            super(target, valveArray);
+        }
+        
+        @Override
+        public void update() {
+            currentLevel = target.getWaterLevel();
+            deltaLevel = currentLevel - previousLevel;
+            deltaLevelSetpoint = (setpoint - currentLevel) / 200;
+            if (deltaLevel > deltaLevelSetpoint + 0.001) {
+                for (WaterValve valve: valveArray) {
+                    valve.setAutoState(2);
+                }
+            } else if (deltaLevel < deltaLevelSetpoint - 0.001) {
+                for (WaterValve valve: valveArray) {
+                    valve.setAutoState(0);
+                }
+            } else {
+                for (WaterValve valve: valveArray) {
+                    valve.setAutoState(1);
+                }
+            }
+            previousLevel = currentLevel;
+        }
+        
+    }
+     
     class InletSteamPressureControl implements Serializable {
         SteamValve[] valveArray;
         Connectable target;

@@ -5,5 +5,4 @@ public interface UIReadable {
     double getSteamOutflowRate();
     double getWaterOutflowRate();
     double getWaterInflowRate();
-    void resetFlowRates();
 }

@@ -48,15 +48,14 @@ public class MCC extends Component {
         }
     }
 
-    protected class SeparatorDrum implements Connectable, UIReadable, Serializable {
+    protected class SeparatorDrum extends WaterSteamSubComponent implements Connectable, UIReadable, Serializable {
         private final double volume = 682.35;
         private final double nominalWaterVolume;
         private double initialSteamMass; // this would be air in reality
         private double steamMass = 0.0; // kg
         private double waterMass = 305837.26; // 306.4 m3 at 20C
         private double pressure = 0.10142; // pressure in Mpa
-        private double waterTemperature = 20.0, steamTemperature = 20.0;
-        private double waterLevel = 0.0;
+        private double steamTemperature = 20.0;
         private double steamProduction = 0.0; // kg/s
         private double thermalLoss = 0.0; // conductive energy loss Mwt
 
@@ -70,11 +69,7 @@ public class MCC extends Component {
         private double waterVolume;
         private double steamVolume;
         private double deltaEnergy = 0.0; // surplus/deficit energy from last time step in kJ
-        private double waterInflow = 0.0, waterInflowRate = 0.0; // kg, kg/s
         private double waterInflowTemperature = 20.0; // c
-        private double waterOutflow = 0.0, waterOutflowRate = 0.0; // kg, kg/s
-        private double steamInflow = 0.0, steamInflowRate = 0.0; // kg, kg/s
-        private double steamOutflow = 0.0, steamOutflowRate = 0.0; // kg, kg/s
         private double steamInflowTemperature = 20.0; // c
 
         public SeparatorDrum() {
@@ -153,10 +148,7 @@ public class MCC extends Component {
             steamDensity = steamVolume / (steamMass + initialSteamMass);
             pressure = Loader.tables.getSteamPressureByDensity(steamDensity);
             boilingPoint = Loader.tables.getSteamTemperatureByPressure(pressure);
-            steamOutflow = 0; // reset lostSteam for next timeStep
-            steamInflow = 0;
-            waterInflow = 0;
-            waterOutflow = 0;
+            resetFlows();
         }
 
         @Override
@@ -179,7 +171,6 @@ public class MCC extends Component {
         @Override
         public void updateSteamOutflow(double flow, double tempC) {
             steamOutflow += flow;
-            steamOutflowRate += flow;
         }
 
         @Override
@@ -191,36 +182,19 @@ public class MCC extends Component {
                 waterInflow = inflowData[0];
                 waterInflowTemperature = inflowData[1];
             }
-            waterInflowRate += flow;
         }
 
         @Override
         public void updateWaterOutflow(double flow, double tempC) {
             waterOutflow += flow;
-            waterOutflowRate += flow;
         }
 
-        @Override
         public void resetFlowRates() {
             steamProduction = 0;
-            steamOutflowRate = 0;
-            steamInflowRate = 0;
-            waterInflowRate = 0;
-            waterOutflowRate = 0;
-        }
-
-        @Override
-        public double getWaterTemperature() {
-            return waterTemperature;
         }
 
         public double getWaterMass() {
             return waterMass;
-        }
-
-        @Override
-        public double getWaterLevel() {
-            return waterLevel;
         }
 
         public double getBoilingPoint() {
@@ -229,11 +203,6 @@ public class MCC extends Component {
 
         public double getSteamProduction() {
             return steamProduction;
-        }
-
-        @Override
-        public double getSteamOutflowRate() {
-            return steamOutflowRate;
         }
 
         @Override
@@ -258,22 +227,6 @@ public class MCC extends Component {
         @Override
         public double getSteamTemperature() {
             return steamTemperature;
-        }
-
-        @Override
-        public double getWaterOutflowRate() {
-            return waterOutflowRate;
-        }
-
-        @Override
-        public double getWaterInflowRate() {
-            return waterInflowRate;
-        }
-
-        @Override
-        public double getSteamInflowRate() {
-            // TODO Auto-generated method stub
-            return 0;
         }
         
         public double getInitialSteamMass() {
@@ -326,14 +279,11 @@ public class MCC extends Component {
     }
 }
 
-    protected class MCPPressureHeader implements Connectable, UIReadable, Serializable {
+    protected class MCPPressureHeader extends WaterSteamSubComponent implements Connectable, UIReadable, Serializable {
         final List<FuelChannel> drains;
         private final double volume = 121.5; 
         private double waterMass, waterVolume;
-        private double waterTemperature = 20.0;
-        private double waterInflow = 0.0, waterInflowRate = 0.0; // kg kg/s
-        private double waterInflowTemperature = 0.0; // C
-        private double waterOutflow = 0.0, waterOutflowRate = 0.0; // kg, kg/s
+        private double waterInflowTemperature = 20.0; // C
         private double specificDensityWater = Loader.tables.getWaterDensityByTemp(waterTemperature);
         private boolean bypassesOpen = true;
 
@@ -353,7 +303,6 @@ public class MCC extends Component {
             specificDensityWater = Loader.tables.getWaterDensityByTemp(waterTemperature);
             waterVolume = specificDensityWater * waterMass;
             waterOutflow = (waterVolume - volume) / specificDensityWater;
-            waterOutflowRate += waterOutflow;
             if (waterOutflow < 0) {
                 if (drains.size() == 835) {
                     double[] inflowData = NPPMath.mixWater(waterMass, waterTemperature, 0 - waterOutflow, mcc.drum1.getWaterTemperature());
@@ -374,13 +323,7 @@ public class MCC extends Component {
                 }
             }
             waterVolume = specificDensityWater * waterMass;
-            waterInflow = 0; //reset for next timestep
-            waterOutflow = 0;
-        }
-
-        @Override
-        public void resetFlowRates() {
-            waterOutflowRate = 0;
+            resetFlows();
         }
 
         @Override
@@ -414,21 +357,6 @@ public class MCC extends Component {
         }
 
         @Override
-        public double getWaterTemperature() {
-            return waterTemperature;
-        }
-
-        public double getWaterOutflow() {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
-        @Override
-        public double getWaterOutflowRate() {
-            return waterOutflowRate;
-        }
-
-        @Override
         public double getSteamTemperature() {
             // TODO Auto-generated method stub
             return 0;
@@ -455,31 +383,6 @@ public class MCC extends Component {
         public void updateWaterInflow(double flow, double tempC) {
             waterInflow += flow;
             waterInflowTemperature = tempC; //tempC will be equal for all mcp's
-
-        }
-
-        @Override
-        public double getWaterLevel() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getWaterLevel'");
-        }
-
-        @Override
-        public double getSteamInflowRate() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getSteamInflowRate'");
-        }
-
-        @Override
-        public double getSteamOutflowRate() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getSteamOutflowRate'");
-        }
-
-        @Override
-        public double getWaterInflowRate() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getWaterInflowRate'");
         }
 
         public void setBypassState(boolean open) {
@@ -492,7 +395,6 @@ public class MCC extends Component {
     }
 
     public void update() {
-        
         core.coreArray.forEach(row -> {
             row.forEach(channel -> {
                 channel.update();

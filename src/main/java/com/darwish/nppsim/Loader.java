@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.darwish.nppsim;
 
 import java.awt.Color;
@@ -17,7 +13,6 @@ import javax.imageio.ImageIO;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.netbeans.swing.laf.dark.*;
-import org.openide.util.Exceptions;
 
 public class Loader extends javax.swing.JFrame {
     static Color BACKGROUND = new Color(180, 140, 40);
@@ -53,15 +48,16 @@ public class Loader extends javax.swing.JFrame {
             System.setErr(logStream);
             System.setOut(logStream);
         } catch (Exception e) {
+            e.printStackTrace();
             try {
                 PrintStream logStream = new PrintStream(new BufferedOutputStream(new FileOutputStream("log.txt")), true);
             System.setErr(logStream);
             System.setOut(logStream);
             } catch (Exception ex) {
+                e.printStackTrace();
                 new ErrorWindow("Warning: Failed to redirect stdout", ExceptionUtils.getStackTrace(ex), false).setVisible(true);
             }
         }
-
     }
     
     public static void main(String args[]) {
@@ -171,7 +167,7 @@ public class Loader extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Dialog", 2, 12)); // NOI18N
-        jLabel2.setText("Version 1.1.2 Alpha");
+        jLabel2.setText("Version 1.1.3 Alpha");
 
         jButton5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jButton5.setText("Load Standard IC");

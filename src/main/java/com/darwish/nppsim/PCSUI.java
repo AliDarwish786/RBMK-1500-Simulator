@@ -107,7 +107,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
                 } else {
                     selected1A = pcs.pcsPump2;
                 }
-                operationalLed.setLedOn(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected() && pcs.pcsPressureHeader.getWaterInflowRate() > 50));
+                operationalLed.setLedOn(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected() && pcs.pcsPressureHeader.getWaterInflowRate() > 20));
                 filterInletTemp.setLcdValue(pcs.pcsFilterPressureHeader.getWaterTemperature());
 
                 rpm1A.setLcdValue(selected1A.getRPM());
@@ -197,7 +197,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         annunciator.setTrigger(pcs.pcsFilterPressureHeader.waterTemperature > 60, waterTemp);
         annunciator.setTrigger(pcs.demineralizedWaterTank.getWaterLevel() < 0, dwLow);
         annunciator.setTrigger(pcs.demineralizedWaterTank.getWaterLevel() > 95, dwHigh);
-        annunciator.setTrigger(!(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected() && pcs.pcsPressureHeader.getWaterInflowRate() > 50)), INOP);
+        annunciator.setTrigger(!(pcs.pcsFilterPressureHeader.getWaterTemperature() < 60 && (filter1In.isSelected() || filter2In.isSelected() && pcs.pcsPressureHeader.getWaterInflowRate() > 20)), INOP);
     }
 
 
@@ -381,6 +381,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         jPanel3.setBackground(UI.BACKGROUND);
         jPanel3.setPreferredSize(new java.awt.Dimension(1366, 768));
 
+        annunciatorPanel.setBackground(UI.BACKGROUND);
         annunciatorPanel.setLayout(new java.awt.GridLayout(3, 6));
 
         waterTemp.setEditable(false);

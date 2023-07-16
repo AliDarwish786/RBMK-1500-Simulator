@@ -348,7 +348,6 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
             // TODO
             waterOutflow /= thermalPower == 0 ? 1 : thermalPower * 1000;
         }
-        waterOutflowRate += waterOutflow;
 
         if (waterOutflow < 0) {
             double[] reverseFlowData = NPPMath.mixWater(waterMass, waterTemperature, 0 - waterOutflow,
@@ -366,6 +365,9 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
         steamVolume = volume - waterVolume < 0 ? 0 : volume - waterVolume;
         steamDensity = steamVolume / steamMass;
         waterLevel = (waterVolume / nominalFeedWaterVolume - 1) * 100;
+        waterInflowRate = waterInflow;
+        waterOutflowRate = waterOutflow;
+        steamOutflowRate = steamOutFlow;
         steamOutFlow = 0; // reset lostSteam for next timeStep
         waterInflow = 0;
 
@@ -406,16 +408,8 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
     }
 
     @Override
-    public void resetFlowRates() {
-        steamProduction = 0;
-        steamOutflowRate = 0;
-        waterInflowRate = 0;
-        waterOutflowRate = 0;
-    }
-
-    @Override
     public double getSteamOutflowRate() {
-        return steamOutflowRate;
+        return steamOutflowRate * 20;
     }
 
     @Override
@@ -460,7 +454,6 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
     @Override
     public void updateSteamOutflow(double flow, double tempC) {
         steamOutFlow = flow;
-        steamOutflowRate += flow;
         // exception to where usually this is done in the update method rather than
         // called by an external object
         steamMass -= steamOutFlow;
@@ -469,7 +462,6 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
     @Override
     public void updateWaterInflow(double flow, double tempC) {
         waterInflow = flow;
-        waterInflowRate += flow;
         waterInflowTemperature = tempC;
     }
 
@@ -480,16 +472,16 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
 
     @Override
     public double getWaterOutflowRate() {
-        return waterOutflowRate;
+        return waterOutflowRate * 20;
     }
 
     @Override
     public double getWaterInflowRate() {
-        return waterInflowRate;
+        return waterInflowRate * 20;
     }
 
     public double getSteamProduction() {
-        return steamProduction;
+        return steamProduction * 20;
     }
 
     @Override
@@ -498,7 +490,7 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
                 { "Type:", uiData.name, "" },
                 { "Thermal Power:", NPPMath.round(thermalPower * 1000), "kW" },
                 { "Pressure:", NPPMath.round(pressure), "Mpa" },
-                { "Water Inflow:", NPPMath.round(waterInflowRate), "kg/s" },
+                { "Water Inflow:", NPPMath.round(waterInflowRate * 20), "kg/s" },
                 { "Inlet Temperature:", NPPMath.round(waterInflowTemperature), "C" },
                 { "Outlet Temperature:", NPPMath.round(waterTemperature), "C" },
                 { "Voiding:", NPPMath.round(voidFraction * 100), "%" }

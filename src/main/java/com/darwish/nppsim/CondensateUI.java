@@ -1,5 +1,6 @@
 package com.darwish.nppsim;
 
+import static com.darwish.nppsim.NPPSim.autoControl;
 import static com.darwish.nppsim.NPPSim.condensate1A;
 import static com.darwish.nppsim.NPPSim.condensate2A;
 import static com.darwish.nppsim.NPPSim.ejectors;
@@ -85,8 +86,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         totalFlow2.setUnitString("kg/s");
         totalFlow2.setValueColor(eu.hansolo.steelseries.tools.ColorDef.YELLOW);
         
-        condTemp1.setTrackStart(100.0);
-        condTemp2.setTrackStart(100.0);
+        //condTemp1.setTrackStart(100.0);
+        //condTemp2.setTrackStart(100.0);
         initializeDialUpdateThread();
         
         //set variables to current state 
@@ -133,7 +134,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         if (this.isVisible()) {
             java.awt.EventQueue.invokeLater(() -> {
                 Pump selected1A = condensate1A.get((int)spinner1A.getValue() - 1);
-                Pump selected2A = condensate2A.get((int)spinner2A.getValue() - 1);;
+                Pump selected2A = condensate2A.get((int)spinner2A.getValue() - 1);
                 Ejector selected1Ejector = ejectors.get((int)ejector1Spinner.getValue() - 1);
                 Ejector selected2Ejector = ejectors.get((int)ejector2Spinner.getValue() - 1);
                 Pump con1 = tg1.condenser.condenserPump;
@@ -175,12 +176,17 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
                         if (this.isVisible()) {
                             java.awt.EventQueue.invokeLater(() -> {
                                 final double[] hotwellFlows = {0.0, 0.0};
+                                final float[] totalValvePosition = {0.0f, 0.0f}; 
                                 condensate1A.forEach(pump -> {
-                                    hotwellFlows[0] += pump.getActualFlow();
+                                    hotwellFlows[0] += pump.getFlowRate();
+                                    totalValvePosition[0] += pump.dischargeValve.getPosition();
                                 });
                                 condensate2A.forEach(pump -> {
-                                    hotwellFlows[1] += pump.getActualFlow();
+                                    hotwellFlows[1] += pump.flowRate;
+                                    totalValvePosition[1] += pump.dischargeValve.getPosition();
                                 });
+                                totalValvePosition[0] /= 3.0f;
+                                totalValvePosition[1] /= 3.0f;
                                 totalFlow1.setValue(hotwellFlows[0]);
                                 totalFlow2.setValue(hotwellFlows[1]);
                                 totalInflow1.setValue(tg1.condenser.getCondensationRate());
@@ -191,6 +197,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
                                 vacuum2.setValue(tg2.condenser.getPressure() * 1000);
                                 condTemp1.setValue(tg1.condenser.getWaterTemperature());
                                 condTemp2.setValue(tg2.condenser.getWaterTemperature());
+                                out1.setValue(totalValvePosition[0] * 100);
+                                out2.setValue(totalValvePosition[1] * 100);
                             });
                         }
                         if (this.isFocused()) {
@@ -277,6 +285,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         buttonGroup6 = new javax.swing.ButtonGroup();
         buttonGroup7 = new javax.swing.ButtonGroup();
         buttonGroup8 = new javax.swing.ButtonGroup();
+        buttonGroup9 = new javax.swing.ButtonGroup();
+        buttonGroup10 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
         totalFlow1 = new eu.hansolo.steelseries.gauges.Linear();
@@ -413,6 +423,21 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         condTemp1 = new eu.hansolo.steelseries.gauges.Linear();
         condTemp2 = new eu.hansolo.steelseries.gauges.Linear();
         jButton1 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel44 = new javax.swing.JLabel();
+        flowControl = new javax.swing.JCheckBox();
+        jPanel24 = new javax.swing.JPanel();
+        out1 = new eu.hansolo.steelseries.gauges.Radial2Top();
+        steamOutVOpen4 = new javax.swing.JRadioButton();
+        steamOutVStop4 = new javax.swing.JRadioButton();
+        steamOutVClose4 = new javax.swing.JRadioButton();
+        jLabel18 = new javax.swing.JLabel();
+        jPanel25 = new javax.swing.JPanel();
+        out2 = new eu.hansolo.steelseries.gauges.Radial2Top();
+        steamOutVOpen5 = new javax.swing.JRadioButton();
+        steamOutVStop5 = new javax.swing.JRadioButton();
+        steamOutVClose5 = new javax.swing.JRadioButton();
+        jLabel19 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -1835,12 +1860,12 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         condTemp1.setLedVisible(false);
         condTemp1.setMaxNoOfMajorTicks(15);
         condTemp1.setMaxNoOfMinorTicks(5);
-        condTemp1.setMaxValue(150.0);
+        condTemp1.setMaximumSize(new java.awt.Dimension(315, 65));
+        condTemp1.setMinimumSize(new java.awt.Dimension(315, 65));
         condTemp1.setTitle("Condensate Temperature 1");
         condTemp1.setTrackSectionColor(java.awt.Color.red);
         condTemp1.setTrackStart(80.0);
         condTemp1.setTrackStartColor(java.awt.Color.red);
-        condTemp1.setTrackStop(150.0);
         condTemp1.setTrackStopColor(java.awt.Color.red);
         condTemp1.setTrackVisible(true);
         condTemp1.setUnitString("°C");
@@ -1853,12 +1878,12 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         condTemp2.setLedVisible(false);
         condTemp2.setMaxNoOfMajorTicks(15);
         condTemp2.setMaxNoOfMinorTicks(5);
-        condTemp2.setMaxValue(150.0);
+        condTemp2.setMaximumSize(new java.awt.Dimension(315, 65));
+        condTemp2.setMinimumSize(new java.awt.Dimension(315, 65));
         condTemp2.setTitle("Condensate Temperature 2");
         condTemp2.setTrackSectionColor(java.awt.Color.red);
         condTemp2.setTrackStart(80.0);
         condTemp2.setTrackStartColor(java.awt.Color.red);
-        condTemp2.setTrackStop(150.0);
         condTemp2.setTrackStopColor(java.awt.Color.red);
         condTemp2.setTrackVisible(true);
         condTemp2.setUnitString("°C");
@@ -1876,6 +1901,239 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
             }
         });
 
+        jPanel1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
+
+        jLabel44.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel44, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jLabel44.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(flowControl, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.flowControl.text")); // NOI18N
+        flowControl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                flowControlActionPerformed(evt);
+            }
+        });
+
+        jPanel24.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
+
+        out1.setBackgroundColor(eu.hansolo.steelseries.tools.BackgroundColor.LIGHT_GRAY);
+        out1.setFrameDesign(eu.hansolo.steelseries.tools.FrameDesign.TILTED_BLACK);
+        out1.setFrameVisible(false);
+        out1.setLcdBackgroundVisible(false);
+        out1.setLcdVisible(false);
+        out1.setLedVisible(false);
+        out1.setPointerColor(eu.hansolo.steelseries.tools.ColorDef.BLACK);
+        out1.setPointerShadowVisible(false);
+        out1.setPreferredSize(new java.awt.Dimension(100, 100));
+        out1.setTitle(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.out1.title")); // NOI18N
+        out1.setTitleAndUnitFont(new java.awt.Font("Verdana", 0, 8)); // NOI18N
+        out1.setTitleAndUnitFontEnabled(true);
+        out1.setUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.out1.unitString")); // NOI18N
+
+        buttonGroup9.add(steamOutVOpen4);
+        org.openide.awt.Mnemonics.setLocalizedText(steamOutVOpen4, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.steamOutVOpen4.text")); // NOI18N
+        steamOutVOpen4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                steamOutVOpen4ItemStateChanged(evt);
+            }
+        });
+        steamOutVOpen4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                steamOutVOpen4ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup9.add(steamOutVStop4);
+        steamOutVStop4.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(steamOutVStop4, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.steamOutVStop4.text")); // NOI18N
+        steamOutVStop4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                steamOutVStop4ItemStateChanged(evt);
+            }
+        });
+        steamOutVStop4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                steamOutVStop4ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup9.add(steamOutVClose4);
+        org.openide.awt.Mnemonics.setLocalizedText(steamOutVClose4, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.steamOutVClose4.text")); // NOI18N
+        steamOutVClose4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                steamOutVClose4ItemStateChanged(evt);
+            }
+        });
+        steamOutVClose4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                steamOutVClose4ActionPerformed(evt);
+            }
+        });
+
+        jLabel18.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel18, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jLabel18.text")); // NOI18N
+
+        javax.swing.GroupLayout jPanel24Layout = new javax.swing.GroupLayout(jPanel24);
+        jPanel24.setLayout(jPanel24Layout);
+        jPanel24Layout.setHorizontalGroup(
+            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel24Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel18)
+                    .addGroup(jPanel24Layout.createSequentialGroup()
+                        .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(steamOutVOpen4)
+                            .addComponent(steamOutVStop4)
+                            .addComponent(steamOutVClose4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(out1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel24Layout.setVerticalGroup(
+            jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel24Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel18)
+                .addGap(7, 7, 7)
+                .addGroup(jPanel24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel24Layout.createSequentialGroup()
+                        .addComponent(steamOutVOpen4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(steamOutVStop4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(steamOutVClose4))
+                    .addComponent(out1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        jPanel25.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
+
+        out2.setBackgroundColor(eu.hansolo.steelseries.tools.BackgroundColor.LIGHT_GRAY);
+        out2.setFrameDesign(eu.hansolo.steelseries.tools.FrameDesign.TILTED_BLACK);
+        out2.setFrameVisible(false);
+        out2.setLcdBackgroundVisible(false);
+        out2.setLcdVisible(false);
+        out2.setLedVisible(false);
+        out2.setPointerColor(eu.hansolo.steelseries.tools.ColorDef.BLACK);
+        out2.setPointerShadowVisible(false);
+        out2.setPreferredSize(new java.awt.Dimension(100, 100));
+        out2.setTitle(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.out2.title")); // NOI18N
+        out2.setTitleAndUnitFont(new java.awt.Font("Verdana", 0, 8)); // NOI18N
+        out2.setTitleAndUnitFontEnabled(true);
+        out2.setUnitString(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.out2.unitString")); // NOI18N
+
+        buttonGroup10.add(steamOutVOpen5);
+        org.openide.awt.Mnemonics.setLocalizedText(steamOutVOpen5, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.steamOutVOpen5.text")); // NOI18N
+        steamOutVOpen5.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                steamOutVOpen5ItemStateChanged(evt);
+            }
+        });
+        steamOutVOpen5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                steamOutVOpen5ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup10.add(steamOutVStop5);
+        steamOutVStop5.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(steamOutVStop5, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.steamOutVStop5.text")); // NOI18N
+        steamOutVStop5.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                steamOutVStop5ItemStateChanged(evt);
+            }
+        });
+        steamOutVStop5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                steamOutVStop5ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup10.add(steamOutVClose5);
+        org.openide.awt.Mnemonics.setLocalizedText(steamOutVClose5, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.steamOutVClose5.text")); // NOI18N
+        steamOutVClose5.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                steamOutVClose5ItemStateChanged(evt);
+            }
+        });
+        steamOutVClose5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                steamOutVClose5ActionPerformed(evt);
+            }
+        });
+
+        jLabel19.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel19, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jLabel19.text")); // NOI18N
+
+        javax.swing.GroupLayout jPanel25Layout = new javax.swing.GroupLayout(jPanel25);
+        jPanel25.setLayout(jPanel25Layout);
+        jPanel25Layout.setHorizontalGroup(
+            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel25Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addGroup(jPanel25Layout.createSequentialGroup()
+                        .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(steamOutVOpen5)
+                            .addComponent(steamOutVStop5)
+                            .addComponent(steamOutVClose5))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(out2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel25Layout.setVerticalGroup(
+            jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel25Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel19)
+                .addGap(7, 7, 7)
+                .addGroup(jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel25Layout.createSequentialGroup()
+                        .addComponent(steamOutVOpen5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(steamOutVStop5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(steamOutVClose5))
+                    .addComponent(out2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(42, 42, 42)
+                        .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel44)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(38, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(flowControl)
+                        .addContainerGap())))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel25, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel44)
+                            .addComponent(flowControl))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel24, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -1886,82 +2144,88 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
                         .addContainerGap()
                         .addComponent(annunciatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(15, 15, 15)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(hotwellLevel1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(totalInflow1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(totalInflow2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(hotwellLevel2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(jPanel3Layout.createSequentialGroup()
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(totalFlow1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(vacuum1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(vacuum2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(totalFlow2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(condTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(condTemp2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(jPanel21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(73, Short.MAX_VALUE))
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(hotwellLevel1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(totalInflow1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(totalFlow1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(totalInflow2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(totalFlow2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(jPanel3Layout.createSequentialGroup()
+                                            .addComponent(hotwellLevel2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(254, 254, 254)
+                                            .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(vacuum1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(condTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(vacuum2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(condTemp2, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(612, 612, 612))))))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(annunciatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(annunciatorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(hotwellLevel1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(hotwellLevel2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(condTemp2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(condTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(hotwellLevel2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(totalInflow1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(totalInflow2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(totalFlow1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(totalFlow2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(6, 6, 6)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(vacuum2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(vacuum1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jPanel19, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(totalInflow1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(totalInflow2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(totalFlow1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(totalFlow2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(6, 6, 6)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(condTemp2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(vacuum2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(condTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(vacuum1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jPanel19, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel21, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel3);
@@ -2282,6 +2546,82 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         NPPSim.ui.toFront();
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
+    private void steamOutVOpen4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_steamOutVOpen4ItemStateChanged
+        
+    }//GEN-LAST:event_steamOutVOpen4ItemStateChanged
+
+    private void steamOutVOpen4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVOpen4ActionPerformed
+        condensate1A.forEach(pump -> {
+            pump.dischargeValve.setAutoState(1);
+            pump.dischargeValve.setState(2);
+        });
+    }//GEN-LAST:event_steamOutVOpen4ActionPerformed
+
+    private void steamOutVStop4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_steamOutVStop4ItemStateChanged
+        
+    }//GEN-LAST:event_steamOutVStop4ItemStateChanged
+
+    private void steamOutVStop4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVStop4ActionPerformed
+        condensate1A.forEach(pump -> {
+            pump.dischargeValve.setAutoState(1);
+            pump.dischargeValve.setState(1);
+        });
+    }//GEN-LAST:event_steamOutVStop4ActionPerformed
+
+    private void steamOutVClose4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_steamOutVClose4ItemStateChanged
+        
+    }//GEN-LAST:event_steamOutVClose4ItemStateChanged
+
+    private void steamOutVOpen5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_steamOutVOpen5ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_steamOutVOpen5ItemStateChanged
+
+    private void steamOutVOpen5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVOpen5ActionPerformed
+        condensate2A.forEach(pump -> {
+            pump.dischargeValve.setAutoState(1);
+            pump.dischargeValve.setState(2);
+        });
+    }//GEN-LAST:event_steamOutVOpen5ActionPerformed
+
+    private void steamOutVStop5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_steamOutVStop5ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_steamOutVStop5ItemStateChanged
+
+    private void steamOutVStop5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVStop5ActionPerformed
+        condensate2A.forEach(pump -> {
+            pump.dischargeValve.setAutoState(1);
+            pump.dischargeValve.setState(1);
+        });
+    }//GEN-LAST:event_steamOutVStop5ActionPerformed
+
+    private void steamOutVClose5ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_steamOutVClose5ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_steamOutVClose5ItemStateChanged
+
+    private void steamOutVClose4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVClose4ActionPerformed
+        condensate1A.forEach(pump -> {
+            pump.dischargeValve.setAutoState(1);
+            pump.dischargeValve.setState(0);
+        });
+    }//GEN-LAST:event_steamOutVClose4ActionPerformed
+
+    private void steamOutVClose5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVClose5ActionPerformed
+        condensate2A.forEach(pump -> {
+            pump.dischargeValve.setAutoState(1);
+            pump.dischargeValve.setState(0);
+        });
+    }//GEN-LAST:event_steamOutVClose5ActionPerformed
+
+    private void flowControlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flowControlActionPerformed
+        if (flowControl.isSelected()) {
+            autoControl.condenserWaterLevelControl.get(0).setEnabled(true);
+            autoControl.condenserWaterLevelControl.get(1).setEnabled(true);
+        } else {
+            autoControl.condenserWaterLevelControl.get(0).setEnabled(false);
+            autoControl.condenserWaterLevelControl.get(1).setEnabled(false);
+        }
+    }//GEN-LAST:event_flowControlActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private eu.hansolo.steelseries.gauges.DisplaySingle SGAMFlow1;
@@ -2292,6 +2632,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private eu.hansolo.steelseries.gauges.DisplaySingle amps2B;
     private javax.swing.JPanel annunciatorPanel;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup10;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.ButtonGroup buttonGroup4;
@@ -2299,6 +2640,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.ButtonGroup buttonGroup6;
     private javax.swing.ButtonGroup buttonGroup7;
     private javax.swing.ButtonGroup buttonGroup8;
+    private javax.swing.ButtonGroup buttonGroup9;
     private eu.hansolo.steelseries.gauges.DisplaySingle con1A;
     private eu.hansolo.steelseries.gauges.DisplaySingle con1Flow;
     private eu.hansolo.steelseries.gauges.DisplaySingle con1Inlet;
@@ -2329,6 +2671,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private eu.hansolo.steelseries.gauges.DisplaySingle flow1B;
     private eu.hansolo.steelseries.gauges.DisplaySingle flow2A;
     private eu.hansolo.steelseries.gauges.DisplaySingle flow2B;
+    private javax.swing.JCheckBox flowControl;
     private eu.hansolo.steelseries.gauges.Linear hotwellLevel1;
     private eu.hansolo.steelseries.gauges.Linear hotwellLevel2;
     private javax.swing.JTextField hw1High;
@@ -2341,6 +2684,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
@@ -2363,6 +2708,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel43;
+    private javax.swing.JLabel jLabel44;
     private javax.swing.JLabel jLabel45;
     private javax.swing.JLabel jLabel46;
     private javax.swing.JLabel jLabel48;
@@ -2376,6 +2722,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
@@ -2385,6 +2732,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanel22;
     private javax.swing.JPanel jPanel23;
+    private javax.swing.JPanel jPanel24;
+    private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
@@ -2397,6 +2746,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JTextField jTextField9;
     private javax.swing.JTextField lowVacuum1;
     private javax.swing.JTextField lowVacuum2;
+    private eu.hansolo.steelseries.gauges.Radial2Top out1;
+    private eu.hansolo.steelseries.gauges.Radial2Top out2;
     private eu.hansolo.steelseries.extras.Led power1A1;
     private eu.hansolo.steelseries.extras.Led power1A2;
     private eu.hansolo.steelseries.extras.Led power1A3;
@@ -2423,6 +2774,12 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JRadioButton start1B;
     private javax.swing.JRadioButton start2A;
     private javax.swing.JRadioButton start2B;
+    private javax.swing.JRadioButton steamOutVClose4;
+    private javax.swing.JRadioButton steamOutVClose5;
+    private javax.swing.JRadioButton steamOutVOpen4;
+    private javax.swing.JRadioButton steamOutVOpen5;
+    private javax.swing.JRadioButton steamOutVStop4;
+    private javax.swing.JRadioButton steamOutVStop5;
     private javax.swing.JRadioButton stop1A;
     private javax.swing.JRadioButton stop1B;
     private javax.swing.JRadioButton stop2A;
