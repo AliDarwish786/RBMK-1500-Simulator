@@ -157,7 +157,7 @@ class TG extends WaterSteamComponent implements Connectable {
     public double getSteamTemperature() {
         return steamInflowTemperature;
     }
-
+    
     @Override
     public void updateSteamOutflow(double flow, double tempC) {
         // TODO Auto-generated method stub
@@ -361,6 +361,7 @@ class Condenser extends WaterSteamSubComponent implements Connectable, UIReadabl
         feedwaterOutflowRate = feedwaterOutflow;
         feedwaterOutflow = 0;
         resetFlows();
+        waterLevel = feedwaterLevel;
     }
 
     @Override
@@ -410,7 +411,7 @@ class Condenser extends WaterSteamSubComponent implements Connectable, UIReadabl
     public double getWaterOutflowRate() {
         return feedwaterOutflowRate * 20;
     }
-
+    
     public double getCondenserWaterTemperature() {
         return waterTemperature;
     }

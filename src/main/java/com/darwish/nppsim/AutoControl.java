@@ -87,8 +87,8 @@ public class AutoControl extends Component {
         });
         sdv_cControl.forEach(controller -> {
             controller.setEnabled(true);
-            controller.setpoint = 7.02; 
-            controller.activationTreshold = 7.02;
+            controller.setpoint = 6.98; 
+            controller.activationTreshold = 6.98;
         });
         sdv_aControl.forEach(controller -> {
         controller.setEnabled(true);
@@ -683,7 +683,7 @@ public class AutoControl extends Component {
             }
             averagePower /= linkedChannels.size();
             ro = core.getReactivity();
-            roSetpoint = 0 + ((setpoint - thermalPower) / 30000); 
+            roSetpoint = 0 + ((setpoint - thermalPower) / 50000); 
             if (ro  > roSetpoint + 0.00001) {
                 if (ro  > roSetpoint + 0.00005) {
                     fineControl = false;
@@ -698,7 +698,7 @@ public class AutoControl extends Component {
                     for (ControlRodChannel channel: linkedChannels) {
                         if (channel.getNeutronPopulation()[0] < averagePower * 0.99) {
                             toControl.remove(channel);
-                            channel.setAutoState(1);
+                            channel.setAutoState(0);
                         }
                     }
                 }
@@ -746,7 +746,7 @@ public class AutoControl extends Component {
                     for (ControlRodChannel channel: linkedChannels) {
                         if (channel.getNeutronPopulation()[0] > averagePower * 1.01) {
                             toControl.remove(channel);
-                            channel.setAutoState(1);
+                            channel.setAutoState(2);
                         }
                     }
                 }

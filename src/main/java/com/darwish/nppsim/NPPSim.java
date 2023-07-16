@@ -181,7 +181,7 @@ public class NPPSim {
         autoControl = new AutoControl();
 
         //set variables if needed
-        
+
         //initialize UI
         simPaused = false;
         ui = new UI();
@@ -198,7 +198,7 @@ public class NPPSim {
      */
     public NPPSim(List<Serializable> state) {
         
-        stateArray = (ArrayList)state;
+        stateArray = (ArrayList<Serializable>)state;
         sdv_c = new ArrayList<>(); 
         sdv_a = new ArrayList<>();
         msvLoop1 = new ArrayList<>(); 

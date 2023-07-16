@@ -182,7 +182,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
                                     totalValvePosition[0] += pump.dischargeValve.getPosition();
                                 });
                                 condensate2A.forEach(pump -> {
-                                    hotwellFlows[1] += pump.flowRate;
+                                    hotwellFlows[1] += pump.getFlowRate();
                                     totalValvePosition[1] += pump.dischargeValve.getPosition();
                                 });
                                 totalValvePosition[0] /= 3.0f;
