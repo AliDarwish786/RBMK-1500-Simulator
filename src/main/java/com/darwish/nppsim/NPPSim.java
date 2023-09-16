@@ -317,7 +317,7 @@ public class NPPSim {
         auxFeederValves.add((WaterValve)state.get(130));
         auxFeederValves.add((WaterValve)state.get(131));
         pcs = (PCS)state.get(132);
-        autoControl = (AutoControl)state.get(184);
+        autoControl = (AutoControl)state.get(187);
 
         simPaused = false;
         ui = new UI();
