@@ -368,6 +368,11 @@ class Condenser extends WaterSteamSubComponent implements Connectable, UIReadabl
     public double getSteamDensity() {
         return steamDensity;
     }
+    
+    @Override 
+    public double getWaterTemperature() {
+        return feedwaterTemperature;
+    }
 
     @Override
     public double getWaterDensity() {

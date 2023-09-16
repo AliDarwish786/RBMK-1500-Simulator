@@ -26,6 +26,7 @@ public class AutoControl extends Component {
     ArrayList<OutflowWaterLevelControl> condenserWaterLevelControl = new ArrayList<>();
     ArrayList<InflowWaterLevelControl> dearatorWaterControl = new ArrayList<>();
     ArrayList<InflowWaterLevelControl> dearatorMakeupControl = new ArrayList<>();
+    ArrayList<InflowWaterLevelControl> dearatorWaterAndMakeupControl = new ArrayList<>();
     ArrayList<InletSteamPressureControl> dearatorPressureControl = new ArrayList<>();
     ArrayList<InflowWaterLevelControl> auxFeederControl = new ArrayList<>();
     ArrayList<InflowWaterLevelControl> mainFeederControl = new ArrayList<>();
@@ -50,8 +51,11 @@ public class AutoControl extends Component {
             dearatorWaterControl.add(new InflowWaterLevelControl(valve.drain, new WaterValve[] {valve}));
             dearatorPressureControl.add(new InletSteamPressureControl(valve.drain, new SteamValve[] {((Dearator)valve.drain).steamInlet}));
         });
+        short valveIterator[] = {0};
         pcs.dearatorMakeupValves.forEach(valve -> {
             dearatorMakeupControl.add(new InflowWaterLevelControl(valve.drain, new WaterValve[] {valve}));
+            dearatorWaterAndMakeupControl.add(new InflowWaterLevelControl(valve.drain, new WaterValve[] {dearatorWaterControl.get(valveIterator[0]).valveArray[0], valve}));
+            valveIterator[0]++;
         });
 
         auxFeederValves.forEach(valve -> {
@@ -131,10 +135,6 @@ public class AutoControl extends Component {
             });
         });
         automaticRodController = new FluidAutomaticRodController();
-//        ar1Control = new AutomaticRodController(new ControlRodChannel[] {ar1.get(0), ar1.get(1), ar1.get(2), ar1.get(3)});
-//        ar2Control = new AutomaticRodController(new ControlRodChannel[] {ar2.get(0), ar2.get(1), ar2.get(2), ar2.get(3)});
-//        ar12Control = new AutomaticRodController(new ControlRodChannel[] {ar1.get(0), ar1.get(1), ar1.get(2), ar1.get(3), ar2.get(0), ar2.get(1), ar2.get(2), ar2.get(3)});
-//        larControl = new AutomaticRodController(new ControlRodChannel[] {lar.get(0), lar.get(1), lar.get(2), lar.get(3), lar.get(4), lar.get(5), lar.get(6), lar.get(7), lar.get(8), lar.get(9), lar.get(10), lar.get(11)});
     }
 
     public void update() {
@@ -158,16 +158,25 @@ public class AutoControl extends Component {
                 controller.update();
             }
         });
-        dearatorWaterControl.forEach(controller -> {
-            if (controller.isEnabled()) {
-                controller.update();
+        for (short i = 0; i < 4; i++) {
+            if (dearatorWaterAndMakeupControl.get(i).isEnabled()) {
+                dearatorWaterAndMakeupControl.get(i).update();
+            } else if (dearatorWaterControl.get(i).isEnabled()) {
+                dearatorWaterControl.get(i).update();
+            } else if (dearatorMakeupControl.get(i).isEnabled()) {
+                dearatorMakeupControl.get(i).update();
             }
-        });
-        dearatorMakeupControl.forEach(controller -> {
-            if (controller.isEnabled()) {
-                controller.update();
-            }
-        });
+        }
+//        dearatorWaterControl.forEach(controller -> {
+//            if (controller.isEnabled()) {
+//                controller.update();
+//            }
+//        });
+//        dearatorMakeupControl.forEach(controller -> {
+//            if (controller.isEnabled()) {
+//                controller.update();
+//            }
+//        });
         dearatorPressureControl.forEach(controller -> {
             if (controller.isEnabled()) {
                 controller.update();
@@ -198,7 +207,9 @@ public class AutoControl extends Component {
                 controller.update();
             }
         });
-        az1Control.update();
+        if (az1Control.isEnabled()) {
+            az1Control.update();
+        }
         fasrControl.update();
         automaticRodController.update();
     }
@@ -378,6 +389,7 @@ public class AutoControl extends Component {
     class AZ1Control implements Serializable {
         private boolean tripped = false;
         boolean persistentReactivity = false;
+        private boolean enabled = true;
         
         public void update() {
             if (mcc.drum1.getPressure() > 7.26 || mcc.drum2.getPressure() > 7.26) {
@@ -443,6 +455,14 @@ public class AutoControl extends Component {
         
         public boolean isTripped() {
             return tripped;
+        }
+        
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+        
+        public boolean isEnabled() {
+            return enabled;
         }
     }
     

@@ -58,10 +58,10 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         isolate2.setSelected(fwSuctionHeader.isolationValveArray.get(1).getPosition() == 0);
         isolate3.setSelected(fwSuctionHeader.isolationValveArray.get(2).getPosition() == 0);
         isolate4.setSelected(fwSuctionHeader.isolationValveArray.get(3).getPosition() == 0);
-        autoWaterLevel1On.setSelected(autoControl.dearatorWaterControl.get(0).isEnabled());
-        autoWaterLevel2On.setSelected(autoControl.dearatorWaterControl.get(1).isEnabled());
-        autoWaterLevel3On.setSelected(autoControl.dearatorWaterControl.get(2).isEnabled());
-        autoWaterLevel4On.setSelected(autoControl.dearatorWaterControl.get(3).isEnabled());
+        autoWaterLevel1On.setSelected(autoControl.dearatorWaterControl.get(0).isEnabled() || autoControl.dearatorWaterAndMakeupControl.get(0).isEnabled());
+        autoWaterLevel2On.setSelected(autoControl.dearatorWaterControl.get(1).isEnabled() || autoControl.dearatorWaterAndMakeupControl.get(1).isEnabled());
+        autoWaterLevel3On.setSelected(autoControl.dearatorWaterControl.get(2).isEnabled() || autoControl.dearatorWaterAndMakeupControl.get(2).isEnabled());
+        autoWaterLevel4On.setSelected(autoControl.dearatorWaterControl.get(3).isEnabled() || autoControl.dearatorWaterAndMakeupControl.get(3).isEnabled());
         autoSteamPressure1On.setSelected(autoControl.dearatorPressureControl.get(0).isEnabled());
         autoSteamPressure2On.setSelected(autoControl.dearatorPressureControl.get(1).isEnabled());
         autoSteamPressure3On.setSelected(autoControl.dearatorPressureControl.get(2).isEnabled());
@@ -3402,7 +3402,12 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoSteamPressure3OnItemStateChanged
 
     private void autoWaterLevel3OffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoWaterLevel3OffActionPerformed
+        if (autoControl.dearatorWaterAndMakeupControl.get(2).isEnabled()) {
+            autoControl.dearatorWaterAndMakeupControl.get(2).setEnabled(false);
+            autoControl.dearatorMakeupControl.get(2).setEnabled(true);
+        }
         autoControl.dearatorWaterControl.get(2).setEnabled(false);
+        //autoControl.dearatorWaterControl.get(2).setEnabled(false);
     }//GEN-LAST:event_autoWaterLevel3OffActionPerformed
 
     private void autoWaterLevel3OffItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoWaterLevel3OffItemStateChanged
@@ -3410,7 +3415,13 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoWaterLevel3OffItemStateChanged
 
     private void autoWaterLevel3OnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoWaterLevel3OnActionPerformed
-        autoControl.dearatorWaterControl.get(2).setEnabled(true);
+        if (autoControl.dearatorMakeupControl.get(2).isEnabled()) {
+            autoControl.dearatorWaterAndMakeupControl.get(2).setEnabled(true);
+            autoControl.dearatorMakeupControl.get(2).setEnabled(false);
+        } else {
+            autoControl.dearatorWaterControl.get(2).setEnabled(true);
+        }
+        //autoControl.dearatorWaterControl.get(2).setEnabled(true);
     }//GEN-LAST:event_autoWaterLevel3OnActionPerformed
 
     private void autoWaterLevel3OnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoWaterLevel3OnItemStateChanged
@@ -3512,7 +3523,12 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoSteamPressure2OnItemStateChanged
 
     private void autoWaterLevel2OffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoWaterLevel2OffActionPerformed
+        if (autoControl.dearatorWaterAndMakeupControl.get(1).isEnabled()) {
+            autoControl.dearatorWaterAndMakeupControl.get(1).setEnabled(false);
+            autoControl.dearatorMakeupControl.get(1).setEnabled(true);
+        }
         autoControl.dearatorWaterControl.get(1).setEnabled(false);
+        //autoControl.dearatorWaterControl.get(1).setEnabled(false);
     }//GEN-LAST:event_autoWaterLevel2OffActionPerformed
 
     private void autoWaterLevel2OffItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoWaterLevel2OffItemStateChanged
@@ -3520,7 +3536,13 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoWaterLevel2OffItemStateChanged
 
     private void autoWaterLevel2OnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoWaterLevel2OnActionPerformed
-        autoControl.dearatorWaterControl.get(1).setEnabled(true);
+        if (autoControl.dearatorMakeupControl.get(1).isEnabled()) {
+            autoControl.dearatorWaterAndMakeupControl.get(1).setEnabled(true);
+            autoControl.dearatorMakeupControl.get(1).setEnabled(false);
+        } else {
+            autoControl.dearatorWaterControl.get(1).setEnabled(true);
+        }
+        //autoControl.dearatorWaterControl.get(1).setEnabled(true);
     }//GEN-LAST:event_autoWaterLevel2OnActionPerformed
 
     private void autoWaterLevel2OnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoWaterLevel2OnItemStateChanged
@@ -3622,7 +3644,12 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoSteamPressure4OnItemStateChanged
 
     private void autoWaterLevel4OffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoWaterLevel4OffActionPerformed
-       autoControl.dearatorWaterControl.get(3).setEnabled(false);
+        if (autoControl.dearatorWaterAndMakeupControl.get(3).isEnabled()) {
+            autoControl.dearatorWaterAndMakeupControl.get(3).setEnabled(false);
+            autoControl.dearatorMakeupControl.get(3).setEnabled(true);
+        }
+        autoControl.dearatorWaterControl.get(3).setEnabled(false);
+        //autoControl.dearatorWaterControl.get(3).setEnabled(false);
     }//GEN-LAST:event_autoWaterLevel4OffActionPerformed
 
     private void autoWaterLevel4OffItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoWaterLevel4OffItemStateChanged
@@ -3630,7 +3657,13 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoWaterLevel4OffItemStateChanged
 
     private void autoWaterLevel4OnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoWaterLevel4OnActionPerformed
-        autoControl.dearatorWaterControl.get(3).setEnabled(true);
+        if (autoControl.dearatorMakeupControl.get(3).isEnabled()) {
+            autoControl.dearatorWaterAndMakeupControl.get(3).setEnabled(true);
+            autoControl.dearatorMakeupControl.get(3).setEnabled(false);
+        } else {
+            autoControl.dearatorWaterControl.get(3).setEnabled(true);
+        }
+        //autoControl.dearatorWaterControl.get(3).setEnabled(true);
     }//GEN-LAST:event_autoWaterLevel4OnActionPerformed
 
     private void autoWaterLevel4OnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoWaterLevel4OnItemStateChanged
@@ -3732,6 +3765,10 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoSteamPressure1OnItemStateChanged
 
     private void autoWaterLevel1OffActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoWaterLevel1OffActionPerformed
+        if (autoControl.dearatorWaterAndMakeupControl.get(0).isEnabled()) {
+            autoControl.dearatorWaterAndMakeupControl.get(0).setEnabled(false);
+            autoControl.dearatorMakeupControl.get(0).setEnabled(true);
+        }
         autoControl.dearatorWaterControl.get(0).setEnabled(false);
     }//GEN-LAST:event_autoWaterLevel1OffActionPerformed
 
@@ -3740,7 +3777,13 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoWaterLevel1OffItemStateChanged
 
     private void autoWaterLevel1OnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoWaterLevel1OnActionPerformed
-        autoControl.dearatorWaterControl.get(0).setEnabled(true);
+        if (autoControl.dearatorMakeupControl.get(0).isEnabled()) {
+            autoControl.dearatorWaterAndMakeupControl.get(0).setEnabled(true);
+            autoControl.dearatorMakeupControl.get(0).setEnabled(false);
+        } else {
+            autoControl.dearatorWaterControl.get(0).setEnabled(true);
+        }
+        //autoControl.dearatorWaterControl.get(0).setEnabled(true);
     }//GEN-LAST:event_autoWaterLevel1OnActionPerformed
 
     private void autoWaterLevel1OnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoWaterLevel1OnItemStateChanged

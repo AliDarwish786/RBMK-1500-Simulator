@@ -18,7 +18,7 @@ public class PCS extends Component {
     pcsMockupValve pcsValve;
     SimpleSuctionHeader pcsSuctionHeader;
     SimplePressureHeader pcsPressureHeader, pcsFilterPressureHeader, pcsReturnHeader, pcsCoolingHeader;
-    SimplePump pcsPump1, pcsPump2, coolingPump;
+    SimplePump pcsPump1, pcsPump2, coolingPump, dwMakeupPump;
     Atmosphere intermediateLoop;
     ArrayList<Pump> admsPumps = new ArrayList<>();
     PressureHeader admsHeader;
@@ -66,14 +66,16 @@ public class PCS extends Component {
         }
         admsHeader.setSources(new Pump[] {admsPumps.get(0), admsPumps.get(1), admsPumps.get(2), admsPumps.get(3)});
         for (int i = 0; i < 4; i++) {
-            dearatorMakeupValves.add(new WaterValve(209.77, 10, admsHeader, dearators.get(i)));
+            dearatorMakeupValves.add(new WaterValve(209.77, 12, admsHeader, dearators.get(i)));
         }
         for (int i = 0; i < 4; i++) {
             dearatorOverflowValves.add(new WaterValve(41.4, 10, dearators.get(i), demineralizedWaterTank));
         }
+        dwMakeupPump = new SimplePump(700, 0.075f, 0.83, 10, 10, 10, atmosphere, demineralizedWaterTank);
     }
     
     public void update() {
+        dwMakeupPump.update();
         pcsValve.update();
         pcsPump1.update();
         pcsPump2.update();

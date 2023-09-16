@@ -158,10 +158,10 @@ public class NPPSim {
         auxiliaryFWPressureHeader = new PressureHeader();
         mainFWPressureHeader = new PressureHeader();
         for (int i = 0; i < 7; i++) {
-            mainFeedWaterPumps.add(new Pump(2982, 0.458f, 8.9, 30, 40, 833, fwSuctionHeader, mainFWPressureHeader));
+            mainFeedWaterPumps.add(new Pump(2982, 0.458f, 9.5, 30, 40, 833, fwSuctionHeader, mainFWPressureHeader)); //8.9
         }
         for (int i = 0; i < 6; i++) {
-            auxFeedWaterPumps.add(new Pump(2970, 0.069f, 8.6, 30, 40, 133, fwSuctionHeader, auxiliaryFWPressureHeader));    
+            auxFeedWaterPumps.add(new Pump(2970, 0.069f, 9.2, 30, 40, 133, fwSuctionHeader, auxiliaryFWPressureHeader)); //8.6
         } 
         mainFWPressureHeader.setSources(new Pump[] {mainFeedWaterPumps.get(0), mainFeedWaterPumps.get(1), mainFeedWaterPumps.get(2), mainFeedWaterPumps.get(3), mainFeedWaterPumps.get(4), mainFeedWaterPumps.get(5), mainFeedWaterPumps.get(6)});
         auxiliaryFWPressureHeader.setSources(new Pump[] {auxFeedWaterPumps.get(0), auxFeedWaterPumps.get(1), auxFeedWaterPumps.get(2), auxFeedWaterPumps.get(3), auxFeedWaterPumps.get(4), auxFeedWaterPumps.get(5)});
@@ -181,6 +181,32 @@ public class NPPSim {
         autoControl = new AutoControl();
 
         //set variables if needed
+//        core.coreArray.forEach(row -> {
+//            row.forEach(channel -> {
+//                channel.setNeutronCount(new Double[] {1e9, 0.0});
+//                if(channel instanceof ControlRodChannel) {
+//                    if (channel instanceof FASRChannel) {
+//                        ((ControlRodChannel) channel).setPosition(0.0f);
+//                    } else {
+//                        ((ControlRodChannel) channel).setPosition(0.65f);
+//                    }
+//                }
+//            });
+//        });
+//        autoControl.az1Control.setEnabled(false);
+//        mcc.setWaterTemp(280);
+//        mcc.mcp.get(0).setActive(true);
+//        mcc.mcp.get(1).setActive(true);
+//        mcc.mcp.get(4).setActive(true);
+//        mcc.mcp.get(5).setActive(true);
+//        mcc.mcp.get(0).setRPM(1000);
+//        mcc.mcp.get(1).setRPM(1000);
+//        mcc.mcp.get(4).setRPM(1000);
+//        mcc.mcp.get(5).setRPM(1000);
+//        autoControl.automaticRodController.setSetpoint(500);
+//        dearators.forEach(dearator -> {
+//            dearator.setWaterTemp(190);
+//        });
 
         //initialize UI
         simPaused = false;

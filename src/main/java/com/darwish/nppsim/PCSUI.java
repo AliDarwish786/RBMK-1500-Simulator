@@ -47,7 +47,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         
         spinner1A2.addChangeListener((ChangeEvent e) -> {
             WaterValve currentSelection = pcs.dearatorMakeupValves.get((int)spinner1A2.getValue() - 1);
-            admsAC.setSelected(autoControl.dearatorMakeupControl.get((int)spinner1A2.getValue() - 1).isEnabled());
+            admsAC.setSelected(autoControl.dearatorMakeupControl.get((int)spinner1A2.getValue() - 1).isEnabled() || autoControl.dearatorWaterAndMakeupControl.get((int)spinner1A2.getValue() - 1).isEnabled());
             switch (currentSelection.getState()) {
                 case 0:
                     sdvcClose5.setSelected(true);
@@ -79,13 +79,13 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         if (pcs.pcsFilterPressureHeader.isolationValveArray.get(2).getPosition() == 1) {
             dwTankButton.setSelected(true);
         } else if (pcs.pcsFilterPressureHeader.isolationValveArray.get(0).getPosition() == 0 && pcs.pcsFilterPressureHeader.isolationValveArray.get(1).getPosition() == 0 && pcs.pcsFilterPressureHeader.isolationValveArray.get(3).getPosition() == 2 && pcs.pcsFilterPressureHeader.isolationValveArray.get(4).getPosition() == 2) {
-          bypassButton.setSelected(true);
+            bypassButton.setSelected(true);
         } else if (pcs.pcsFilterPressureHeader.isolationValveArray.get(0).getPosition() == 0) {
             regen2.setSelected(true);
         } else if (pcs.pcsFilterPressureHeader.isolationValveArray.get(1).getPosition() == 0) {
             regen1.setSelected(true);
         }
-        if (autoControl.dearatorMakeupControl.get(0).isEnabled()) {
+        if (autoControl.dearatorMakeupControl.get(0).isEnabled() || autoControl.dearatorWaterAndMakeupControl.get(0).isEnabled()) {
             admsAC.setSelected(true);
         }
         if (pcs.admsPumps.get(0).isActive()) {
@@ -221,6 +221,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         buttonGroup9 = new javax.swing.ButtonGroup();
         buttonGroup10 = new javax.swing.ButtonGroup();
         buttonGroup11 = new javax.swing.ButtonGroup();
+        buttonGroup12 = new javax.swing.ButtonGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
         annunciatorPanel = new javax.swing.JPanel();
@@ -344,6 +345,9 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         dwTemp = new eu.hansolo.steelseries.gauges.DisplaySingle();
+        start1A3 = new javax.swing.JRadioButton();
+        stop1A3 = new javax.swing.JRadioButton();
+        jLabel12 = new javax.swing.JLabel();
         linearBargraph2 = new eu.hansolo.steelseries.gauges.LinearBargraph();
         jPanel30 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
@@ -1765,6 +1769,36 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         dwTemp.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
         dwTemp.setLcdUnitString("°C");
 
+        buttonGroup12.add(start1A3);
+        org.openide.awt.Mnemonics.setLocalizedText(start1A3, "Start");
+        start1A3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                start1A3ItemStateChanged(evt);
+            }
+        });
+        start1A3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                start1A3ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup12.add(stop1A3);
+        stop1A3.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(stop1A3, "Stop");
+        stop1A3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                stop1A3ItemStateChanged(evt);
+            }
+        });
+        stop1A3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stop1A3ActionPerformed(evt);
+            }
+        });
+
+        jLabel12.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel12, "DW Makeup");
+
         javax.swing.GroupLayout jPanel33Layout = new javax.swing.GroupLayout(jPanel33);
         jPanel33.setLayout(jPanel33Layout);
         jPanel33Layout.setHorizontalGroup(
@@ -1791,7 +1825,13 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
                                 .addComponent(dwTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel33Layout.createSequentialGroup()
                                 .addGap(42, 42, 42)
-                                .addComponent(jLabel9))))
+                                .addComponent(jLabel9))
+                            .addGroup(jPanel33Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(start1A3)
+                                    .addComponent(stop1A3)
+                                    .addComponent(jLabel12)))))
                     .addComponent(jLabel52))
                 .addContainerGap())
         );
@@ -1801,7 +1841,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
                 .addGap(8, 8, 8)
                 .addComponent(jLabel52)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel33Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(dwTank, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel33Layout.createSequentialGroup()
                         .addComponent(jLabel7)
@@ -1814,7 +1854,13 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel9)
                         .addGap(5, 5, 5)
-                        .addComponent(dwTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(dwTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(start1A3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(stop1A3)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1839,7 +1885,6 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         });
 
         buttonGroup10.add(stop1A1);
-        stop1A1.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(stop1A1, org.openide.util.NbBundle.getMessage(PCSUI.class, "PCSUI.stop1A1.text")); // NOI18N
         stop1A1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -2502,7 +2547,22 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_sdvcClose5ActionPerformed
 
     private void admsACActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_admsACActionPerformed
-        autoControl.dearatorMakeupControl.get((int)spinner1A2.getValue() - 1).setEnabled(admsAC.isSelected());
+        if (admsAC.isSelected()) {
+            if (autoControl.dearatorWaterControl.get((int)spinner1A2.getValue() -1 ).isEnabled()) {
+                autoControl.dearatorWaterControl.get((int)spinner1A2.getValue() -1 ).setEnabled(false);
+                autoControl.dearatorWaterAndMakeupControl.get((int)spinner1A2.getValue() - 1).setEnabled(true);
+            } else {
+                autoControl.dearatorMakeupControl.get((int)spinner1A2.getValue() - 1).setEnabled(true);
+            }
+        } else {
+            if (autoControl.dearatorWaterAndMakeupControl.get((int)spinner1A2.getValue() - 1).isEnabled()) {
+                autoControl.dearatorWaterAndMakeupControl.get((int)spinner1A2.getValue() -1 ).setEnabled(false);
+                autoControl.dearatorWaterControl.get((int)spinner1A2.getValue() - 1).setEnabled(true);
+            } else {
+                autoControl.dearatorMakeupControl.get((int)spinner1A2.getValue() - 1).setEnabled(false);
+            }
+        }
+        //autoControl.dearatorMakeupControl.get((int)spinner1A2.getValue() - 1).setEnabled(admsAC.isSelected());
     }//GEN-LAST:event_admsACActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
@@ -2512,6 +2572,22 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         NPPSim.ui.toFront();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void start1A3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start1A3ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_start1A3ItemStateChanged
+
+    private void start1A3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start1A3ActionPerformed
+        pcs.dwMakeupPump.setActive(true);
+    }//GEN-LAST:event_start1A3ActionPerformed
+
+    private void stop1A3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop1A3ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stop1A3ItemStateChanged
+
+    private void stop1A3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop1A3ActionPerformed
+        pcs.dwMakeupPump.setActive(false);
+    }//GEN-LAST:event_stop1A3ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField INOP;
@@ -2523,6 +2599,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup10;
     private javax.swing.ButtonGroup buttonGroup11;
+    private javax.swing.ButtonGroup buttonGroup12;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.ButtonGroup buttonGroup3;
     private javax.swing.ButtonGroup buttonGroup4;
@@ -2567,6 +2644,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
@@ -2672,9 +2750,11 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     private javax.swing.JRadioButton start1A;
     private javax.swing.JRadioButton start1A1;
     private javax.swing.JRadioButton start1A2;
+    private javax.swing.JRadioButton start1A3;
     private javax.swing.JRadioButton stop1A;
     private javax.swing.JRadioButton stop1A1;
     private javax.swing.JRadioButton stop1A2;
+    private javax.swing.JRadioButton stop1A3;
     private eu.hansolo.steelseries.gauges.RadialBargraph valvePos3;
     private eu.hansolo.steelseries.gauges.RadialBargraph valvePos4;
     private javax.swing.JTextField waterTemp;

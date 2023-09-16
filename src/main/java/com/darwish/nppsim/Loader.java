@@ -51,8 +51,8 @@ public class Loader extends javax.swing.JFrame {
             e.printStackTrace();
             try {
                 PrintStream logStream = new PrintStream(new BufferedOutputStream(new FileOutputStream("log.txt")), true);
-            System.setErr(logStream);
-            System.setOut(logStream);
+                System.setErr(logStream);
+                System.setOut(logStream);
             } catch (Exception ex) {
                 e.printStackTrace();
                 new ErrorWindow("Warning: Failed to redirect stdout", ExceptionUtils.getStackTrace(ex), false).setVisible(true);
@@ -167,7 +167,7 @@ public class Loader extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Dialog", 2, 12)); // NOI18N
-        jLabel2.setText("Version 1.1.3 Alpha");
+        jLabel2.setText("Version 1.1.4 Alpha");
 
         jButton5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jButton5.setText("Load Standard IC");

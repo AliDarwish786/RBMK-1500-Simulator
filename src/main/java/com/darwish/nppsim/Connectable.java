@@ -268,7 +268,7 @@ class Pump extends Component { //TODO will need refactoring after water flow get
         drain.updateWaterInflow(timestepFlow, waterTemp);
     }
 
-    void setActive(boolean active) {
+    public void setActive(boolean active) {
         if (this.active && !active) {
             this.dischargeValve.setAutoState(0);
         } else if (!this.active && active) {
@@ -278,6 +278,10 @@ class Pump extends Component { //TODO will need refactoring after water flow get
         }
         this.active = active;
     }
+    
+    public void setRPM(float rpm) {
+        this.rpm = rpm;
+    };
 
     public boolean isActive() {
         return active;

@@ -159,6 +159,7 @@ public class Dearator extends WaterSteamComponent implements Connectable, UIRead
 
     public void setWaterTemp(double tempC) {
         waterTemperature = tempC;
+        waterMass = nominalWaterVolume / NPPSim.tables.getWaterDensityByTemp(tempC);
     }
     
     @Override

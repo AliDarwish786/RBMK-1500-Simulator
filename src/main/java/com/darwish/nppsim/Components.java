@@ -120,7 +120,7 @@ class SimplifiedCondensateHeader extends PressureHeader { //greatly simplified f
         double deltaWaterTemp = thermalPower * 50 / (NPPMath.calculateSpecificHeatWater(waterTemperature) * waterMass);
         waterTemperature += Double.isNaN(deltaWaterTemp) || Double.isInfinite(deltaWaterTemp) ? 0.0 : deltaWaterTemp;
         if (waterTemperature > highestSteamTemp && waterTemperature > oldWaterTemp) {
-            waterTemperature = highestSteamTemp * 0.9;
+            waterTemperature = highestSteamTemp * 0.96;
         }
         heatedWaterTemp = waterTemperature;
         thermalPower = 0.0;

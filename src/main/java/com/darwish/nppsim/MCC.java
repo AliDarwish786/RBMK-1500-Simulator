@@ -442,6 +442,10 @@ public class MCC extends Component {
         drum2.setSteamPressure(saturatedPress);
         pHeader1.waterTemperature = tempC;
         pHeader2.waterTemperature = tempC;
+        pHeader1.waterMass = pHeader1.volume / NPPSim.tables.getWaterDensityByTemp(tempC);
+        pHeader2.waterMass = pHeader2.volume / NPPSim.tables.getWaterDensityByTemp(tempC);
+        drum1.waterMass = drum1.nominalWaterVolume / NPPSim.tables.getWaterDensityByTemp(tempC);
+        drum2.waterMass = drum2.nominalWaterVolume / NPPSim.tables.getWaterDensityByTemp(tempC);
     }
 
 }
