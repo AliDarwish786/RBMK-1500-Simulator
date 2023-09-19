@@ -299,7 +299,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
                     try {
                         selectedControlRods.forEach(channel -> {
                             if (rodsOut.getModel().isPressed()) {
-                                if (selectedControlRods.size() > 8) {
+                                if (selectedControlRods.size() > 40) {
                                     rodLimit.setBackground(Annunciator.YELLOWON_COLOR);
                                 } else {
                                     if (sequenceBlock[0]) {
@@ -1675,7 +1675,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
                             .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(drumTemp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(press1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(27, 27, 27)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel11)
                     .addGroup(jPanel9Layout.createSequentialGroup()

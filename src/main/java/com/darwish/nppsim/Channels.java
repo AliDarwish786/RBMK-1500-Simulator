@@ -14,6 +14,7 @@ class ChannelUIData implements Serializable {
     protected java.awt.Color UIBackgroundColor = new Color(245, 245, 160), UISelectedColor = Color.WHITE;
     protected java.awt.Color UISelsynColor = new Color(245, 245, 160);
     protected Object tableData[][];
+    protected static java.text.DecimalFormat sf = new java.text.DecimalFormat("0.####E0");
 
     public void setTableData(Object[][] tableData) {
         this.tableData = tableData;
@@ -73,7 +74,6 @@ abstract class Channel implements ChannelUIUpdatable, Serializable {
             fastNeutronCount = initialNeutronCount;
         }
     }
-
 }
 
 abstract class CPSChannel extends Channel {
@@ -86,7 +86,7 @@ abstract class CPSChannel extends Channel {
     public void updateTableValues() {
         uiData.setTableData(new Object[][] {
                 { "Type:", uiData.name, "" },
-                { "Count:", NPPMath.round(getNeutronPopulation()[0]), "" },
+                { "Count:", ChannelUIData.sf.format(getNeutronPopulation()[0]), "" },
 //                { "Pressure:", NPPMath.round(pressure), "Mpa" },
 //                { "Water Inflow:", NPPMath.round(waterInflowRate), "kg/s" },
 //                { "Inlet Temperature:", NPPMath.round(waterInflowTemperature), "C" },
@@ -294,8 +294,16 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
     private double waterOutflow = 0.0, waterOutflowRate = 0.0; // kg, kg/s
     private double steamOutFlow = 0.0, steamOutflowRate = 0.0; // kg, kg/s
     private double steamProduction = 0.0; // kg/s
+    private double averagePower = 0.0; //average power history for simplified decay heat calculation
+    private double tElapsed = 0.0; //elapsed time since reaction stopped
+    private double xeThermalUtilizationModifier = 0.0;
+    private long tPower = 0; //total time for average power
+    private double i135Count = 0, xe135Count = 0; //atoms per channel
     private final double nominalFeedWaterVolume;
     private final double resonanceEscapeProbInitial, thermalUtilizationFactorInitial;
+    
+    private final double I135DECAY_MULTIPLIER = NPPMath.calculateDecayMultiplierPerUpdate(6.57);
+    private final double XE135DECAY_MULTIPLIER = NPPMath.calculateDecayMultiplierPerUpdate(9.14);
 
     public FuelChannel() {
         uiData.setName("Fuel Channel");
@@ -373,15 +381,45 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
 
         resonanceEscapeProb = resonanceEscapeProbInitial - thermalPower / 4.25 * 0.03 - (waterTemperature / 300 * 0.005); //greatly simplified for simple core model
         resonanceEscapeProb -= (voidFraction * 0.04);
-        thermalUtilizationFactor = thermalUtilizationFactorInitial + voidFraction * 0.08;
+        thermalUtilizationFactor = (thermalUtilizationFactorInitial - xeThermalUtilizationModifier) + voidFraction * 0.08;
         thermalUtilizationFactor += 0.025 - Loader.tables.getWaterDensityByTemp(20) / Loader.tables.getWaterDensityByTemp(waterTemperature) * 0.025;
         thermalPower = (this.getNeutronPopulation()[0] / 29986861831.1868724665) * 2.8898254064; // simple mapping of neutron count to thermal power per channel for 4800 MWt
+        
         if (thermalPower < 0.000001) {
             thermalPower = 0;
+            tElapsed += 0.05;
+        } else if (tElapsed > 0) {
+            tElapsed -= 0.05;
         }
         if (thermalPower > 5) {
             autoControl.az1Control.trip("High Fuel Channel Power");
         }
+        //averagePower = 4800.0/1661; debug
+        //decay heat
+        if (autoControl.getTimeUpdatedFlag()) {     //update average power every second
+            long simTime = autoControl.getSimulationTime() > 432000 ? 432000 : autoControl.getSimulationTime(); //consider last 48 hours only
+            averagePower = ((simTime - 1) * averagePower + thermalPower) / simTime;
+            tPower = simTime;
+        }
+        double multiplicationFactor = tElapsed <= 1 ? 1 : (Math.pow(tElapsed, -0.2) - Math.pow(tPower + tElapsed, -0.2));
+        thermalPower += 0.066 * averagePower * multiplicationFactor; //add decay heat
+        //xenon
+        //macroscopic constants for simple core model:
+        //3001050 fission  235
+        //507870 capture   235
+        //495929 capture   238
+        i135Count += 3001050 * this.getNeutronPopulation()[0] * 0.063 * 0.05; //generate 0.063 atoms of I135 per fission event
+        xe135Count += i135Count * (1 - I135DECAY_MULTIPLIER);
+        i135Count *= I135DECAY_MULTIPLIER;
+        xe135Count *= XE135DECAY_MULTIPLIER;
+        xe135Count -= 2000000e-24 * xe135Count * this.getNeutronPopulation()[0] * 0.05;
+        if (xe135Count < 0) {
+            xe135Count = 0;
+        }
+        if (i135Count < 0) {
+            i135Count = 0;
+        }
+        xeThermalUtilizationModifier = 0.876167866 - (3508920.0 / (495929.0 + 3508920.0 + (xe135Count * 2000000e-24)));
     }
 
     public void setDrain(Connectable drain) {
@@ -493,7 +531,9 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
                 { "Water Inflow:", NPPMath.round(waterInflowRate * 20), "kg/s" },
                 { "Inlet Temperature:", NPPMath.round(waterInflowTemperature), "C" },
                 { "Outlet Temperature:", NPPMath.round(waterTemperature), "C" },
-                { "Voiding:", NPPMath.round(voidFraction * 100), "%" }
+                { "Voiding:", NPPMath.round(voidFraction * 100), "%" },
+                { "I135:", NPPMath.round(i135Count), "",},
+                { "Xe135:", NPPMath.round(xe135Count), "" }
         });
     }
 

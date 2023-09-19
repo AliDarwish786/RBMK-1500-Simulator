@@ -91,6 +91,9 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         if (pcs.admsPumps.get(0).isActive()) {
             start1A1.setSelected(true);
         }
+        if (pcs.dwMakeupPump.isActive()) {
+            start1A3.setSelected(true);
+        }
        
     }
     
@@ -1885,6 +1888,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         });
 
         buttonGroup10.add(stop1A1);
+        stop1A1.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(stop1A1, org.openide.util.NbBundle.getMessage(PCSUI.class, "PCSUI.stop1A1.text")); // NOI18N
         stop1A1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {

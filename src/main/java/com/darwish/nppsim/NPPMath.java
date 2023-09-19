@@ -215,5 +215,11 @@ public class NPPMath {
         return "Day " + (days + 1) + longFormatString + hoursZero + hours + ":" + minutesZero + minutes + ":" + secondsZero + seconds;
     }
     
-    
+    /**
+     * @param halfLife half-life in hours
+     * @return decay multiplier per element for each update cycle of 50ms
+     */
+    public static double calculateDecayMultiplierPerUpdate(double halfLife) {
+        return Math.pow(0.5, 1 / (72000 * halfLife));
+    }
 }

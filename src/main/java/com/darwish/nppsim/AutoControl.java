@@ -43,6 +43,7 @@ public class AutoControl extends Component {
     ArrayList<ControlRodChannel> ar2 = new ArrayList<>();
     ArrayList<ControlRodChannel> lar = new ArrayList<>();
     private long simulationTime = 0; //simulation time in seconds
+    private boolean timeUpdated = false;
 
     public AutoControl() {
         condenserWaterLevelControl.add(new OutflowWaterLevelControl(tg1.condenser, new WaterValve[] {condensate1A.get(0).dischargeValve, condensate1A.get(1).dischargeValve, condensate1A.get(2).dischargeValve}));
@@ -655,6 +656,15 @@ public class AutoControl extends Component {
     
     public void updateSimulationTime() {
         simulationTime++;
+        timeUpdated = true;
+    }
+    
+    public void resetTimeUpdatedFlag() {
+        timeUpdated = false;
+    }
+    
+    public boolean getTimeUpdatedFlag() {
+        return timeUpdated;
     }
     
     public void recordEvent(String event) {

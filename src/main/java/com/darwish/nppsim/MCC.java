@@ -1,5 +1,6 @@
 package com.darwish.nppsim;
 
+import static com.darwish.nppsim.NPPSim.autoControl;
 import static com.darwish.nppsim.NPPSim.core;
 import static com.darwish.nppsim.NPPSim.mcc;
 import java.io.Serializable;
@@ -400,7 +401,7 @@ public class MCC extends Component {
                 channel.update();
             });
         });
-        
+        autoControl.resetTimeUpdatedFlag();
         for (SteamWaterPipe i: steamWaterPipes1) {
             i.update();
         }
