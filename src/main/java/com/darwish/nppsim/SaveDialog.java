@@ -110,4 +110,9 @@ public class SaveDialog extends javax.swing.JFrame implements UIUpdateable {
     public void discard() {
         this.setVisible(false);
     }
+    
+    @Override
+    public void acknowledge() {
+
+    }
 }

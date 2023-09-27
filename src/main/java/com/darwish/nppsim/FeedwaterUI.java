@@ -5,15 +5,15 @@
 package com.darwish.nppsim;
 
 import static com.darwish.nppsim.NPPSim.autoControl;
-import static com.darwish.nppsim.NPPSim.auxFeedWaterPumps;
 import static com.darwish.nppsim.NPPSim.auxFeederValves;
 import static com.darwish.nppsim.NPPSim.feedwaterMixer1;
 import static com.darwish.nppsim.NPPSim.feedwaterMixer2;
-import static com.darwish.nppsim.NPPSim.mainFeedWaterPumps;
 import static com.darwish.nppsim.NPPSim.mainFeederValves;
 import javax.swing.JSpinner;
 import javax.swing.event.ChangeEvent;
 import static com.darwish.nppsim.NPPSim.mcc;
+import static com.darwish.nppsim.NPPSim.mainFeedwaterPumps;
+import static com.darwish.nppsim.NPPSim.auxFeedwaterPumps;
 
 public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     private final Annunciator annunciator;
@@ -31,7 +31,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         ((JSpinner.DefaultEditor)mFW1Spinner.getEditor()).getTextField().setEditable(false);
         ((JSpinner.DefaultEditor)mFW2Spinner.getEditor()).getTextField().setEditable(false);
         mFWPSpinner.addChangeListener((ChangeEvent e) -> {
-            Pump currentSelection = mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1);
+            Pump currentSelection = mainFeedwaterPumps.get((int)mFWPSpinner.getValue() - 1);
             rpm1A.setLcdValue(currentSelection.getRPM());
             amps1A.setLcdValue(currentSelection.getPowerUsage());
             if (currentSelection.isActive()) {
@@ -41,7 +41,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
             }
         });
         auxFWPSpinner.addChangeListener((ChangeEvent e) -> {
-            Pump currentSelection = auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1);
+            Pump currentSelection = auxFeedwaterPumps.get((int)auxFWPSpinner.getValue() - 1);
             rpm2A.setLcdValue(currentSelection.getRPM());
             amps2A.setLcdValue(currentSelection.getPowerUsage());
             if (currentSelection.isActive()) {
@@ -81,31 +81,31 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         initializeDialUpdateThread();
         
         //set variables
-        Pump currentSelection = mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1);
+        Pump currentSelection = mainFeedwaterPumps.get((int)mFWPSpinner.getValue() - 1);
         if (currentSelection.isActive()) {
             startMFWP.setSelected(true);
         } else {
             stopMWFP.setSelected(true);
         }
-        currentSelection = auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1);
+        currentSelection = auxFeedwaterPumps.get((int)auxFWPSpinner.getValue() - 1);
         if (currentSelection.isActive()) {
             startAuxFWP.setSelected(true);
         } else {
             stopAuxFWP.setSelected(true);
         }
-        powerFWP1.setLedOn(mainFeedWaterPumps.get(0).isActive());
-        powerFWP2.setLedOn(mainFeedWaterPumps.get(1).isActive());
-        powerFWP3.setLedOn(mainFeedWaterPumps.get(2).isActive());
-        powerFWP4.setLedOn(mainFeedWaterPumps.get(3).isActive());
-        powerFWP5.setLedOn(mainFeedWaterPumps.get(4).isActive());
-        powerFWP6.setLedOn(mainFeedWaterPumps.get(5).isActive());
-        powerFWP7.setLedOn(mainFeedWaterPumps.get(6).isActive());
-        power2A1.setLedOn(auxFeedWaterPumps.get(0).isActive());
-        power2A2.setLedOn(auxFeedWaterPumps.get(1).isActive());
-        power2A3.setLedOn(auxFeedWaterPumps.get(2).isActive());
-        power2A4.setLedOn(auxFeedWaterPumps.get(3).isActive());
-        power2A5.setLedOn(auxFeedWaterPumps.get(4).isActive());
-        power2A6.setLedOn(auxFeedWaterPumps.get(5).isActive());
+        powerFWP1.setLedOn(mainFeedwaterPumps.get(0).isActive());
+        powerFWP2.setLedOn(mainFeedwaterPumps.get(1).isActive());
+        powerFWP3.setLedOn(mainFeedwaterPumps.get(2).isActive());
+        powerFWP4.setLedOn(mainFeedwaterPumps.get(3).isActive());
+        powerFWP5.setLedOn(mainFeedwaterPumps.get(4).isActive());
+        powerFWP6.setLedOn(mainFeedwaterPumps.get(5).isActive());
+        powerFWP7.setLedOn(mainFeedwaterPumps.get(6).isActive());
+        power2A1.setLedOn(auxFeedwaterPumps.get(0).isActive());
+        power2A2.setLedOn(auxFeedwaterPumps.get(1).isActive());
+        power2A3.setLedOn(auxFeedwaterPumps.get(2).isActive());
+        power2A4.setLedOn(auxFeedwaterPumps.get(3).isActive());
+        power2A5.setLedOn(auxFeedwaterPumps.get(4).isActive());
+        power2A6.setLedOn(auxFeedwaterPumps.get(5).isActive());
         if (autoControl.mainFeederControl.get(0).isEnabled() || autoControl.mainFeederControl.get(1).isEnabled()) {
             autoControl3Elem.setSelected(true);
             autoControlMain1.setSelected(autoControl.mainFeederControl.get(0).isEnabled());
@@ -124,8 +124,8 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         checkAlarms();
         if (this.isVisible()) {
             java.awt.EventQueue.invokeLater(() -> {
-                Pump selectedMain = mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1);
-                Pump selectedAux = auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1);
+                Pump selectedMain = mainFeedwaterPumps.get((int)mFWPSpinner.getValue() - 1);
+                Pump selectedAux = auxFeedwaterPumps.get((int)auxFWPSpinner.getValue() - 1);
 
                 rpm1A.setLcdValue(selectedMain.getRPM());
                 flow1A.setLcdValue(selectedMain.getFlowRate());
@@ -204,6 +204,11 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         this.setVisible(false);
     }
     
+    @Override
+    public void acknowledge() {
+        annunciator.acknowledge();
+    }
+    
     private void checkAlarms() {
         if (mcc.drum1.getWaterLevel() < -25) {
             annunciator.trigger(drum1Low);
@@ -230,6 +235,22 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         } else {
             annunciator.reset(FWTemp);
         }
+        boolean mainCavitation = false;
+        for (Pump pump: mainFeedwaterPumps) {
+            if (pump.isCavitating) {
+                mainCavitation = true;
+                break;
+            }
+        }
+        annunciator.setTrigger(mainCavitation, mainCavit);
+        boolean auxCavitation = false;
+        for (Pump pump: auxFeedwaterPumps) {
+            if (pump.isCavitating) {
+                auxCavitation = true;
+                break;
+            }
+        }
+        annunciator.setTrigger(auxCavitation, auxCavit);
     }
     
      /**
@@ -582,7 +603,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         mainCavit.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         mainCavit.setForeground(new java.awt.Color(0, 0, 0));
         mainCavit.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        mainCavit.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.jTextField2.text")); // NOI18N
+        mainCavit.setText("Main FWP Cavit");
         mainCavit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         mainCavit.setFocusable(false);
         mainCavit.setPreferredSize(new java.awt.Dimension(100, 30));
@@ -598,7 +619,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
         auxCavit.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         auxCavit.setForeground(new java.awt.Color(0, 0, 0));
         auxCavit.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        auxCavit.setText(org.openide.util.NbBundle.getMessage(FeedwaterUI.class, "CondensateUI.jTextField3.text")); // NOI18N
+        auxCavit.setText("Aux FWP Cavit");
         auxCavit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         auxCavit.setFocusable(false);
         annunciatorPanel.add(auxCavit);
@@ -1778,15 +1799,15 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        UI.createOrContinue(CoreMap.class, false);
+        UI.createOrContinue(CoreMap.class, false, false);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        UI.createOrContinue(TGUI.class, true);
+        UI.createOrContinue(TGUI.class, true, false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        UI.createOrContinue(DearatorUI.class, true);
+        UI.createOrContinue(DearatorUI.class, true, false);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void aFWStop1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aFWStop1ActionPerformed
@@ -1862,7 +1883,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_mFW1OpenItemStateChanged
 
     private void stopAuxFWPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopAuxFWPActionPerformed
-        auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1).setActive(false);
+        auxFeedwaterPumps.get((int)auxFWPSpinner.getValue() - 1).setActive(false);
         switch((int)auxFWPSpinner.getValue()) {
             case 1:
                 power2A1.setLedOn(false);
@@ -1890,7 +1911,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_stopAuxFWPItemStateChanged
 
     private void startAuxFWPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startAuxFWPActionPerformed
-        auxFeedWaterPumps.get((int)auxFWPSpinner.getValue() - 1).setActive(true);
+        auxFeedwaterPumps.get((int)auxFWPSpinner.getValue() - 1).setActive(true);
         switch((int)auxFWPSpinner.getValue()) {
             case 1:
                 power2A1.setLedOn(true);
@@ -1942,7 +1963,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_drum2LowActionPerformed
 
     private void stopMWFPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopMWFPActionPerformed
-        mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1).setActive(false);
+        mainFeedwaterPumps.get((int)mFWPSpinner.getValue() - 1).setActive(false);
         switch((int)mFWPSpinner.getValue()) {
             case 1:
                 powerFWP1.setLedOn(false);
@@ -1973,7 +1994,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_stopMWFPItemStateChanged
 
     private void startMFWPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startMFWPActionPerformed
-        mainFeedWaterPumps.get((int)mFWPSpinner.getValue() - 1).setActive(true);
+        mainFeedwaterPumps.get((int)mFWPSpinner.getValue() - 1).setActive(true);
         switch((int)mFWPSpinner.getValue()) {
             case 1:
                 powerFWP1.setLedOn(true);
@@ -2063,7 +2084,7 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoControl3ElemActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        UI.createOrContinue(CondensateUI.class, true);
+        UI.createOrContinue(CondensateUI.class, true, false);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -2119,11 +2140,11 @@ public class FeedwaterUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_autoControlMain2ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        UI.createOrContinue(PCSUI.class, true);
+        UI.createOrContinue(PCSUI.class, true, false);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        UI.createOrContinue(SelsynPanel.class, false);
+        UI.createOrContinue(SelsynPanel.class, false, false);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed

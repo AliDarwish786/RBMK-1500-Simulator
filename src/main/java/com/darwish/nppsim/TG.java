@@ -36,21 +36,31 @@ class TG extends WaterSteamComponent implements Connectable {
     }
     
     protected void sync() {
+        if (synced) {
+            return;
+        }
         synced = genAlignment > 48.5 && genAlignment < 51.5 && rpm >= 2997.5 && rpm <= 3002.5;
+        if (synced) {
+            if (isTG1) {
+                autoControl.recordEvent("TG-1 Sync");
+            } else {
+                autoControl.recordEvent("TG-2 Sync");
+            }
+        }
     }
     
     protected void deSync() {
         synced = false;
     }
     
-    protected void trip() {
+    protected void trip(String reason) {
         if (tripped) {
             return;
         }
         if (isTG1) {
-            autoControl.recordEvent("TG-1 Trip");
+            autoControl.recordEvent("TG-1 Trip: " + reason);
         } else {
-            autoControl.recordEvent("TG-2 Trip");
+            autoControl.recordEvent("TG-2 Trip: " + reason);
         }
         synced = false;
         TG1InletValves.forEach(valve -> {
@@ -106,16 +116,16 @@ class TG extends WaterSteamComponent implements Connectable {
             }
         }
         if (rpm > 3250) {
-            trip();
+            trip("High RPM");
         }
         if (condenser.getPressure() > 0.030) {
-            trip();
+            trip("Condenser Vacuum Low");
         }
         if (mcc.drum1.getPressure() < 5 || mcc.drum2.getPressure() < 5) {
-            trip();
+            trip("Low Drum Pressure");
         }
         if (load > 825) {
-            trip();
+            trip("High Generator Load");
         }
         
         reversePower = load < 0;
@@ -225,7 +235,7 @@ class TG extends WaterSteamComponent implements Connectable {
             try {
                 Thread.sleep(7000); // if reverse power for 7 seconds trip turbine;
                 if (reversePower) {
-                    trip();
+                    trip("Reverse Power");
                 }
                 reversePowerRecorded = false;
             } catch (InterruptedException e) {
@@ -236,6 +246,11 @@ class TG extends WaterSteamComponent implements Connectable {
     
     public void setTG1() {
         isTG1 = true;
+    }
+
+    @Override
+    public double getWaterMass() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
 
@@ -259,7 +274,7 @@ class Condenser extends WaterSteamSubComponent implements Connectable, UIReadabl
     private double steamDensity;
 
     public Condenser() {
-        condenserPump = new Pump(750.0f, 5.14f, 5.0, 40, 55, 1880, atmosphere, atmosphere);
+        condenserPump = new Pump(750.0f, 5.14f, 5.0, 0, 40, 55, 1880, atmosphere, atmosphere);
         feedwaterVolume = feedwaterMass * specificDensityFeedwater;
         nominalFeedwaterVolume = feedwaterVolume;
         volume = feedwaterVolume * 2;
@@ -423,6 +438,11 @@ class Condenser extends WaterSteamSubComponent implements Connectable, UIReadabl
     
     public double getCondensationRate() {
         return condensationRate * 20;
+    }
+
+    @Override
+    public double getWaterMass() {
+        return waterMass;
     }
 }
 

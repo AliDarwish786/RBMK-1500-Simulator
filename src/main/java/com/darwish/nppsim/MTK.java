@@ -5,8 +5,8 @@ import java.util.HashMap;
 import javax.swing.JTextField;
 
 public class MTK extends javax.swing.JPanel {
-    static Color CPSONCOLOR = new SARChannel().uiData.UISelectedColor;
-    static Color CPSOFFCOLOR = new SARChannel().uiData.UIBackgroundColor.darker();
+    static Color CPSONCOLOR = Color.GREEN.brighter();
+    static Color CPSOFFCOLOR = Color.GREEN.darker().darker();
     static Color CHANNELOFFCOLOR; 
     private short rowNumber = 0;
     private int[] fuelCPSCount = {0, 0};

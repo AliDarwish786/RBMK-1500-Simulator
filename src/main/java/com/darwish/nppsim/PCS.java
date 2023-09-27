@@ -53,16 +53,16 @@ public class PCS extends Component {
             valve.setPosition(1.0f); //open header valves for both regenerators
         });
         pcsValve = new pcsMockupValve(pcsSuctionHeader, pcsPressureHeader); 
-        pcsPump1 = new SimplePump(2985, 0.1389f, 12.36, 20, 20, 83, pcsSuctionHeader, pcsPressureHeader);
-        pcsPump2 = new SimplePump(2985, 0.1389f, 12.36, 20, 20, 83, pcsSuctionHeader, pcsPressureHeader);
+        pcsPump1 = new SimplePump(2985, 0.1389f, 12.36, 0.16671305, 20, 20, 83, pcsSuctionHeader, pcsPressureHeader);
+        pcsPump2 = new SimplePump(2985, 0.1389f, 12.36, 0.16671305, 20, 20, 83, pcsSuctionHeader, pcsPressureHeader);
         pcsCoolingHeader = new SimplePressureHeader(new Connectable[] {pcsCooler1, pcsCooler2}, 0.5);
         pcsCoolingHeader.isolationValveArray.forEach(valve -> {
             valve.setPosition(1.0f); //open header valves for both regenerators
         });
-        coolingPump = new SimplePump(1000, 0.577f, 2.0, 20, 25, 83, intermediateLoop, pcsCoolingHeader);
+        coolingPump = new SimplePump(1000, 0.577f, 2.0, 0, 20, 25, 83, intermediateLoop, pcsCoolingHeader);
         admsHeader = new PressureHeader();
         for (int i = 0; i < 4; i++) {
-            admsPumps.add(new Pump(1480, 0.1389f, 2.157, 5, 35, 83, demineralizedWaterTank, admsHeader));
+            admsPumps.add(new Pump(1480, 0.1389f, 2.157, 0.024516625, 5, 35, 83, demineralizedWaterTank, admsHeader));
         }
         admsHeader.setSources(new Pump[] {admsPumps.get(0), admsPumps.get(1), admsPumps.get(2), admsPumps.get(3)});
         for (int i = 0; i < 4; i++) {
@@ -71,7 +71,7 @@ public class PCS extends Component {
         for (int i = 0; i < 4; i++) {
             dearatorOverflowValves.add(new WaterValve(41.4, 10, dearators.get(i), demineralizedWaterTank));
         }
-        dwMakeupPump = new SimplePump(700, 0.075f, 0.83, 10, 10, 10, atmosphere, demineralizedWaterTank);
+        dwMakeupPump = new SimplePump(700, 0.075f, 0.83, 0.024516625, 10, 10, 10, atmosphere, demineralizedWaterTank);
     }
     
     public void update() {

@@ -1,8 +1,11 @@
 package com.darwish.nppsim;
 
 import static com.darwish.nppsim.Loader.soundProvider;
+import static com.darwish.nppsim.NPPSim.autoControl;
 import java.awt.Color;
 import java.util.HashMap;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class Annunciator {
     private static boolean isInitialized = false;
@@ -87,7 +90,20 @@ public class Annunciator {
     }
     
     public void trigger(javax.swing.JTextField element) {
+        if (annunciatorArray.get(element) == 0) {
+            autoControl.recordEvent("Warning: " + element.getText());
+        } else {
+            return;
+        }
         annunciatorArray.replace(element, 0, 2);
+        if (UI.hush) { 
+            annunciatorArray.replace(element, 2, 1);
+        } else {
+            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(element);
+            topFrame.setState(JFrame.NORMAL);
+            topFrame.setVisible(true);
+            topFrame.toFront();
+        }
     }
     
     public void acknowledge() {
@@ -99,6 +115,11 @@ public class Annunciator {
     }
     
     public void reset(javax.swing.JTextField element) {
+        if (annunciatorArray.get(element) != 0) {
+            autoControl.recordEvent("Cleared: " + element.getText());
+        } else {
+            return;
+        }
         annunciatorArray.replace(element, 0);
         if (annunciatorArray.containsValue(2)) {
             return;

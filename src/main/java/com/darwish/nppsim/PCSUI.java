@@ -196,6 +196,11 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
         this.setVisible(false);
     }
     
+    @Override
+    public void acknowledge() {
+        annunciator.acknowledge();
+    }
+    
     private void checkAlarms() { 
         annunciator.setTrigger(pcs.pcsFilterPressureHeader.waterTemperature > 60, waterTemp);
         annunciator.setTrigger(pcs.demineralizedWaterTank.getWaterLevel() < 0, dwLow);
@@ -2233,7 +2238,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        UI.createOrContinue(CoreMap.class, false);
+        UI.createOrContinue(CoreMap.class, false, false);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void waterTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_waterTempActionPerformed
@@ -2253,15 +2258,15 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_dwHighActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        UI.createOrContinue(CondensateUI.class, true);
+        UI.createOrContinue(CondensateUI.class, true, false);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        UI.createOrContinue(DearatorUI.class, true);
+        UI.createOrContinue(DearatorUI.class, true, false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        UI.createOrContinue(FeedwaterUI.class, true);
+        UI.createOrContinue(FeedwaterUI.class, true, false);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -2491,7 +2496,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_dwTankButtonActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        UI.createOrContinue(TGUI.class, true);
+        UI.createOrContinue(TGUI.class, true, false);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void dwTankTempActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dwTankTempActionPerformed
@@ -2570,7 +2575,7 @@ public class PCSUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_admsACActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        UI.createOrContinue(SelsynPanel.class, false);
+        UI.createOrContinue(SelsynPanel.class, false, false);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed

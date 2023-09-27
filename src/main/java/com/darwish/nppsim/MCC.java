@@ -10,6 +10,7 @@ import java.util.List;
 public class MCC extends Component {
     final SeparatorDrum drum1, drum2;
     final MCPPressureHeader pHeader1, pHeader2;
+    final SimpleSuctionHeader sHeader1, sHeader2;
     final ArrayList<Pump> mcp = new ArrayList<>(); // 0-3 loop 1, 4-7 loop 2
     final ArrayList<FuelChannel> fuelChannels1 = new ArrayList<>();
     final ArrayList<FuelChannel> fuelChannels2 = new ArrayList<>();
@@ -37,26 +38,27 @@ public class MCC extends Component {
         fuelChannels2.forEach(channel -> {
             steamWaterPipes2.add(new SteamWaterPipe(channel, drum2));
         });
-
+        sHeader1 = new SimpleSuctionHeader(new Connectable[] {drum1}, 74.9);
+        sHeader2 = new SimpleSuctionHeader(new Connectable[] {drum2}, 74.9);
+        sHeader1.isolationValveArray.get(0).position = 1.0f;
+        sHeader2.isolationValveArray.get(0).position = 1.0f;
         pHeader1 = new MCPPressureHeader(fuelChannels1);
         pHeader2 = new MCPPressureHeader(fuelChannels2);
         // add the eight MCP's, 4 per loop
         for (int i = 0; i < 4; i++) {
-            mcp.add(new MCCPump(1000, 2.2222f, 18, 200, 933, drum1, pHeader1));
+            mcp.add(new MCCPump(1000, 2.2222f, 0.226, 18, 200, 933, sHeader1, pHeader1));
         }
         for (int i = 0; i < 4; i++) {
-            mcp.add(new MCCPump(1000, 2.2222f, 18, 200, 933, drum2, pHeader2));
+            mcp.add(new MCCPump(1000, 2.2222f, 0.226, 18, 200, 933, sHeader2, pHeader2));
         }
     }
 
     protected class SeparatorDrum extends WaterSteamSubComponent implements Connectable, UIReadable, Serializable {
-        private final double volume = 682.35;
+        private final double volume = 397.1;// drum + downcomers //682.35;
         private final double nominalWaterVolume;
         private double initialSteamMass; // this would be air in reality
         private double steamMass = 0.0; // kg
-        private double waterMass = 305837.26; // 306.4 m3 at 20C
-        private double pressure = 0.10142; // pressure in Mpa
-        private double steamTemperature = 20.0;
+        private double waterMass = 223089.51; //223,5 m3 (2 drums + downcomers) //305837.26; // 306.4 m3 at 20C
         private double steamProduction = 0.0; // kg/s
         private double thermalLoss = 0.0; // conductive energy loss Mwt
 
@@ -194,6 +196,7 @@ public class MCC extends Component {
             steamProduction = 0;
         }
 
+        @Override
         public double getWaterMass() {
             return waterMass;
         }
@@ -393,6 +396,11 @@ public class MCC extends Component {
         public boolean getBypassState() {
             return bypassesOpen;
         }
+
+        @Override
+        public double getWaterMass() {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }
     }
 
     public void update() {
@@ -410,6 +418,8 @@ public class MCC extends Component {
         }
         drum1.update();
         drum2.update();
+        sHeader1.update();
+        sHeader2.update();
         for (Pump i : mcp) {
             i.update();
         }

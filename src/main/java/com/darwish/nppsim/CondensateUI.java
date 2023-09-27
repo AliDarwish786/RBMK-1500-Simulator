@@ -3,6 +3,8 @@ package com.darwish.nppsim;
 import static com.darwish.nppsim.NPPSim.autoControl;
 import static com.darwish.nppsim.NPPSim.condensate1A;
 import static com.darwish.nppsim.NPPSim.condensate2A;
+import static com.darwish.nppsim.NPPSim.condensate1B;
+import static com.darwish.nppsim.NPPSim.condensate2B;
 import static com.darwish.nppsim.NPPSim.ejectors;
 import static com.darwish.nppsim.NPPSim.tg1;
 import static com.darwish.nppsim.NPPSim.tg2;
@@ -49,6 +51,26 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
                 start2A.setSelected(true);
             } else {
                 stop2A.setSelected(true);
+            }
+        });
+        spinner1B.addChangeListener((ChangeEvent e) -> {
+            Pump currentSelection = condensate1B.get((int)spinner1B.getValue() - 1);
+            rpm1B.setLcdValue(currentSelection.getRPM());
+            amps1B.setLcdValue(currentSelection.getPowerUsage());
+            if (currentSelection.isActive()) {
+                start1B.setSelected(true);
+            } else {
+                stop1B.setSelected(true);
+            }
+        });
+        spinner2B.addChangeListener((ChangeEvent e) -> {
+            Pump currentSelection = condensate2B.get((int)spinner2B.getValue() - 1);
+            rpm2B.setLcdValue(currentSelection.getRPM());
+            amps2B.setLcdValue(currentSelection.getPowerUsage());
+            if (currentSelection.isActive()) {
+                start2B.setSelected(true);
+            } else {
+                stop2B.setSelected(true);
             }
         });
         ejector1Spinner.addChangeListener((ChangeEvent e) -> {
@@ -135,6 +157,8 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
             java.awt.EventQueue.invokeLater(() -> {
                 Pump selected1A = condensate1A.get((int)spinner1A.getValue() - 1);
                 Pump selected2A = condensate2A.get((int)spinner2A.getValue() - 1);
+                Pump selected1B = condensate1B.get((int)spinner1B.getValue() - 1);
+                Pump selected2B = condensate2B.get((int)spinner2B.getValue() - 1);
                 Ejector selected1Ejector = ejectors.get((int)ejector1Spinner.getValue() - 1);
                 Ejector selected2Ejector = ejectors.get((int)ejector2Spinner.getValue() - 1);
                 Pump con1 = tg1.condenser.condenserPump;
@@ -146,6 +170,12 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
                 rpm2A.setLcdValue(selected2A.getRPM());
                 flow2A.setLcdValue(selected2A.getFlowRate());
                 amps2A.setLcdValue(selected2A.getPowerUsage());
+                rpm1B.setLcdValue(selected1B.getRPM());
+                flow1B.setLcdValue(selected1B.getFlowRate());
+                amps1B.setLcdValue(selected1B.getPowerUsage());
+                rpm2B.setLcdValue(selected2B.getRPM());
+                flow2B.setLcdValue(selected2B.getFlowRate());
+                amps2B.setLcdValue(selected2B.getPowerUsage());
 
                 con1RPM.setLcdValue(con1.getRPM());
                 con1Flow.setLcdValue(con1.getFlow() * 20);
@@ -225,6 +255,11 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         this.setVisible(false);
     }
     
+    @Override
+    public void acknowledge() {
+        annunciator.acknowledge();
+    }
+    
     private void checkAlarms() {
         if (tg1.condenser.getWaterLevel() < -25) {
             annunciator.trigger(hw1Low);
@@ -266,6 +301,38 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         } else {
             annunciator.reset(relief2);
         }
+        boolean cavitation1A = false;
+        for (Pump pump: condensate1A) {
+            if (pump.isCavitating) {
+                cavitation1A = true;
+                break;
+            }
+        }
+        annunciator.setTrigger(cavitation1A, cavit1A);
+        boolean cavitation2A = false;
+        for (Pump pump: condensate2A) {
+            if (pump.isCavitating) {
+                cavitation2A = true;
+                break;
+            }
+        }
+        annunciator.setTrigger(cavitation2A, cavit2A);
+        boolean cavitation1B = false;
+        for (Pump pump: condensate1B) {
+            if (pump.isCavitating) {
+                cavitation1B = true;
+                break;
+            }
+        }
+        annunciator.setTrigger(cavitation1B, cavit1B);
+        boolean cavitation2B = false;
+        for (Pump pump: condensate2B) {
+            if (pump.isCavitating) {
+                cavitation2B = true;
+                break;
+            }
+        }
+        annunciator.setTrigger(cavitation2B, cavit2B);
     }
     
      /**
@@ -321,14 +388,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         annunciatorPanel = new javax.swing.JPanel();
         hw1Low = new javax.swing.JTextField();
         hw1High = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        cavit1A = new javax.swing.JTextField();
+        cavit2A = new javax.swing.JTextField();
         hw2Low = new javax.swing.JTextField();
         hw2High = new javax.swing.JTextField();
         lowVacuum1 = new javax.swing.JTextField();
         trip1A = new javax.swing.JTextField();
-        jTextField9 = new javax.swing.JTextField();
-        jTextField16 = new javax.swing.JTextField();
+        cavit1B = new javax.swing.JTextField();
+        cavit2B = new javax.swing.JTextField();
         trip2A = new javax.swing.JTextField();
         lowVacuum2 = new javax.swing.JTextField();
         relief1 = new javax.swing.JTextField();
@@ -757,36 +824,36 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         hw1High.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         hw1High.setForeground(new java.awt.Color(0, 0, 0));
         hw1High.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        hw1High.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.hw1High.text")); // NOI18N
+        hw1High.setText("Hotwell 1 high");
         hw1High.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         hw1High.setFocusable(false);
         annunciatorPanel.add(hw1High);
 
-        jTextField2.setEditable(false);
-        jTextField2.setBackground(new java.awt.Color(142, 0, 0));
-        jTextField2.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jTextField2.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField2.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jTextField2.text")); // NOI18N
-        jTextField2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jTextField2.setFocusable(false);
-        jTextField2.setPreferredSize(new java.awt.Dimension(100, 30));
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        cavit1A.setEditable(false);
+        cavit1A.setBackground(new java.awt.Color(142, 0, 0));
+        cavit1A.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        cavit1A.setForeground(new java.awt.Color(0, 0, 0));
+        cavit1A.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        cavit1A.setText("1A Cavitation");
+        cavit1A.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        cavit1A.setFocusable(false);
+        cavit1A.setPreferredSize(new java.awt.Dimension(100, 30));
+        cavit1A.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                cavit1AActionPerformed(evt);
             }
         });
-        annunciatorPanel.add(jTextField2);
+        annunciatorPanel.add(cavit1A);
 
-        jTextField3.setEditable(false);
-        jTextField3.setBackground(new java.awt.Color(142, 0, 0));
-        jTextField3.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jTextField3.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField3.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField3.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jTextField3.text")); // NOI18N
-        jTextField3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jTextField3.setFocusable(false);
-        annunciatorPanel.add(jTextField3);
+        cavit2A.setEditable(false);
+        cavit2A.setBackground(new java.awt.Color(142, 0, 0));
+        cavit2A.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        cavit2A.setForeground(new java.awt.Color(0, 0, 0));
+        cavit2A.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        cavit2A.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.cavit2A.text")); // NOI18N
+        cavit2A.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        cavit2A.setFocusable(false);
+        annunciatorPanel.add(cavit2A);
 
         hw2Low.setEditable(false);
         hw2Low.setBackground(new java.awt.Color(142, 0, 0));
@@ -834,30 +901,30 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         trip1A.setFocusable(false);
         annunciatorPanel.add(trip1A);
 
-        jTextField9.setEditable(false);
-        jTextField9.setBackground(new java.awt.Color(142, 0, 0));
-        jTextField9.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jTextField9.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField9.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField9.setText("1B Cavitation");
-        jTextField9.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jTextField9.setFocusable(false);
-        jTextField9.addActionListener(new java.awt.event.ActionListener() {
+        cavit1B.setEditable(false);
+        cavit1B.setBackground(new java.awt.Color(142, 0, 0));
+        cavit1B.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        cavit1B.setForeground(new java.awt.Color(0, 0, 0));
+        cavit1B.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        cavit1B.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.cavit1B.text")); // NOI18N
+        cavit1B.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        cavit1B.setFocusable(false);
+        cavit1B.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField9ActionPerformed(evt);
+                cavit1BActionPerformed(evt);
             }
         });
-        annunciatorPanel.add(jTextField9);
+        annunciatorPanel.add(cavit1B);
 
-        jTextField16.setEditable(false);
-        jTextField16.setBackground(new java.awt.Color(142, 0, 0));
-        jTextField16.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        jTextField16.setForeground(new java.awt.Color(0, 0, 0));
-        jTextField16.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField16.setText("2B Cavitation");
-        jTextField16.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jTextField16.setFocusable(false);
-        annunciatorPanel.add(jTextField16);
+        cavit2B.setEditable(false);
+        cavit2B.setBackground(new java.awt.Color(142, 0, 0));
+        cavit2B.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        cavit2B.setForeground(new java.awt.Color(0, 0, 0));
+        cavit2B.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        cavit2B.setText(org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.cavit2B.text")); // NOI18N
+        cavit2B.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        cavit2B.setFocusable(false);
+        annunciatorPanel.add(cavit2B);
 
         trip2A.setEditable(false);
         trip2A.setBackground(new java.awt.Color(142, 0, 0));
@@ -2307,15 +2374,15 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        UI.createOrContinue(CoreMap.class, false);
+        UI.createOrContinue(CoreMap.class, false, false);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        UI.createOrContinue(TGUI.class, true);
+        UI.createOrContinue(TGUI.class, true, false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        UI.createOrContinue(DearatorUI.class, true);
+        UI.createOrContinue(DearatorUI.class, true, false);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void ejector1StopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ejector1StopActionPerformed
@@ -2335,7 +2402,18 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_ejector1StartItemStateChanged
 
     private void stop2BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop2BActionPerformed
-        // TODO add your handling code here:
+        condensate2B.get((int)spinner2B.getValue() - 1).setActive(false);
+        switch((int)spinner2B.getValue()) {
+            case 1:
+            power2B1.setLedOn(false);
+            break;
+            case 2:
+            power2B2.setLedOn(false);
+            break;
+            case 3:
+            power2B3.setLedOn(false);
+            break;
+        }
     }//GEN-LAST:event_stop2BActionPerformed
 
     private void stop2BItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop2BItemStateChanged
@@ -2343,7 +2421,18 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_stop2BItemStateChanged
 
     private void start2BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start2BActionPerformed
-        // TODO add your handling code here:
+        condensate2B.get((int)spinner2B.getValue() - 1).setActive(true);
+        switch((int)spinner2B.getValue()) {
+            case 1:
+            power2B1.setLedOn(true);
+            break;
+            case 2:
+            power2B2.setLedOn(true);
+            break;
+            case 3:
+            power2B3.setLedOn(true);
+            break;
+        }
     }//GEN-LAST:event_start2BActionPerformed
 
     private void start2BItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start2BItemStateChanged
@@ -2404,20 +2493,31 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         // TODO add your handling code here:
     }//GEN-LAST:event_trip2BActionPerformed
 
-    private void jTextField9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField9ActionPerformed
+    private void cavit1BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cavit1BActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField9ActionPerformed
+    }//GEN-LAST:event_cavit1BActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void cavit1AActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cavit1AActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_cavit1AActionPerformed
 
     private void hw2LowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hw2LowActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_hw2LowActionPerformed
 
     private void stop1BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop1BActionPerformed
-        //TODO
+        condensate1B.get((int)spinner1B.getValue() - 1).setActive(false);
+        switch((int)spinner1B.getValue()) {
+            case 1:
+            power1B1.setLedOn(false);
+            break;
+            case 2:
+            power1B2.setLedOn(false);
+            break;
+            case 3:
+            power1B3.setLedOn(false);
+            break;
+        }
     }//GEN-LAST:event_stop1BActionPerformed
 
     private void stop1BItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop1BItemStateChanged
@@ -2425,7 +2525,18 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_stop1BItemStateChanged
 
     private void start1BActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start1BActionPerformed
-        // TODO add your handling code here:
+        condensate1B.get((int)spinner1B.getValue() - 1).setActive(true);
+        switch((int)spinner1B.getValue()) {
+            case 1:
+            power1B1.setLedOn(true);
+            break;
+            case 2:
+            power1B2.setLedOn(true);
+            break;
+            case 3:
+            power1B3.setLedOn(true);
+            break;
+        }
     }//GEN-LAST:event_start1BActionPerformed
 
     private void start1BItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start1BItemStateChanged
@@ -2523,7 +2634,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_con2StopActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        UI.createOrContinue(FeedwaterUI.class, true);
+        UI.createOrContinue(FeedwaterUI.class, true, false);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -2531,7 +2642,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        UI.createOrContinue(PCSUI.class, true);
+        UI.createOrContinue(PCSUI.class, true, false);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jTextField12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
@@ -2539,7 +2650,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_jTextField12ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        UI.createOrContinue(SelsynPanel.class, false);
+        UI.createOrContinue(SelsynPanel.class, false, false);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
@@ -2641,6 +2752,10 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.ButtonGroup buttonGroup7;
     private javax.swing.ButtonGroup buttonGroup8;
     private javax.swing.ButtonGroup buttonGroup9;
+    private javax.swing.JTextField cavit1A;
+    private javax.swing.JTextField cavit1B;
+    private javax.swing.JTextField cavit2A;
+    private javax.swing.JTextField cavit2B;
     private eu.hansolo.steelseries.gauges.DisplaySingle con1A;
     private eu.hansolo.steelseries.gauges.DisplaySingle con1Flow;
     private eu.hansolo.steelseries.gauges.DisplaySingle con1Inlet;
@@ -2740,10 +2855,6 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField11;
     private javax.swing.JTextField jTextField12;
-    private javax.swing.JTextField jTextField16;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField9;
     private javax.swing.JTextField lowVacuum1;
     private javax.swing.JTextField lowVacuum2;
     private eu.hansolo.steelseries.gauges.Radial2Top out1;

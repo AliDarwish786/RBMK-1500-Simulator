@@ -2,6 +2,7 @@ public class ValveCVTest {
     public static void main(String[] args) {
         //steamValve(745.76, 6960.0, 1000.0, 36.015, 300.0);    //SDV-C 4 per loop
         //waterValve(1667.52, 1766, 1400, 1001.9, 0.887);        //Dearator for 180 C
+        waterValve(827.85, 2885, 1400, 1001.9, 0.887);        //Dearator for 180 C new
         //waterValve(498.01, 8550, 7550, 1254.2, 0.876);        //Main Feeder 3 per loop for 190 C
         //waterValve(197.44, 8400, 7420, 1254.2, 0.876);        //Aux Feeder 1 per loop for 190 C
         //steamValve(5.14, 6960.0, 0.10142, 36.015, 300.0);     //ejector?
@@ -12,7 +13,7 @@ public class ValveCVTest {
         //steamValve(458.53, 7450, 1000.0, 36.015, 300.0);    //msv group 2
         //steamValve(455.48, 7550, 1000.0, 36.015, 300.0);    //msv group 3
         //waterValve(209.77, 2157, 1400, 42.45, 0.997); //dearator makeup valve for 30 C
-        waterValve(41.4, 1000, 101.4, 42.45, 0.997);
+        //waterValve(41.4, 1000, 101.4, 42.45, 0.997);
     }
 
     static void waterValve(double cV, double p1, double p2, double pVapor, double sG) { // pressures in Kpa //flows in m3/h

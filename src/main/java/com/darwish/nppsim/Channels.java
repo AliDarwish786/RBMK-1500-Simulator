@@ -11,7 +11,7 @@ interface ChannelUIUpdatable {
 class ChannelUIData implements Serializable {
     protected String positionString = "00-00";
     protected String name = "Channel";
-    protected java.awt.Color UIBackgroundColor = new Color(245, 245, 160), UISelectedColor = Color.WHITE;
+    protected java.awt.Color UIBackgroundColor = new Color(235, 235, 160), UISelectedColor = Color.WHITE;
     protected java.awt.Color UISelsynColor = new Color(245, 245, 160);
     protected Object tableData[][];
     protected static java.text.DecimalFormat sf = new java.text.DecimalFormat("0.####E0");
@@ -81,7 +81,7 @@ abstract class CPSChannel extends Channel {
     protected double waterInflowTemperature = 0.0;
     protected double waterInflowRate = 0.0;
     protected double pressure = 0.0;
-
+    
     @Override
     public void updateTableValues() {
         uiData.setTableData(new Object[][] {
@@ -126,7 +126,7 @@ abstract class ControlRodChannel extends CPSChannel {
         } else {
             position = NPPMath.updatePositionFromState(state, autoState, position, speed);
         }
-        thermalUtilizationFactor = 0.95 - (0.75 * position);
+        thermalUtilizationFactor = 1.0 - (0.8 * position);
     }
     
     public float getPosition() {
@@ -169,7 +169,7 @@ class PDMSChannel extends CPSChannel {
 
 class MCRChannel extends ControlRodChannel {
     public MCRChannel() {
-        uiData.setCoreMapColors(Color.BLUE, Color.CYAN);
+        uiData.setCoreMapColors(Color.GRAY.brighter(), Color.GRAY.brighter().brighter());
         uiData.setName("Manual Control Rod");
 
     }
@@ -180,18 +180,20 @@ class ACRChannel extends MCRChannel {
         speed = 0.0014285714f;
         uiData.setName("Automatic Control Rod Group 1");
         uiData.setSelsynColors(Color.GREEN.darker().darker());
+        uiData.setCoreMapColors(Color.GREEN.darker().darker(), Color.GREEN.darker().brighter());
     }
 }
 class LEPChannel extends MCRChannel {
     public LEPChannel() {
         uiData.setName("Local Emergency Protection Rod");
+        uiData.setCoreMapColors(new Color(200, 73, 73), Color.PINK);
     }
 }
 
 class MCRMChannel extends ControlRodChannel {
     public MCRMChannel() {
         uiData.setName("Manual Control Rod Modernized");
-        uiData.setCoreMapColors(Color.ORANGE, Color.YELLOW);
+        uiData.setCoreMapColors(Color.GRAY.brighter(), Color.GRAY.brighter().brighter());
     }
 }
 
@@ -200,6 +202,7 @@ class LACChannel extends MCRMChannel {
         speed = 0.0014285714f;
         uiData.setName("Local Automatic Control Rod");
         uiData.setSelsynColors(Color.BLUE);
+        uiData.setCoreMapColors(new Color(30, 30, 255), Color.CYAN);
     }
 }
 
@@ -218,7 +221,7 @@ class SARChannel extends ControlRodChannel {
     public SARChannel() {
         uiData.setName("Shortened Absorber Rod");
         uiData.setSelsynColors(Color.ORANGE);
-        uiData.setCoreMapColors(Color.GREEN.darker(), Color.GREEN.brighter());
+        uiData.setCoreMapColors(Color.ORANGE, Color.ORANGE.brighter());
     }
 }
 
@@ -226,6 +229,7 @@ class SACRChannel extends SARChannel {
     public SACRChannel() {
         uiData.setName("Automatic Control Rod Group 2");
         uiData.setSelsynColors(Color.GREEN.darker());
+        uiData.setCoreMapColors(Color.GREEN.darker().darker(), Color.GREEN.darker().brighter());
     }
 }
 
@@ -312,7 +316,7 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
         steamVolume = 0.0;
         nominalFeedWaterVolume = waterVolume;
         steamDensity = 0.0;
-        thermalFissionFactor = 1.725;
+        thermalFissionFactor = 1.735;
         resonanceEscapeProbInitial = resonanceEscapeProb;
         thermalUtilizationFactor = 0.75;
         thermalUtilizationFactorInitial = thermalUtilizationFactor;
@@ -348,7 +352,6 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
             waterMass -= deltaSteamMass;
         }
         
-
         specificDensityWater = Loader.tables.getWaterDensityByTemp(waterTemperature);
         waterVolume = specificDensityWater * waterMass;
         waterOutflow = (waterVolume - volume) / specificDensityWater;
@@ -385,41 +388,57 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
         thermalUtilizationFactor += 0.025 - Loader.tables.getWaterDensityByTemp(20) / Loader.tables.getWaterDensityByTemp(waterTemperature) * 0.025;
         thermalPower = (this.getNeutronPopulation()[0] / 29986861831.1868724665) * 2.8898254064; // simple mapping of neutron count to thermal power per channel for 4800 MWt
         
-        if (thermalPower < 0.000001) {
-            thermalPower = 0;
-            tElapsed += 0.05;
-        } else if (tElapsed > 0) {
-            tElapsed -= 0.05;
-        }
         if (thermalPower > 5) {
             autoControl.az1Control.trip("High Fuel Channel Power");
         }
-        //averagePower = 4800.0/1661; debug
+        
         //decay heat
+        
+//        if (thermalPower < 0.000001) {
+//            thermalPower = 0;
+//            tElapsed += 0.05;
+//        } 
+//        else if (tElapsed > 0) {
+//            tElapsed -= 0.05;
+//        }
+        if (thermalPower < 0.000001) {
+            thermalPower = 0;
+        } 
+        if (thermalPower < averagePower) {
+            tElapsed += 1;
+        } else {
+            tElapsed = 1;
+        }
+        
         if (autoControl.getTimeUpdatedFlag()) {     //update average power every second
-            long simTime = autoControl.getSimulationTime() > 432000 ? 432000 : autoControl.getSimulationTime(); //consider last 48 hours only
+            long simTime = autoControl.getSimulationTime() > 432000 ? 432000 : autoControl.getSimulationTime(); //consider last 5 days only
             averagePower = ((simTime - 1) * averagePower + thermalPower) / simTime;
             tPower = simTime;
         }
-        double multiplicationFactor = tElapsed <= 1 ? 1 : (Math.pow(tElapsed, -0.2) - Math.pow(tPower + tElapsed, -0.2));
-        thermalPower += 0.066 * averagePower * multiplicationFactor; //add decay heat
+        //double multiplicationFactor = tElapsed <= 1 ? 1 : (Math.pow(tElapsed, -0.2) - Math.pow(tPower + tElapsed, -0.2));
+        //thermalPower += 0.066 * averagePower * multiplicationFactor; //add decay heat
+        double baseDecay = 0.066 * averagePower * (Math.pow(1, -0.2) - Math.pow(tPower + 1, -0.2));
+        double realDecay = 0.066 * (averagePower - thermalPower) * (Math.pow(tElapsed, -0.2) - Math.pow(tPower + tElapsed, -0.2));
+        thermalPower += baseDecay + realDecay;
+
         //xenon
         //macroscopic constants for simple core model:
         //3001050 fission  235
         //507870 capture   235
         //495929 capture   238
-        i135Count += 3001050 * this.getNeutronPopulation()[0] * 0.063 * 0.05; //generate 0.063 atoms of I135 per fission event
+        i135Count += 3001050 * this.getNeutronPopulation()[0] * 0.063 * 0.05;//* 0.05; //generate 0.063 atoms of I135 per fission event
         xe135Count += i135Count * (1 - I135DECAY_MULTIPLIER);
         i135Count *= I135DECAY_MULTIPLIER;
         xe135Count *= XE135DECAY_MULTIPLIER;
-        xe135Count -= 2000000e-24 * xe135Count * this.getNeutronPopulation()[0] * 0.05;
+        xe135Count -= 2000000e-24 * xe135Count * 1661 * this.getNeutronPopulation()[0] * 0.05;// * 0.05;
         if (xe135Count < 0) {
             xe135Count = 0;
         }
         if (i135Count < 0) {
             i135Count = 0;
         }
-        xeThermalUtilizationModifier = 0.876167866 - (3508920.0 / (495929.0 + 3508920.0 + (xe135Count * 2000000e-24)));
+        //xe135Count = 4.6979e19;//1.0521e20; nominal, max xenon pit from 4800 to 0
+        xeThermalUtilizationModifier = (0.876167866 - (3508920.0 / (495929.0 + 3508920.0 + (xe135Count * 1661 * 2000000e-24)))) * 0.9;
     }
 
     public void setDrain(Connectable drain) {
@@ -532,8 +551,8 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
                 { "Inlet Temperature:", NPPMath.round(waterInflowTemperature), "C" },
                 { "Outlet Temperature:", NPPMath.round(waterTemperature), "C" },
                 { "Voiding:", NPPMath.round(voidFraction * 100), "%" },
-                { "I135:", NPPMath.round(i135Count), "",},
-                { "Xe135:", NPPMath.round(xe135Count), "" }
+                { "I135:", NPPMath.round(i135Count / 1.93458087e20 * 100), "%",},
+                { "Xe135:", NPPMath.round(xe135Count / 4.6978565e19 * 100), "%" }
         });
     }
 

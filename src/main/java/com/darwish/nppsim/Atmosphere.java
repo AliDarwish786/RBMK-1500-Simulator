@@ -52,4 +52,9 @@ public class Atmosphere extends WaterSteamComponent implements Connectable {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public double getWaterMass() {
+        return 100000000000.0;
+    }
 }

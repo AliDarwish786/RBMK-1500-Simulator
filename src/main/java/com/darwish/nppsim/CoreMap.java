@@ -107,6 +107,11 @@ public class CoreMap extends javax.swing.JFrame implements UIUpdateable {
         this.setVisible(false);
     }
     
+    @Override
+    public void acknowledge() {
+        
+    }
+    
     private javax.swing.JPanel createRow() {
         javax.swing.JPanel row = new javax.swing.JPanel();
         row.setBackground(UI.BACKGROUND);

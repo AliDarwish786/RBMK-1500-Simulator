@@ -1,23 +1,10 @@
 package com.darwish.nppsim;
 
 import static com.darwish.nppsim.NPPSim.autoControl;
-import static com.darwish.nppsim.NPPSim.auxFeedWaterPumps;
-import static com.darwish.nppsim.NPPSim.auxiliaryFWPressureHeader;
-import static com.darwish.nppsim.NPPSim.condensate1A;
-import static com.darwish.nppsim.NPPSim.condensate1B;
-import static com.darwish.nppsim.NPPSim.condensate2A;
-import static com.darwish.nppsim.NPPSim.condensate2B;
-import static com.darwish.nppsim.NPPSim.condensateHeader;
 import static com.darwish.nppsim.NPPSim.core;
-import static com.darwish.nppsim.NPPSim.dearators;
-import static com.darwish.nppsim.NPPSim.ejectors;
-import static com.darwish.nppsim.NPPSim.mainFWPressureHeader;
-import static com.darwish.nppsim.NPPSim.mainFeedWaterPumps;
 import static com.darwish.nppsim.NPPSim.msvLoop1;
 import static com.darwish.nppsim.NPPSim.msvLoop2;
-import static com.darwish.nppsim.NPPSim.pcs;
 import static com.darwish.nppsim.NPPSim.sdv_a;
-import static com.darwish.nppsim.NPPSim.sdv_c;
 import static com.darwish.nppsim.NPPSim.tg1;
 import static com.darwish.nppsim.NPPSim.tg2;
 import java.awt.Color;
@@ -34,16 +21,17 @@ import javax.swing.plaf.metal.MetalToggleButtonUI;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class UI extends javax.swing.JFrame implements Serializable {
-    static Color BACKGROUND = new Color(180, 140, 40);
+    static Color BACKGROUND = new Color(170, 130, 40);
     static ArrayList<ControlRodChannel> selectedControlRods;
     static ArrayList<UIUpdateable> elementsToUpdate; 
     static final ArrayList<Thread> uiThreads = new ArrayList<>();
     final Annunciator annunciator;
-    private double previousNeutronFlux = 0;
     private boolean debounce = false;
     private static long uiUpdateRate = 50;
+    static boolean hush = true;
     
     public UI() {
+        hush = true;
         try {
             javax.swing.UIManager.setLookAndFeel(new DarkMetalLookAndFeel());
             //UI.BACKGROUND = new Color(115, 53, 0); //TODO
@@ -115,6 +103,11 @@ public class UI extends javax.swing.JFrame implements Serializable {
         power2A6.setLedOn(mcc.mcp.get(5).isActive());
         power2A7.setLedOn(mcc.mcp.get(6).isActive());
         power2A8.setLedOn(mcc.mcp.get(7).isActive());
+        createOrContinue(PCSUI.class, true, true);
+        createOrContinue(TGUI.class, true, true);
+        createOrContinue(CondensateUI.class, true, true);
+        createOrContinue(FeedwaterUI.class, true, true);
+        createOrContinue(DearatorUI.class, true, true);
     }
     
     public void update() {
@@ -122,14 +115,12 @@ public class UI extends javax.swing.JFrame implements Serializable {
         for (UIUpdateable i: elementsToUpdate) {
             i.update();
         }
-        
         mTK1.update();
         double currentNeutronFlux = core.getNeutronCount();
         //double kEffective = Math.pow(currentNeutronFlux / previousNeutronFlux, 1 / 10.0);
         double reactivity = core.getReactivity();//(kEffective - 1) / kEffective;
         double reactorPeriod = core.getPeriod();//0.1 / (kEffective - 1);
         double thermalPower = core.getThermalPower();
-        previousNeutronFlux = currentNeutronFlux;
 
         java.awt.EventQueue.invokeLater(() -> {
             thermalPower1.setLcdValue(thermalPower);
@@ -137,11 +128,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
             keff.setLcdValue(reactivity);
             period.setLcdValue(reactorPeriod < -9999 || reactorPeriod > 9999 ? Double.POSITIVE_INFINITY : reactorPeriod);
             deltaKeff.setValue(reactivity * 100);
-            if (autoControl.az1Control.isTripped()) {
-                rodLimit1.setBackground(Annunciator.REDON_COLOR);
-            } else {
-                rodLimit1.setBackground(Annunciator.REDOFF_COLOR);
-            }
             Pump selectedMCP1 = mcc.mcp.get((int)mcp1Spinner.getValue() - 1);
             Pump selectedMCP2 = mcc.mcp.get((int)mcp2Spinner.getValue() - 1);
             rmp1.setLcdValue(selectedMCP1.getRPM());
@@ -170,6 +156,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         });
         mcc.drum1.resetFlowRates();
         mcc.drum2.resetFlowRates();
+        hush = false;
     }
     
     public void initializeDialUpdateThread() {
@@ -181,6 +168,16 @@ public class UI extends javax.swing.JFrame implements Serializable {
                         if (this.isFocused()) {
                             manualRodControl1.update();
                             java.awt.EventQueue.invokeLater(() -> {
+                                if (autoControl.az1Control.isTripped()) {
+                                    rodLimit1.setBackground(Annunciator.REDON_COLOR);
+                                } else {
+                                    rodLimit1.setBackground(Annunciator.REDOFF_COLOR);
+                                }
+                                if (autoControl.fasrControl.isTripped()) {
+                                    rodLimit10.setBackground(Annunciator.REDON_COLOR);
+                                } else {
+                                    rodLimit10.setBackground(Annunciator.REDOFF_COLOR);
+                                }
                                 if (autoControl.automaticRodController.isEnabled()[0]) {
                                     if (autoControl.automaticRodController.onLimit()[0]) {
                                         limitLAC.setBackground(Annunciator.YELLOWON_COLOR);
@@ -274,6 +271,14 @@ public class UI extends javax.swing.JFrame implements Serializable {
         boolean lacInop = autoControl.automaticRodController.isEnabled()[0] && autoControl.automaticRodController.hasError()[0] && autoControl.automaticRodController.onLimit()[0];
         double currentPeriod = core.getPeriod();
         boolean periodLess30 = currentPeriod < 30 && currentPeriod > 0;
+        boolean mcpCavitation = false;
+        for (Pump pump: mcc.mcp) {
+            if (pump.isCavitating) {
+                mcpCavitation = true;
+                break;
+            }
+        }
+        annunciator.setTrigger(mcpCavitation, mcpCavit);
         annunciator.setTrigger(mcc.drum1.getWaterLevel() < -25 || mcc.drum2.getWaterLevel() < -25, lowWaterLevel);
         annunciator.setTrigger(mcc.drum1.getWaterLevel() > 25 || mcc.drum2.getWaterLevel() > 25, highWaterLevel);
         annunciator.setTrigger(mcc.drum1.getPressure() > 7.02 || mcc.drum2.getPressure() > 7.02, highDrumPress);
@@ -358,11 +363,12 @@ public class UI extends javax.swing.JFrame implements Serializable {
         uiThreads.get(uiThreads.size() - 1).start();
     }
 
-    public static void createOrContinue(Class element, boolean fullscreen) {
+    public static void createOrContinue(Class element, boolean fullscreen, boolean justInit) {
         for (UIUpdateable i: elementsToUpdate) {
             if (i.getClass() == element) {
                 i.setVisibility(true);
                 ((JFrame)i).toFront();
+                ((JFrame)i).requestFocus();
                 return;
             }
         }
@@ -371,11 +377,13 @@ public class UI extends javax.swing.JFrame implements Serializable {
             if (fullscreen) {
                 ((javax.swing.JFrame)newElement).setSize(1366, 768); //2000,2000
             }
-            ((UIUpdateable)newElement).setVisibility(true);
+            if (!justInit) {
+                ((UIUpdateable)newElement).setVisibility(true);
+            }
             elementsToUpdate.add((UIUpdateable)newElement);
         } catch (Exception e) {
             e.printStackTrace();
-            //new ErrorWindow("Error loading UI element class" , ExceptionUtils.getStackTrace(e), false).setVisible(true);
+            new ErrorWindow("Error loading UI element class" , ExceptionUtils.getStackTrace(e), false).setVisible(true);
         }
     }
     
@@ -432,6 +440,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         rodLimit10 = new javax.swing.JTextField();
         rodLimit4 = new javax.swing.JTextField();
         rodLimit5 = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         rodsOut1 = new javax.swing.JButton();
         rodsOut = new javax.swing.JButton();
@@ -526,7 +535,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         pause = new javax.swing.JCheckBoxMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
@@ -550,6 +558,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
         fifteen = new javax.swing.JRadioButtonMenuItem();
         twenty = new javax.swing.JRadioButtonMenuItem();
         twentyfive = new javax.swing.JRadioButtonMenuItem();
+        jMenu8 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(UI.BACKGROUND);
@@ -839,6 +849,15 @@ public class UI extends javax.swing.JFrame implements Serializable {
         rodLimit5.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jPanel2.add(rodLimit5);
 
+        jButton4.setBackground(new java.awt.Color(183, 0, 0));
+        jButton4.setText("BSM");
+        jButton4.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -848,7 +867,9 @@ public class UI extends javax.swing.JFrame implements Serializable {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -859,8 +880,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1267,7 +1290,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         thermalPower1.setFrameDesign(eu.hansolo.steelseries.tools.FrameDesign.BLACK_METAL);
         thermalPower1.setFrameEffect(eu.hansolo.steelseries.tools.FrameEffect.EFFECT_BULGE);
         thermalPower1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.BLACKRED_LCD);
-        thermalPower1.setLcdUnitString("Nt");
+        thermalPower1.setLcdUnitString("MWt");
         thermalPower1.setLcdUnitStringVisible(true);
         thermalPower1.setSize(new java.awt.Dimension(170, 90));
 
@@ -1688,7 +1711,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
                             .addComponent(drumTemp1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(headerTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(press2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1758,17 +1781,14 @@ public class UI extends javax.swing.JFrame implements Serializable {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(manualRodControl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(10, 10, 10)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(mTK1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mTK1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE))
+                .addGap(92, 92, 92))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1792,7 +1812,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGap(18, 18, 18)
                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1805,7 +1825,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel3);
@@ -1887,14 +1907,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
             }
         });
         jMenu2.add(jMenuItem9);
-
-        jMenuItem1.setText("Log");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem1);
 
         jMenuBar1.add(jMenu2);
 
@@ -2081,15 +2093,25 @@ public class UI extends javax.swing.JFrame implements Serializable {
 
         jMenuBar1.add(jMenu4);
 
+        jMenu8.setText("Data");
+
+        jMenuItem1.setText("Log");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu8);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1464, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2100,31 +2122,34 @@ public class UI extends javax.swing.JFrame implements Serializable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        createOrContinue(SaveDialog.class, false);
+        createOrContinue(SaveDialog.class, false, false);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        createOrContinue(TGUI.class, true);
+        createOrContinue(TGUI.class, true, false);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        createOrContinue(CondensateUI.class, true);
+        createOrContinue(CondensateUI.class, true, false);
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        createOrContinue(DearatorUI.class, true);
+        createOrContinue(DearatorUI.class, true, false);
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        createOrContinue(FeedwaterUI.class, true);
+        createOrContinue(FeedwaterUI.class, true, false);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        UI.createOrContinue(PCSUI.class, true);
+        UI.createOrContinue(PCSUI.class, true, false);
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         annunciator.acknowledge();
+        for (UIUpdateable window: elementsToUpdate) {
+            window.acknowledge();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void powerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_powerActionPerformed
@@ -2144,7 +2169,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     }//GEN-LAST:event_highDrumPressActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        createOrContinue(SelsynPanel.class, false);
+        createOrContinue(SelsynPanel.class, false, false);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void rodsOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rodsOutActionPerformed
@@ -2165,6 +2190,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         autoControl.az1Control.reset();
+        autoControl.fasrControl.reset();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
@@ -2289,7 +2315,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     }//GEN-LAST:event_twentyfiveActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        createOrContinue(LogWindow.class, false);
+        createOrContinue(LogWindow.class, false, false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -2408,8 +2434,12 @@ public class UI extends javax.swing.JFrame implements Serializable {
         uiUpdateRate = 1000;
     }//GEN-LAST:event_jRadioButtonMenuItem6ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+         autoControl.fasrControl.trip("BSM Button Pressed");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
-        createOrContinue(CoreMap.class, false);
+        createOrContinue(CoreMap.class, false, false);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2446,6 +2476,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel28;
@@ -2473,6 +2504,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
     private javax.swing.JMenu jMenu7;
+    private javax.swing.JMenu jMenu8;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;

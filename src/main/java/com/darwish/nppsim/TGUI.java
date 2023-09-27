@@ -207,6 +207,11 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
         this.setVisible(false);
     }
     
+    @Override
+    public void acknowledge() {
+        annunciator.acknowledge();
+    }
+    
     private void checkAlarms() { 
         if (tg1.getRpm() > 3100) {
             annunciator.trigger(tg1Speed);
@@ -2437,16 +2442,16 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         tgValvesStop.setSelected(true);
-        tg1.trip();
+        tg1.trip("Manual");
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        UI.createOrContinue(CoreMap.class, false);
+        UI.createOrContinue(CoreMap.class, false, false);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         tgValvesStop1.setSelected(true);
-        tg2.trip();
+        tg2.trip("Manual");
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
@@ -2496,15 +2501,15 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_lowVacuum1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        UI.createOrContinue(CondensateUI.class, true);
+        UI.createOrContinue(CondensateUI.class, true, false);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        UI.createOrContinue(DearatorUI.class, true);
+        UI.createOrContinue(DearatorUI.class, true, false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        UI.createOrContinue(FeedwaterUI.class, true);
+        UI.createOrContinue(FeedwaterUI.class, true, false);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -2689,11 +2694,11 @@ public class TGUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_sdvcManualActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        UI.createOrContinue(PCSUI.class, true);
+        UI.createOrContinue(PCSUI.class, true, false);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        UI.createOrContinue(SelsynPanel.class, false);
+        UI.createOrContinue(SelsynPanel.class, false, false);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed

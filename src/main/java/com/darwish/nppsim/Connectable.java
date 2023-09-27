@@ -11,6 +11,7 @@ interface Connectable {
     double getSteamDensity();
     double getWaterDensity();
     double getSteamMass();
+    double getWaterMass();
     double getSteamVolume();
     double getWaterTemperature();
     double getSteamTemperature();
@@ -47,7 +48,6 @@ class WaterValve extends Component {
 
     public void update() {
         position = NPPMath.updatePositionFromState(state, autoState, position, speed);
-
         waterTemp = source.getWaterTemperature();
         final double pVapor = Loader.tables.getSteamPressureByTemp(waterTemp);
         final double sG = 1.0 / Loader.tables.getWaterDensityByTemp(waterTemp) / 1000; //converts density in m3/kg to specific gravity
@@ -67,6 +67,9 @@ class WaterValve extends Component {
         flow *= sG * 1000; //specific gravity to kg/m3 to get kg/h from m3/h
         flow /= 3600; // from kg/h to kg/s
         timestepFlow = flow * position * 0.05; // flow per time step: flow in kg/h / 3600 * 0.05
+        if (source.getWaterMass() < timestepFlow) {
+            timestepFlow = source.getWaterMass();
+        }
         source.updateWaterOutflow(timestepFlow, waterTemp);
         drain.updateWaterInflow(timestepFlow, waterTemp);
     }
@@ -204,15 +207,16 @@ class Pump extends Component { //TODO will need refactoring after water flow get
     protected final float maxPowerUsage; // at full rpm, kW
     protected final float accelerationSpeed; // rpm increase per tick
     protected final float decelerationSpeed; // rpm decrease per tick
-    protected final double head;
+    protected final double head, npshr;
     protected float rpm = 0.0f; // current rpm in percentage of max rmp
     private float oilPressure = 0.0f;
     protected float powerUsage = 0.0f; // A
     protected double currentHead = 0; //current head as determined by rpm
+    protected double npsha = 0;
     protected double flow = 0.0, flowRate = 0.0;// flow in kg/s NOTE converted from m3/s, flow per timestep = flow * 0.05
     protected double timestepFlow = 0.0;
     protected double waterTemp = 20.0;
-    private boolean isCavitating = false;
+    protected boolean isCavitating = false;
     protected boolean active = false;
     protected Connectable source;
     protected Connectable drain;
@@ -221,11 +225,12 @@ class Pump extends Component { //TODO will need refactoring after water flow get
      * @param ratedRPM         max rated rpm
      * @param ratedFlow        flow at max rpm m3/s
      * @param head             pump head
+     * @param npshr            net positive suction head required
      * @param accelerationTime time for reach max rpm in s
      * @param decelerationTime time to full stop from max rpm in s
      * @param maxPowerUsage    rated power usage in kW
      */
-    public Pump(float ratedRPM, float ratedFlow, double head, int accelerationTime, int decelerationTime, float maxPowerUsage, Connectable source, Connectable drain) {
+    public Pump(float ratedRPM, float ratedFlow, double head, double npshr, int accelerationTime, int decelerationTime, float maxPowerUsage, Connectable source, Connectable drain) {
         this.ratedRPM = ratedRPM;
         this.ratedFlow = ratedFlow;
         accelerationSpeed = (0.05f / accelerationTime) * ratedRPM;
@@ -234,6 +239,7 @@ class Pump extends Component { //TODO will need refactoring after water flow get
         this.source = source;
         this.drain = drain;
         this.head = head;
+        this.npshr = npshr;
         //this.dischargeValve.setPosition(1.0f);
     }
 
@@ -241,6 +247,7 @@ class Pump extends Component { //TODO will need refactoring after water flow get
         dischargeValve.update();
         waterTemp = source.getWaterTemperature();
         powerUsage = active ? (rpm / ratedRPM) * maxPowerUsage : 0;
+        npsha = source.getPressure() - Loader.tables.getSteamPressureByTemp(waterTemp);
         if (active) {
             if (rpm != ratedRPM) {
                 rpm += accelerationSpeed;
@@ -248,6 +255,7 @@ class Pump extends Component { //TODO will need refactoring after water flow get
                     rpm = ratedRPM;
                 }
             }
+            isCavitating = npsha < npshr * (rpm / ratedRPM);
         } else {
             if (rpm != 0) {
                 rpm -= decelerationSpeed;
@@ -255,6 +263,7 @@ class Pump extends Component { //TODO will need refactoring after water flow get
                     rpm = 0;
                 }
             }
+            isCavitating = false;
         }
         currentHead = (Math.pow(rpm, 2) * (head / Math.pow(ratedRPM, 2)) + (rpm == 0 ? 0 : source.getPressure())) * dischargeValve.position;
         flow = ((rpm / ratedRPM) * ratedFlow) / source.getWaterDensity() * 0.05 * dischargeValve.position;
@@ -263,6 +272,12 @@ class Pump extends Component { //TODO will need refactoring after water flow get
         }
         if (Double.isNaN(timestepFlow)) {
             timestepFlow = 0.0;
+        }
+        if (source.getWaterMass() < timestepFlow) {
+            timestepFlow = source.getWaterMass();
+        }
+        if (source.getWaterMass() < flow) {
+            flow = source.getWaterMass();
         }
         source.updateWaterOutflow(timestepFlow, waterTemp);
         drain.updateWaterInflow(timestepFlow, waterTemp);
@@ -316,8 +331,8 @@ class MCCPump extends Pump { //TODO will need refactoring after MCC water flow g
     MCC.MCPPressureHeader drain;
     double bypassFlow = 0.0;
 
-    public MCCPump(float ratedRPM, float ratedFlow, int accelerationTime, int decelerationTime, float maxPowerUsage, Connectable source, MCC.MCPPressureHeader drain) {
-        super(ratedRPM, ratedFlow, 0, accelerationTime, decelerationTime, maxPowerUsage, source, drain);
+    public MCCPump(float ratedRPM, float ratedFlow, double npshr, int accelerationTime, int decelerationTime, float maxPowerUsage, Connectable source, MCC.MCPPressureHeader drain) {
+        super(ratedRPM, ratedFlow, 0, npshr, accelerationTime, decelerationTime, maxPowerUsage, source, drain);
         this.drain = drain;
     }
 
@@ -325,6 +340,7 @@ class MCCPump extends Pump { //TODO will need refactoring after MCC water flow g
     void update() {
         waterTemp = source.getWaterTemperature();
         powerUsage = active ? (rpm / ratedRPM) * maxPowerUsage : 0;
+        npsha = source.getPressure() - Loader.tables.getSteamPressureByTemp(waterTemp);
         if (active) {
             if (rpm != ratedRPM) {
                 rpm += accelerationSpeed;
@@ -332,6 +348,7 @@ class MCCPump extends Pump { //TODO will need refactoring after MCC water flow g
                     rpm = ratedRPM;
                 }
             }
+            isCavitating = npsha < npshr * (rpm / ratedRPM);
         } else {
             if (rpm != 0) {
                 rpm -= decelerationSpeed;
@@ -339,6 +356,7 @@ class MCCPump extends Pump { //TODO will need refactoring after MCC water flow g
                     rpm = 0;
                 }
             }
+            isCavitating = false;
         }
         flow = ((rpm / ratedRPM) * ratedFlow) / source.getWaterDensity();
         if (drain.getBypassState()) {   //if bypasses are open calculate thermal driving head and derive natural ciculation flow
@@ -441,6 +459,11 @@ class OneWaySteamHeader extends WaterSteamComponent implements Connectable, UIRe
     public void updateWaterInflow(double flow, double tempC) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateWaterInFlow'");
+    }
+
+    @Override
+    public double getWaterMass() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
 
@@ -600,6 +623,11 @@ class WaterWaterHeatExchanger extends WaterSteamComponent implements Connectable
         }
         source1 = !source1;
     }
+
+    @Override
+    public double getWaterMass() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
 
 class pcsMockupValve extends WaterValve { //will be obsolete when mcp is reworked
@@ -681,8 +709,8 @@ class pcsMockupValve extends WaterValve { //will be obsolete when mcp is reworke
 
 class SimplePump extends Pump { //will become obsolete soon
     WaterValve outletValve;
-    public SimplePump(float ratedRPM, float ratedFlow, double head, int accelerationTime, int decelerationTime,float maxPowerUsage, Connectable source, Connectable drain) {
-        super(ratedRPM, ratedFlow, head, accelerationTime, decelerationTime, maxPowerUsage, source, drain);
+    public SimplePump(float ratedRPM, float ratedFlow, double head, double npshr, int accelerationTime, int decelerationTime,float maxPowerUsage, Connectable source, Connectable drain) {
+        super(ratedRPM, ratedFlow, head, npshr, accelerationTime, decelerationTime, maxPowerUsage, source, drain);
         outletValve = new WaterValve(10, 10, atmosphere, atmosphere); //dummy valve
         outletValve.setPosition(1.0f);
     }
@@ -691,7 +719,7 @@ class SimplePump extends Pump { //will become obsolete soon
         outletValve.update();
         waterTemp = source.getWaterTemperature();
         powerUsage = active ? (rpm / ratedRPM) * maxPowerUsage : 0;
-        
+        npsha = source.getPressure() - Loader.tables.getSteamPressureByTemp(waterTemp);
         if (active) {
             if (rpm != ratedRPM) {
                 rpm += accelerationSpeed;
@@ -699,6 +727,7 @@ class SimplePump extends Pump { //will become obsolete soon
                     rpm = ratedRPM;
                 }
             }
+            isCavitating = npsha < npshr * (rpm / ratedRPM);
         } else {
             if (rpm != 0) {
                 rpm -= decelerationSpeed;
@@ -706,9 +735,13 @@ class SimplePump extends Pump { //will become obsolete soon
                     rpm = 0;
                 }
             }
+            isCavitating = false;
         }
         flow = ((rpm / ratedRPM) * ratedFlow) / source.getWaterDensity();
         timestepFlow = flow * 0.05 * outletValve.getPosition();
+        if (source.getWaterMass() < timestepFlow) {
+            timestepFlow = source.getWaterMass();
+        }
         source.updateWaterOutflow(timestepFlow, waterTemp);
         drain.updateWaterInflow(timestepFlow, waterTemp);
     }

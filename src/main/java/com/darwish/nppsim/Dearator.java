@@ -152,9 +152,9 @@ public class Dearator extends WaterSteamComponent implements Connectable, UIRead
         return 0;
     }
 
+    @Override
     public double getWaterMass() {
-        // TODO Auto-generated method stub
-        return 0;
+        return waterMass;
     }
 
     public void setWaterTemp(double tempC) {

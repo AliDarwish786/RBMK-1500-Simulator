@@ -5,5 +5,6 @@ public interface UIUpdateable {
     void initializeDialUpdateThread();
     void setVisibility(boolean visible);
     void discard();
+    void acknowledge();
 }
 

@@ -37,6 +37,11 @@ public class LogWindow extends javax.swing.JFrame implements UIUpdateable {
         this.setVisible(false);//throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
+    @Override
+    public void acknowledge() {
+
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

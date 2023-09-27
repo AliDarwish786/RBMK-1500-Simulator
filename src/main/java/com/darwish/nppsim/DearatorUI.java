@@ -147,10 +147,10 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
                         });
                     }
                     if (this.isFocused()) {
-                            Thread.sleep(UI.getUpdateRate());
-                        } else {
-                            Thread.sleep(200);
-                        }
+                        Thread.sleep(UI.getUpdateRate());
+                    } else {
+                        Thread.sleep(200);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -168,6 +168,11 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     @Override
     public void discard() {
         this.setVisible(false);
+    }
+    
+    @Override
+    public void acknowledge() {
+        annunciator.acknowledge();
     }
     
     private void checkAlarms() {
@@ -3324,7 +3329,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        UI.createOrContinue(CoreMap.class, false);
+        UI.createOrContinue(CoreMap.class, false, false);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void steamOutVClose3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_steamOutVClose3ItemStateChanged
@@ -3839,15 +3844,15 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_hLevel1ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        UI.createOrContinue(TGUI.class, true);
+        UI.createOrContinue(TGUI.class, true, false);
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        UI.createOrContinue(CondensateUI.class, true);
+        UI.createOrContinue(CondensateUI.class, true, false);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        UI.createOrContinue(FeedwaterUI.class, true);
+        UI.createOrContinue(FeedwaterUI.class, true, false);
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void isolate4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_isolate4ActionPerformed
@@ -3883,7 +3888,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_isolate1ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        UI.createOrContinue(PCSUI.class, true);
+        UI.createOrContinue(PCSUI.class, true, false);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -3891,7 +3896,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        UI.createOrContinue(SelsynPanel.class, false);
+        UI.createOrContinue(SelsynPanel.class, false, false);
     }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed

@@ -223,4 +223,9 @@ public class oldUI implements UIUpdateable {
     public void discard() {
         frame.setVisible(false);
     }
+    
+    @Override
+    public void acknowledge() {
+
+    }
 }

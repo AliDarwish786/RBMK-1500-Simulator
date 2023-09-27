@@ -91,6 +91,11 @@ public class SelsynPanel extends javax.swing.JFrame implements UIUpdateable {
         this.setVisible(false);
     }
     
+    @Override
+    public void acknowledge() {
+
+    }
+    
     private javax.swing.JPanel createRow() {
         boolean fuelchannelIteratorActive = false;
         int fuelchannelIterator = 0;

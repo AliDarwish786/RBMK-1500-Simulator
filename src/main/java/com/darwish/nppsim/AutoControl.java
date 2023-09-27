@@ -4,8 +4,8 @@ import static com.darwish.nppsim.Loader.soundProvider;
 import static com.darwish.nppsim.NPPSim.TG1InletValves;
 import static com.darwish.nppsim.NPPSim.TG2InletValves;
 import static com.darwish.nppsim.NPPSim.auxFeederValves;
-import static com.darwish.nppsim.NPPSim.condensate1A;
-import static com.darwish.nppsim.NPPSim.condensate2A;
+import static com.darwish.nppsim.NPPSim.condensate1B;
+import static com.darwish.nppsim.NPPSim.condensate2B;
 import static com.darwish.nppsim.NPPSim.core;
 import static com.darwish.nppsim.NPPSim.dearatorValves;
 import static com.darwish.nppsim.NPPSim.mainFeederValves;
@@ -46,8 +46,8 @@ public class AutoControl extends Component {
     private boolean timeUpdated = false;
 
     public AutoControl() {
-        condenserWaterLevelControl.add(new OutflowWaterLevelControl(tg1.condenser, new WaterValve[] {condensate1A.get(0).dischargeValve, condensate1A.get(1).dischargeValve, condensate1A.get(2).dischargeValve}));
-        condenserWaterLevelControl.add(new OutflowWaterLevelControl(tg2.condenser, new WaterValve[] {condensate2A.get(0).dischargeValve, condensate2A.get(1).dischargeValve, condensate2A.get(2).dischargeValve}));
+        condenserWaterLevelControl.add(new OutflowWaterLevelControl(tg1.condenser, new WaterValve[] {condensate1B.get(0).dischargeValve, condensate1B.get(1).dischargeValve, condensate1B.get(2).dischargeValve}));
+        condenserWaterLevelControl.add(new OutflowWaterLevelControl(tg2.condenser, new WaterValve[] {condensate2B.get(0).dischargeValve, condensate2B.get(1).dischargeValve, condensate2B.get(2).dischargeValve}));
         dearatorValves.forEach(valve -> {
             dearatorWaterControl.add(new InflowWaterLevelControl(valve.drain, new WaterValve[] {valve}));
             dearatorPressureControl.add(new InletSteamPressureControl(valve.drain, new SteamValve[] {((Dearator)valve.drain).steamInlet}));
@@ -168,16 +168,6 @@ public class AutoControl extends Component {
                 dearatorMakeupControl.get(i).update();
             }
         }
-//        dearatorWaterControl.forEach(controller -> {
-//            if (controller.isEnabled()) {
-//                controller.update();
-//            }
-//        });
-//        dearatorMakeupControl.forEach(controller -> {
-//            if (controller.isEnabled()) {
-//                controller.update();
-//            }
-//        });
         dearatorPressureControl.forEach(controller -> {
             if (controller.isEnabled()) {
                 controller.update();
@@ -491,7 +481,12 @@ public class AutoControl extends Component {
             sequenceLock = false;
         }
         
-        public void trip() {
+        public void trip(String reason) {
+            if (tripped) {
+                return;
+            }
+            soundProvider.playContinuously(soundProvider.ALARM_2);
+            recordEvent("BAZ Trip Signal: " + reason);
             tripped = true;
             core.coreArray.forEach(row -> {
                 row.forEach(channel -> {
@@ -508,6 +503,8 @@ public class AutoControl extends Component {
         }   
         
         public void reset() {
+            recordEvent("BAZ Reset");
+            soundProvider.stop(soundProvider.ALARM_2);
             tripped = false;
             core.coreArray.forEach(row -> {
                 row.forEach(channel -> {
