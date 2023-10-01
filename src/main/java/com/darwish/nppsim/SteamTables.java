@@ -3,8 +3,6 @@ package com.darwish.nppsim;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 

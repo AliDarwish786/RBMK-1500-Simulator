@@ -126,7 +126,7 @@ abstract class ControlRodChannel extends CPSChannel {
         } else {
             position = NPPMath.updatePositionFromState(state, autoState, position, speed);
         }
-        thermalUtilizationFactor = 1.0 - (0.8 * position);
+        thermalUtilizationFactor = 1.0 - position;
     }
     
     public float getPosition() {
@@ -384,7 +384,7 @@ class FuelChannel extends Channel implements Connectable, UIReadable {
 
         resonanceEscapeProb = resonanceEscapeProbInitial - thermalPower / 4.25 * 0.03 - (waterTemperature / 300 * 0.005); //greatly simplified for simple core model
         resonanceEscapeProb -= (voidFraction * 0.04);
-        thermalUtilizationFactor = (thermalUtilizationFactorInitial - xeThermalUtilizationModifier) + voidFraction * 0.08;
+        thermalUtilizationFactor = (thermalUtilizationFactorInitial - xeThermalUtilizationModifier) + voidFraction * 0.077;
         thermalUtilizationFactor += 0.025 - Loader.tables.getWaterDensityByTemp(20) / Loader.tables.getWaterDensityByTemp(waterTemperature) * 0.025;
         thermalPower = (this.getNeutronPopulation()[0] / 29986861831.1868724665) * 2.8898254064; // simple mapping of neutron count to thermal power per channel for 4800 MWt
         

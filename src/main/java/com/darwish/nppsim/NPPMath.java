@@ -1,4 +1,3 @@
-
 package com.darwish.nppsim;
 
 import static com.darwish.nppsim.Loader.tables;

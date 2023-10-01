@@ -710,7 +710,7 @@ public class AutoControl extends Component {
             ro = core.getReactivity();
             roSetpoint = 0 + ((setpoint - thermalPower) / 50000); 
             if (ro  > roSetpoint + 0.00001) {
-                if (ro  > roSetpoint + 0.00005) {
+                if (ro  > roSetpoint + 0.0001) {
                     fineControl = false;
                 }
                 for (int i = 0; i < 3; i++) {
@@ -751,7 +751,7 @@ public class AutoControl extends Component {
                     }
                 }
             } else if (ro < roSetpoint - 0.00001) { 
-                if (ro  < roSetpoint - 0.00005) {
+                if (ro  < roSetpoint - 0.0001) {
                     fineControl = false;
                 }
                 for (int i = 0; i < 3; i++) {

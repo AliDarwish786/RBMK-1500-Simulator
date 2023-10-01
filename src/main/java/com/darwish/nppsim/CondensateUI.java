@@ -165,6 +165,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         con2Start.setSelected(tg2.condenser.condenserPump.isActive());
         con1Power.setLedOn(tg1.condenser.condenserPump.isActive());
         con2Power.setLedOn(tg2.condenser.condenserPump.isActive());
+        flowControl.setSelected(autoControl.condenserWaterLevelControl.get(0).isEnabled());
     }
     
     
