@@ -10,11 +10,11 @@ What has been achieved so far:
 - Simplified Reactor Core Model including Automatic Rod Control;
 - Selsyn indicators;
 - MTK indicator;
+- Simplified Xenon and decay heat simulation:
 
 Roadmap (more things will be added to this over time):
 
 - Better Control and Safety Systems;
-- Simplified Xenon and decay heat simulation:
 - ECCS simulation;
 - Digital MTK with more functionality 
 - Rework of TG and Condensers;
