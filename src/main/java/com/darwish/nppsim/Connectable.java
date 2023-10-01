@@ -204,11 +204,11 @@ class Pump extends Component { //TODO will need refactoring after water flow get
     WaterValve dischargeValve = new WaterValve(200, 20, atmosphere, atmosphere); //dummy valve 
     protected final float ratedRPM; // max rated rpm
     protected final float ratedFlow; // flow at max rpm m3/s
-    protected final float maxPowerUsage; // at full rpm, kW
+    protected final float maxPowerUsage; // at full rpm, A
     protected final float accelerationSpeed; // rpm increase per tick
     protected final float decelerationSpeed; // rpm decrease per tick
     protected final double head, npshr;
-    protected float rpm = 0.0f; // current rpm in percentage of max rmp
+    protected float rpm = 0.0f, rpmSetting = 1.0f; // current rpm in percentage of max rmp, setting as fraction of max
     private float oilPressure = 0.0f;
     protected float powerUsage = 0.0f; // A
     protected double currentHead = 0; //current head as determined by rpm
@@ -244,16 +244,23 @@ class Pump extends Component { //TODO will need refactoring after water flow get
     }
 
     void update() {
+        float setRPM = ratedRPM * rpmSetting;
         dischargeValve.update();
         waterTemp = source.getWaterTemperature();
-        powerUsage = active ? (rpm / ratedRPM) * maxPowerUsage : 0;
-        npsha = source.getPressure() - Loader.tables.getSteamPressureByTemp(waterTemp);
         if (active) {
-            if (rpm != ratedRPM) {
+            float setPowerUsage = maxPowerUsage / 1.5f * rpmSetting; 
+            powerUsage = setPowerUsage + ((1 - (rpm / setRPM)) * setPowerUsage * 0.5f); 
+        } else {
+            powerUsage = 0;
+        }
+        npsha = source.getPressure() - Loader.tables.getSteamPressureByTemp(waterTemp) + NPPMath.calculateFluidColumn(10, 1 / source.getWaterDensity());
+        if (active) {
+            if (rpm < setRPM - accelerationSpeed) {
                 rpm += accelerationSpeed;
-                if (rpm > ratedRPM) {
-                    rpm = ratedRPM;
-                }
+            } else if (rpm > setRPM + decelerationSpeed) {
+                rpm -= decelerationSpeed;
+            } else {
+                rpm = setRPM;
             }
             isCavitating = npsha < npshr * (rpm / ratedRPM);
         } else {
@@ -325,6 +332,21 @@ class Pump extends Component { //TODO will need refactoring after water flow get
     public void updateFlow(double flow) {
         timestepFlow = flow;
     }
+    
+    public void setSetPoint(float setPoint) {
+        if (setPoint > 1.0f) {
+            rpmSetting = 1.0f;
+            return;
+        } else if (setPoint < 0.0f) {
+            rpmSetting = 0.0f;
+            return;
+        }
+        rpmSetting = setPoint;
+    }
+    
+    public float getSetPoint() {
+        return rpmSetting;
+    }
 }
 
 class MCCPump extends Pump { //TODO will need refactoring after MCC water flow gets more realistic
@@ -334,19 +356,28 @@ class MCCPump extends Pump { //TODO will need refactoring after MCC water flow g
     public MCCPump(float ratedRPM, float ratedFlow, double npshr, int accelerationTime, int decelerationTime, float maxPowerUsage, Connectable source, MCC.MCPPressureHeader drain) {
         super(ratedRPM, ratedFlow, 0, npshr, accelerationTime, decelerationTime, maxPowerUsage, source, drain);
         this.drain = drain;
+        this.rpmSetting = 0.0f;
     }
 
     @Override
     void update() {
         waterTemp = source.getWaterTemperature();
-        powerUsage = active ? (rpm / ratedRPM) * maxPowerUsage : 0;
-        npsha = source.getPressure() - Loader.tables.getSteamPressureByTemp(waterTemp);
+        float setRPM = ratedRPM * rpmSetting;
+        dischargeValve.update();
         if (active) {
-            if (rpm != ratedRPM) {
+            float setPowerUsage = maxPowerUsage / 1.5f * rpmSetting; 
+            powerUsage = setPowerUsage + ((1 - (rpm / setRPM)) * setPowerUsage * 0.5f); 
+        } else {
+            powerUsage = 0;
+        }
+        npsha = source.getPressure() - Loader.tables.getSteamPressureByTemp(waterTemp) + NPPMath.calculateFluidColumn(25, 1 / source.getWaterDensity());
+        if (active) {
+            if (rpm < setRPM - accelerationSpeed) {
                 rpm += accelerationSpeed;
-                if (rpm > ratedRPM) {
-                    rpm = ratedRPM;
-                }
+            } else if (rpm > setRPM + decelerationSpeed) {
+                rpm -= decelerationSpeed;
+            } else {
+                rpm = setRPM;
             }
             isCavitating = npsha < npshr * (rpm / ratedRPM);
         } else {
@@ -358,21 +389,27 @@ class MCCPump extends Pump { //TODO will need refactoring after MCC water flow g
             }
             isCavitating = false;
         }
-        flow = ((rpm / ratedRPM) * ratedFlow) / source.getWaterDensity();
+        flow = ((rpm / ratedRPM) * ratedFlow) / source.getWaterDensity() * dischargeValve.position;
+
         if (drain.getBypassState()) {   //if bypasses are open calculate thermal driving head and derive natural ciculation flow
             drain.drains.forEach(channel -> {
                 double tHead = NPPMath.calculateThermalDrivingHead(1 / source.getWaterDensity(), (1 / channel.getWaterDensity()), 14.1) / 1000; 
                 double dVisc = NPPMath.calculateDynamicviscosity(source.getWaterTemperature());
-                bypassFlow += source.getWaterDensity() * NPPMath.calculateVolumeFlowRate(1 + tHead, 1, 0.025, 7, dVisc);
+                bypassFlow += source.getWaterDensity() * NPPMath.calculateVolumeFlowRate(1 + tHead, 1, 0.025, 7, dVisc) * dischargeValve.position;
             });
             if (bypassFlow > flow) {
                 flow = bypassFlow;
-                bypassFlow = 0;
             }
         }
         timestepFlow = flow * 0.05;
         source.updateWaterOutflow(timestepFlow, waterTemp);
         drain.updateWaterInflow(timestepFlow, waterTemp);
+        bypassFlow = 0;
+    }
+    
+    @Override
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
 
@@ -718,7 +755,13 @@ class SimplePump extends Pump { //will become obsolete soon
     @Override public void update() {
         outletValve.update();
         waterTemp = source.getWaterTemperature();
-        powerUsage = active ? (rpm / ratedRPM) * maxPowerUsage : 0;
+        float setRPM = ratedRPM * rpmSetting;
+        if (active) {
+            float setPowerUsage = maxPowerUsage / 1.5f * rpmSetting; 
+            powerUsage = setPowerUsage + ((1 - (rpm / setRPM)) * setPowerUsage * 0.5f); 
+        } else {
+            powerUsage = 0;
+        }
         npsha = source.getPressure() - Loader.tables.getSteamPressureByTemp(waterTemp);
         if (active) {
             if (rpm != ratedRPM) {

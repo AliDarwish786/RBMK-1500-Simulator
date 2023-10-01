@@ -44,7 +44,7 @@ abstract class Channel implements ChannelUIUpdatable, Serializable {
         
     }
     
-    public void updateNeutronCount() {
+    public void updateNeutronPopulation() {
         fastNeutronCount *= thermalFissionFactor * fastNonLeakageProb * resonanceEscapeProb * thermalNonLeakageProb * thermalUtilizationFactor;
     }
 
@@ -67,7 +67,7 @@ abstract class Channel implements ChannelUIUpdatable, Serializable {
         return new Double[] {fastNeutronCount, thermalNeutronCount};
     }
 
-    public void setNeutronCount(Double[] neutronPopulation) {
+    public void setNeutronPopulation(Double[] neutronPopulation) {
         fastNeutronCount = neutronPopulation[0];
         thermalNeutronCount = neutronPopulation[1];
         if (fastNeutronCount < initialNeutronCount) {

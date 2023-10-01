@@ -63,28 +63,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
             }
         });
         
-        ((JSpinner.DefaultEditor)mcp1Spinner.getEditor()).getTextField().setEditable(false);
-        ((JSpinner.DefaultEditor)mcp2Spinner.getEditor()).getTextField().setEditable(false);
-        mcp1Spinner.addChangeListener((ChangeEvent e) -> {
-            Pump currentSelection = mcc.mcp.get((int)mcp1Spinner.getValue() - 1);
-            rmp1.setLcdValue(currentSelection.getRPM());
-            amps1.setLcdValue(currentSelection.getPowerUsage());
-            if (currentSelection.isActive()) {
-                start1.setSelected(true);
-            } else {
-                stop1.setSelected(true);
-            }
-        });
-        mcp2Spinner.addChangeListener((ChangeEvent e) -> {
-            Pump currentSelection = mcc.mcp.get((int)mcp2Spinner.getValue() - 1);
-            rpm2.setLcdValue(currentSelection.getRPM());
-            apms2.setLcdValue(currentSelection.getPowerUsage());
-            if (currentSelection.isActive()) {
-                start2.setSelected(true);
-            } else {
-                stop2.setSelected(true);
-            }
-        });
         initializeDialUpdateThread();
         precisionController();
         
@@ -93,21 +71,12 @@ public class UI extends javax.swing.JFrame implements Serializable {
         toggleAR2.getModel().setSelected(autoControl.automaticRodController.isEnabled()[2]);
         toggleLAC.getModel().setSelected(autoControl.automaticRodController.isEnabled()[0]);
         setpoint.setLcdValue(autoControl.automaticRodController.getSetpoint());
-        start1.setSelected(mcc.mcp.get(0).isActive());
-        start2.setSelected(mcc.mcp.get(4).isActive());
-        power2A1.setLedOn(mcc.mcp.get(0).isActive());
-        power2A2.setLedOn(mcc.mcp.get(1).isActive());
-        power2A3.setLedOn(mcc.mcp.get(2).isActive());
-        power2A4.setLedOn(mcc.mcp.get(3).isActive());
-        power2A5.setLedOn(mcc.mcp.get(4).isActive());
-        power2A6.setLedOn(mcc.mcp.get(5).isActive());
-        power2A7.setLedOn(mcc.mcp.get(6).isActive());
-        power2A8.setLedOn(mcc.mcp.get(7).isActive());
         createOrContinue(PCSUI.class, true, true);
         createOrContinue(TGUI.class, true, true);
         createOrContinue(CondensateUI.class, true, true);
         createOrContinue(FeedwaterUI.class, true, true);
         createOrContinue(DearatorUI.class, true, true);
+        createOrContinue(MCPUI.class, true, true);
     }
     
     public void update() {
@@ -128,18 +97,14 @@ public class UI extends javax.swing.JFrame implements Serializable {
             keff.setLcdValue(reactivity);
             period.setLcdValue(reactorPeriod < -9999 || reactorPeriod > 9999 ? Double.POSITIVE_INFINITY : reactorPeriod);
             deltaKeff.setValue(reactivity * 100);
-            Pump selectedMCP1 = mcc.mcp.get((int)mcp1Spinner.getValue() - 1);
-            Pump selectedMCP2 = mcc.mcp.get((int)mcp2Spinner.getValue() - 1);
-            rmp1.setLcdValue(selectedMCP1.getRPM());
-            amps1.setLcdValue(selectedMCP1.getPowerUsage());
-            flow1.setLcdValue(selectedMCP1.getFlow());
-            rpm2.setLcdValue(selectedMCP2.getRPM());
-            apms2.setLcdValue(selectedMCP2.getPowerUsage());
-            flow2.setLcdValue(selectedMCP2.getFlow());
             drumTemp.setLcdValue(mcc.drum1.getWaterTemperature());
             drumTemp1.setLcdValue(mcc.drum2.getWaterTemperature());
             headerTemp.setLcdValue(mcc.pHeader1.getWaterTemperature());
             headerTemp1.setLcdValue(mcc.pHeader2.getWaterTemperature());
+            suctionTemp.setLcdValue(mcc.sHeader1.getWaterTemperature());
+            suctionTemp1.setLcdValue(mcc.sHeader2.getWaterTemperature());
+            headerFlow.setLcdValue(mcc.pHeader1.getWaterInflowRate());
+            headerFlow1.setLcdValue(mcc.pHeader2.getWaterInflowRate());
             electric1.setLcdValue(tg1.getGeneratorLoad());
             electric2.setLcdValue(tg2.getGeneratorLoad());
             press1.setLcdValue(mcc.drum1.getPressure());
@@ -271,14 +236,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         boolean lacInop = autoControl.automaticRodController.isEnabled()[0] && autoControl.automaticRodController.hasError()[0] && autoControl.automaticRodController.onLimit()[0];
         double currentPeriod = core.getPeriod();
         boolean periodLess30 = currentPeriod < 30 && currentPeriod > 0;
-        boolean mcpCavitation = false;
-        for (Pump pump: mcc.mcp) {
-            if (pump.isCavitating) {
-                mcpCavitation = true;
-                break;
-            }
-        }
-        annunciator.setTrigger(mcpCavitation, mcpCavit);
         annunciator.setTrigger(mcc.drum1.getWaterLevel() < -25 || mcc.drum2.getWaterLevel() < -25, lowWaterLevel);
         annunciator.setTrigger(mcc.drum1.getWaterLevel() > 25 || mcc.drum2.getWaterLevel() > 25, highWaterLevel);
         annunciator.setTrigger(mcc.drum1.getPressure() > 7.02 || mcc.drum2.getPressure() > 7.02, highDrumPress);
@@ -304,7 +261,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
                     try {
                         selectedControlRods.forEach(channel -> {
                             if (rodsOut.getModel().isPressed()) {
-                                if (selectedControlRods.size() > 40) {
+                                if (selectedControlRods.size() > 4) {
                                     rodLimit.setBackground(Annunciator.YELLOWON_COLOR);
                                 } else {
                                     if (sequenceBlock[0]) {
@@ -478,36 +435,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         thermalPower1 = new eu.hansolo.steelseries.gauges.DisplayRectangular();
         electric1 = new eu.hansolo.steelseries.gauges.DisplayRectangular();
         mTK1 = new com.darwish.nppsim.MTK();
-        jPanel16 = new javax.swing.JPanel();
-        jLabel28 = new javax.swing.JLabel();
-        jPanel17 = new javax.swing.JPanel();
-        start1 = new javax.swing.JRadioButton();
-        stop1 = new javax.swing.JRadioButton();
-        jLabel29 = new javax.swing.JLabel();
-        mcp1Spinner = new javax.swing.JSpinner();
-        rmp1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
-        amps1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
-        flow1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
-        power2A1 = new eu.hansolo.steelseries.extras.Led();
-        power2A2 = new eu.hansolo.steelseries.extras.Led();
-        power2A3 = new eu.hansolo.steelseries.extras.Led();
-        jLabel38 = new javax.swing.JLabel();
-        power2A4 = new eu.hansolo.steelseries.extras.Led();
-        jPanel26 = new javax.swing.JPanel();
-        jLabel39 = new javax.swing.JLabel();
-        jPanel27 = new javax.swing.JPanel();
-        start2 = new javax.swing.JRadioButton();
-        stop2 = new javax.swing.JRadioButton();
-        jLabel40 = new javax.swing.JLabel();
-        mcp2Spinner = new javax.swing.JSpinner();
-        rpm2 = new eu.hansolo.steelseries.gauges.DisplaySingle();
-        apms2 = new eu.hansolo.steelseries.gauges.DisplaySingle();
-        flow2 = new eu.hansolo.steelseries.gauges.DisplaySingle();
-        power2A5 = new eu.hansolo.steelseries.extras.Led();
-        power2A6 = new eu.hansolo.steelseries.extras.Led();
-        power2A7 = new eu.hansolo.steelseries.extras.Led();
-        jLabel41 = new javax.swing.JLabel();
-        power2A8 = new eu.hansolo.steelseries.extras.Led();
         jPanel9 = new javax.swing.JPanel();
         drumTemp = new eu.hansolo.steelseries.gauges.DisplaySingle();
         drumTemp1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
@@ -515,14 +442,22 @@ public class UI extends javax.swing.JFrame implements Serializable {
         jLabel11 = new javax.swing.JLabel();
         jLabel49 = new javax.swing.JLabel();
         jLabel50 = new javax.swing.JLabel();
-        headerTemp = new eu.hansolo.steelseries.gauges.DisplaySingle();
+        suctionTemp = new eu.hansolo.steelseries.gauges.DisplaySingle();
         jLabel51 = new javax.swing.JLabel();
-        headerTemp1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
+        suctionTemp1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
         jLabel52 = new javax.swing.JLabel();
         press1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
         press2 = new eu.hansolo.steelseries.gauges.DisplaySingle();
         jLabel53 = new javax.swing.JLabel();
         jLabel54 = new javax.swing.JLabel();
+        headerTemp1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
+        jLabel55 = new javax.swing.JLabel();
+        headerTemp = new eu.hansolo.steelseries.gauges.DisplaySingle();
+        jLabel56 = new javax.swing.JLabel();
+        headerFlow1 = new eu.hansolo.steelseries.gauges.DisplaySingle();
+        jLabel57 = new javax.swing.JLabel();
+        headerFlow = new eu.hansolo.steelseries.gauges.DisplaySingle();
+        jLabel58 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
@@ -530,6 +465,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
@@ -574,7 +510,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
 
         jPanel3.setBackground(BACKGROUND);
         jPanel3.setMinimumSize(new java.awt.Dimension(0, 0));
-        jPanel3.setPreferredSize(new java.awt.Dimension(1366, 768));
 
         annunciatorPanel.setBackground(UI.BACKGROUND);
         annunciatorPanel.setLayout(new java.awt.GridLayout(3, 5));
@@ -685,7 +620,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         mcpCavit.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
         mcpCavit.setForeground(new java.awt.Color(0, 0, 0));
         mcpCavit.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        mcpCavit.setText("MCP cavitation");
         mcpCavit.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         mcpCavit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1309,306 +1243,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         mTK1.setMinimumSize(new java.awt.Dimension(427, 325));
         mTK1.setPreferredSize(new java.awt.Dimension(427, 325));
 
-        jPanel16.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
-
-        jLabel28.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel28.setText("MCP Loop 1");
-
-        jPanel17.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
-
-        buttonGroup5.add(start1);
-        start1.setText("Start");
-        start1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                start1ItemStateChanged(evt);
-            }
-        });
-        start1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                start1ActionPerformed(evt);
-            }
-        });
-
-        buttonGroup5.add(stop1);
-        stop1.setSelected(true);
-        stop1.setText("Stop");
-        stop1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                stop1ItemStateChanged(evt);
-            }
-        });
-        stop1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stop1ActionPerformed(evt);
-            }
-        });
-
-        jLabel29.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jLabel29.setText("Pump Selector");
-
-        mcp1Spinner.setModel(new javax.swing.SpinnerNumberModel(1, 1, 4, 1));
-        mcp1Spinner.setDoubleBuffered(true);
-
-        rmp1.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
-        rmp1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
-        rmp1.setLcdUnitString(org.openide.util.NbBundle.getMessage(UI.class, "CondensateUI.rpm2A.lcdUnitString")); // NOI18N
-
-        amps1.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
-        amps1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
-        amps1.setLcdUnitString(org.openide.util.NbBundle.getMessage(UI.class, "CondensateUI.amps2A.lcdUnitString")); // NOI18N
-
-        flow1.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
-        flow1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
-        flow1.setLcdUnitString(org.openide.util.NbBundle.getMessage(UI.class, "CondensateUI.flow2A.lcdUnitString")); // NOI18N
-
-        javax.swing.GroupLayout jPanel17Layout = new javax.swing.GroupLayout(jPanel17);
-        jPanel17.setLayout(jPanel17Layout);
-        jPanel17Layout.setHorizontalGroup(
-            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel17Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel17Layout.createSequentialGroup()
-                        .addComponent(jLabel29)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(mcp1Spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel17Layout.createSequentialGroup()
-                        .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(start1)
-                            .addComponent(stop1))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(amps1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rmp1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(flow1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(0, 12, Short.MAX_VALUE))
-        );
-        jPanel17Layout.setVerticalGroup(
-            jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel17Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel29)
-                    .addComponent(mcp1Spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel17Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel17Layout.createSequentialGroup()
-                        .addComponent(start1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(stop1))
-                    .addGroup(jPanel17Layout.createSequentialGroup()
-                        .addComponent(rmp1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(amps1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(flow1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        power2A1.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        power2A2.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        power2A3.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        jLabel38.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jLabel38.setText(org.openide.util.NbBundle.getMessage(UI.class, "CondensateUI.jLabel31.text")); // NOI18N
-
-        power2A4.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
-        jPanel16.setLayout(jPanel16Layout);
-        jPanel16Layout.setHorizontalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addComponent(jLabel38)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(power2A4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel16Layout.createSequentialGroup()
-                        .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel28))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(0, 12, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel16Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(power2A1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(power2A2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(power2A3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38))
-        );
-        jPanel16Layout.setVerticalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(power2A1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(power2A2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(power2A3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel38)
-                    .addComponent(power2A4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel26.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
-
-        jLabel39.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jLabel39.setText("MCP Loop 2");
-
-        jPanel27.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
-
-        buttonGroup6.add(start2);
-        start2.setText("Start");
-        start2.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                start2ItemStateChanged(evt);
-            }
-        });
-        start2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                start2ActionPerformed(evt);
-            }
-        });
-
-        buttonGroup6.add(stop2);
-        stop2.setSelected(true);
-        stop2.setText("Stop");
-        stop2.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                stop2ItemStateChanged(evt);
-            }
-        });
-        stop2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stop2ActionPerformed(evt);
-            }
-        });
-
-        jLabel40.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jLabel40.setText("Pump Selector");
-
-        mcp2Spinner.setModel(new javax.swing.SpinnerNumberModel(5, 5, 8, 1));
-        mcp2Spinner.setDoubleBuffered(true);
-
-        rpm2.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
-        rpm2.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
-        rpm2.setLcdUnitString(org.openide.util.NbBundle.getMessage(UI.class, "CondensateUI.rpm2A.lcdUnitString")); // NOI18N
-
-        apms2.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
-        apms2.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
-        apms2.setLcdUnitString(org.openide.util.NbBundle.getMessage(UI.class, "CondensateUI.amps2A.lcdUnitString")); // NOI18N
-
-        flow2.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
-        flow2.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
-        flow2.setLcdUnitString(org.openide.util.NbBundle.getMessage(UI.class, "CondensateUI.flow2A.lcdUnitString")); // NOI18N
-
-        javax.swing.GroupLayout jPanel27Layout = new javax.swing.GroupLayout(jPanel27);
-        jPanel27.setLayout(jPanel27Layout);
-        jPanel27Layout.setHorizontalGroup(
-            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel27Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel27Layout.createSequentialGroup()
-                        .addComponent(jLabel40)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(mcp2Spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel27Layout.createSequentialGroup()
-                        .addGroup(jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(start2)
-                            .addComponent(stop2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(apms2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rpm2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(flow2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(0, 12, Short.MAX_VALUE))
-        );
-        jPanel27Layout.setVerticalGroup(
-            jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel27Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel40)
-                    .addComponent(mcp2Spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel27Layout.createSequentialGroup()
-                        .addComponent(start2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(stop2))
-                    .addGroup(jPanel27Layout.createSequentialGroup()
-                        .addComponent(rpm2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(apms2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(flow2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        power2A5.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        power2A6.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        power2A7.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        jLabel41.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jLabel41.setText(org.openide.util.NbBundle.getMessage(UI.class, "CondensateUI.jLabel31.text")); // NOI18N
-
-        power2A8.setPreferredSize(new java.awt.Dimension(20, 20));
-
-        javax.swing.GroupLayout jPanel26Layout = new javax.swing.GroupLayout(jPanel26);
-        jPanel26.setLayout(jPanel26Layout);
-        jPanel26Layout.setHorizontalGroup(
-            jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel26Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel26Layout.createSequentialGroup()
-                        .addComponent(jLabel41)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(power2A8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel26Layout.createSequentialGroup()
-                        .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel39))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(0, 12, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel26Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(power2A5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(power2A6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(power2A7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38))
-        );
-        jPanel26Layout.setVerticalGroup(
-            jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel26Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel27, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel26Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(power2A5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(power2A6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(power2A7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel41)
-                    .addComponent(power2A8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         jPanel9.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(222, 222, 222), 1, true));
         jPanel9.setMaximumSize(new java.awt.Dimension(9999, 9999));
         jPanel9.setMinimumSize(new java.awt.Dimension(30, 30));
@@ -1639,23 +1273,23 @@ public class UI extends javax.swing.JFrame implements Serializable {
 
         jLabel50.setText("Drum Temp");
 
-        headerTemp.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
-        headerTemp.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
-        headerTemp.setLcdUnitString("°C");
-        headerTemp.setLcdValue(20.0);
-        headerTemp.setMaximumSize(new java.awt.Dimension(94, 32));
-        headerTemp.setPreferredSize(new java.awt.Dimension(94, 32));
+        suctionTemp.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
+        suctionTemp.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
+        suctionTemp.setLcdUnitString("°C");
+        suctionTemp.setLcdValue(20.0);
+        suctionTemp.setMaximumSize(new java.awt.Dimension(94, 32));
+        suctionTemp.setPreferredSize(new java.awt.Dimension(94, 32));
 
-        jLabel51.setText("Header Temp");
+        jLabel51.setText("Suction Temp");
 
-        headerTemp1.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
-        headerTemp1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
-        headerTemp1.setLcdUnitString("°C");
-        headerTemp1.setLcdValue(20.0);
-        headerTemp1.setMaximumSize(new java.awt.Dimension(94, 32));
-        headerTemp1.setPreferredSize(new java.awt.Dimension(94, 32));
+        suctionTemp1.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
+        suctionTemp1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
+        suctionTemp1.setLcdUnitString("°C");
+        suctionTemp1.setLcdValue(20.0);
+        suctionTemp1.setMaximumSize(new java.awt.Dimension(94, 32));
+        suctionTemp1.setPreferredSize(new java.awt.Dimension(94, 32));
 
-        jLabel52.setText("Header Temp");
+        jLabel52.setText("Suction Temp");
 
         press1.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
         press1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
@@ -1679,6 +1313,42 @@ public class UI extends javax.swing.JFrame implements Serializable {
 
         jLabel54.setText("Drum Temp");
 
+        headerTemp1.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
+        headerTemp1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
+        headerTemp1.setLcdUnitString("°C");
+        headerTemp1.setLcdValue(20.0);
+        headerTemp1.setMaximumSize(new java.awt.Dimension(94, 32));
+        headerTemp1.setPreferredSize(new java.awt.Dimension(94, 32));
+
+        jLabel55.setText("Header Temp");
+
+        headerTemp.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
+        headerTemp.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
+        headerTemp.setLcdUnitString("°C");
+        headerTemp.setLcdValue(20.0);
+        headerTemp.setMaximumSize(new java.awt.Dimension(94, 32));
+        headerTemp.setPreferredSize(new java.awt.Dimension(94, 32));
+
+        jLabel56.setText("Header Temp");
+
+        headerFlow1.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
+        headerFlow1.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
+        headerFlow1.setLcdUnitString("kg/s");
+        headerFlow1.setLcdValue(20.0);
+        headerFlow1.setMaximumSize(new java.awt.Dimension(94, 32));
+        headerFlow1.setPreferredSize(new java.awt.Dimension(94, 32));
+
+        jLabel57.setText("Header Flow");
+
+        headerFlow.setCustomLcdForeground(new java.awt.Color(204, 204, 255));
+        headerFlow.setLcdColor(eu.hansolo.steelseries.tools.LcdColor.LIGHTBLUE_LCD);
+        headerFlow.setLcdUnitString("kg/s");
+        headerFlow.setLcdValue(20.0);
+        headerFlow.setMaximumSize(new java.awt.Dimension(94, 32));
+        headerFlow.setPreferredSize(new java.awt.Dimension(94, 32));
+
+        jLabel58.setText("Header Flow");
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -1691,26 +1361,34 @@ public class UI extends javax.swing.JFrame implements Serializable {
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel51)
                             .addComponent(jLabel49)
-                            .addComponent(jLabel50))
+                            .addComponent(jLabel50)
+                            .addComponent(jLabel56)
+                            .addComponent(jLabel58))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(headerTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(suctionTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(drumTemp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(press1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(27, 27, 27)
+                                .addComponent(press1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(headerTemp, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(headerFlow, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(30, 30, 30)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel11)
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel52)
                             .addComponent(jLabel53, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel54, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jLabel54, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel55, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel57, javax.swing.GroupLayout.Alignment.LEADING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(drumTemp1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(suctionTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(press2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(headerTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(press2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(headerFlow1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
@@ -1733,8 +1411,18 @@ public class UI extends javax.swing.JFrame implements Serializable {
                             .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(headerTemp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(suctionTemp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel51, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(headerTemp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel55, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(headerFlow, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel58, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(press2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1743,9 +1431,15 @@ public class UI extends javax.swing.JFrame implements Serializable {
                         .addComponent(drumTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(headerTemp1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel52, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(14, Short.MAX_VALUE))
+                            .addComponent(suctionTemp1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel52, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(headerTemp1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(headerFlow1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel57, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -1782,13 +1476,9 @@ public class UI extends javax.swing.JFrame implements Serializable {
                         .addComponent(manualRodControl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(10, 10, 10)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(mTK1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE))
-                .addGap(92, 92, 92))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1819,13 +1509,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(manualRodControl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(26, Short.MAX_VALUE))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(jPanel3);
@@ -1867,6 +1552,14 @@ public class UI extends javax.swing.JFrame implements Serializable {
             }
         });
         jMenu2.add(jMenuItem10);
+
+        jMenuItem12.setText("MCP");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem12);
 
         jMenuItem5.setText("Turbine-Generators");
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
@@ -2111,7 +1804,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1464, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1409, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2338,94 +2031,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
         uiUpdateRate = 200;
     }//GEN-LAST:event_jRadioButtonMenuItem4ActionPerformed
 
-    private void stop2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop2ActionPerformed
-        mcc.mcp.get((int)mcp2Spinner.getValue() - 1).setActive(false);
-        switch((int)mcp2Spinner.getValue()) {
-            case 5:
-            power2A5.setLedOn(false);
-            break;
-            case 6:
-            power2A6.setLedOn(false);
-            break;
-            case 7:
-            power2A7.setLedOn(false);
-            break;
-            case 8:
-            power2A8.setLedOn(false);
-            break;
-        }
-    }//GEN-LAST:event_stop2ActionPerformed
-
-    private void stop2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop2ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_stop2ItemStateChanged
-
-    private void start2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start2ActionPerformed
-        mcc.mcp.get((int)mcp2Spinner.getValue() - 1).setActive(true);
-        switch((int)mcp2Spinner.getValue()) {
-            case 5:
-            power2A5.setLedOn(true);
-            break;
-            case 6:
-            power2A6.setLedOn(true);
-            break;
-            case 7:
-            power2A7.setLedOn(true);
-            break;
-            case 8:
-            power2A8.setLedOn(true);
-            break;
-        }
-    }//GEN-LAST:event_start2ActionPerformed
-
-    private void start2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start2ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_start2ItemStateChanged
-
-    private void stop1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stop1ActionPerformed
-        mcc.mcp.get((int)mcp1Spinner.getValue() - 1).setActive(false);
-        switch((int)mcp1Spinner.getValue()) {
-            case 1:
-            power2A1.setLedOn(false);
-            break;
-            case 2:
-            power2A2.setLedOn(false);
-            break;
-            case 3:
-            power2A3.setLedOn(false);
-            break;
-            case 4:
-            power2A4.setLedOn(false);
-            break;
-        }
-    }//GEN-LAST:event_stop1ActionPerformed
-
-    private void stop1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_stop1ItemStateChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_stop1ItemStateChanged
-
-    private void start1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_start1ActionPerformed
-        mcc.mcp.get((int)mcp1Spinner.getValue() - 1).setActive(true);
-        switch((int)mcp1Spinner.getValue()) {
-            case 1:
-            power2A1.setLedOn(true);
-            break;
-            case 2:
-            power2A2.setLedOn(true);
-            break;
-            case 3:
-            power2A3.setLedOn(true);
-            break;
-            case 4:
-            power2A4.setLedOn(true);
-            break;
-        }
-    }//GEN-LAST:event_start1ActionPerformed
-
-    private void start1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_start1ItemStateChanged
-        //TODO
-    }//GEN-LAST:event_start1ItemStateChanged
-
     private void jRadioButtonMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItem5ActionPerformed
         uiUpdateRate = 500;
     }//GEN-LAST:event_jRadioButtonMenuItem5ActionPerformed
@@ -2438,14 +2043,16 @@ public class UI extends javax.swing.JFrame implements Serializable {
          autoControl.fasrControl.trip("BSM Button Pressed");
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        createOrContinue(MCPUI.class, true, false);
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {
         createOrContinue(CoreMap.class, false, false);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private eu.hansolo.steelseries.gauges.DisplaySingle amps1;
     private javax.swing.JPanel annunciatorPanel;
-    private eu.hansolo.steelseries.gauges.DisplaySingle apms2;
     private javax.swing.JTextField arINOP;
     private javax.swing.JTextField busy1AR;
     private javax.swing.JTextField busy2AR;
@@ -2467,8 +2074,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JTextField errorLAC;
     private javax.swing.JRadioButtonMenuItem fifteen;
     private javax.swing.JRadioButtonMenuItem five;
-    private eu.hansolo.steelseries.gauges.DisplaySingle flow1;
-    private eu.hansolo.steelseries.gauges.DisplaySingle flow2;
+    private eu.hansolo.steelseries.gauges.DisplaySingle headerFlow;
+    private eu.hansolo.steelseries.gauges.DisplaySingle headerFlow1;
     private eu.hansolo.steelseries.gauges.DisplaySingle headerTemp;
     private eu.hansolo.steelseries.gauges.DisplaySingle headerTemp1;
     private javax.swing.JTextField highDrumPress;
@@ -2479,14 +2086,8 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel38;
-    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel40;
-    private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel49;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel50;
@@ -2494,6 +2095,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JLabel jLabel52;
     private javax.swing.JLabel jLabel53;
     private javax.swing.JLabel jLabel54;
+    private javax.swing.JLabel jLabel55;
+    private javax.swing.JLabel jLabel56;
+    private javax.swing.JLabel jLabel57;
+    private javax.swing.JLabel jLabel58;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
@@ -2509,6 +2114,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
@@ -2519,11 +2125,7 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel16;
-    private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel26;
-    private javax.swing.JPanel jPanel27;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -2547,8 +2149,6 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JTextField lowWaterLevel;
     private com.darwish.nppsim.MTK mTK1;
     private com.darwish.nppsim.ManualRodControl manualRodControl1;
-    private javax.swing.JSpinner mcp1Spinner;
-    private javax.swing.JSpinner mcp2Spinner;
     private javax.swing.JTextField mcpCavit;
     private javax.swing.JTextField msv1;
     private javax.swing.JTextField msv2;
@@ -2561,19 +2161,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JCheckBoxMenuItem pause;
     private eu.hansolo.steelseries.gauges.DisplaySingle period;
     private javax.swing.JTextField power;
-    private eu.hansolo.steelseries.extras.Led power2A1;
-    private eu.hansolo.steelseries.extras.Led power2A2;
-    private eu.hansolo.steelseries.extras.Led power2A3;
-    private eu.hansolo.steelseries.extras.Led power2A4;
-    private eu.hansolo.steelseries.extras.Led power2A5;
-    private eu.hansolo.steelseries.extras.Led power2A6;
-    private eu.hansolo.steelseries.extras.Led power2A7;
-    private eu.hansolo.steelseries.extras.Led power2A8;
     private javax.swing.JButton precisionDecrement2;
     private javax.swing.JButton precisionIncrement2;
     private eu.hansolo.steelseries.gauges.DisplaySingle press1;
     private eu.hansolo.steelseries.gauges.DisplaySingle press2;
-    private eu.hansolo.steelseries.gauges.DisplaySingle rmp1;
     private javax.swing.JTextField rodLimit;
     private javax.swing.JTextField rodLimit1;
     private javax.swing.JTextField rodLimit10;
@@ -2586,13 +2177,10 @@ public class UI extends javax.swing.JFrame implements Serializable {
     private javax.swing.JButton rodsIn;
     private javax.swing.JButton rodsOut;
     private javax.swing.JButton rodsOut1;
-    private eu.hansolo.steelseries.gauges.DisplaySingle rpm2;
     private javax.swing.JTextField sdv_aOpen;
     private eu.hansolo.steelseries.gauges.DisplaySingle setpoint;
-    private javax.swing.JRadioButton start1;
-    private javax.swing.JRadioButton start2;
-    private javax.swing.JRadioButton stop1;
-    private javax.swing.JRadioButton stop2;
+    private eu.hansolo.steelseries.gauges.DisplaySingle suctionTemp;
+    private eu.hansolo.steelseries.gauges.DisplaySingle suctionTemp1;
     private javax.swing.JTextField t30;
     private javax.swing.JRadioButtonMenuItem ten;
     private eu.hansolo.steelseries.gauges.DisplayRectangular thermalPower1;

@@ -125,12 +125,30 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         } else {
             stop2A.setSelected(true);
         }
+        currentSelection = condensate1B.get((int)spinner1B.getValue() - 1);
+        if (currentSelection.isActive()) {
+            start1B.setSelected(true);
+        } else {
+            stop1B.setSelected(true);
+        }
+        currentSelection = condensate2B.get((int)spinner2B.getValue() - 1);
+        if (currentSelection.isActive()) {
+            start2B.setSelected(true);
+        } else {
+            stop2B.setSelected(true);
+        }
         power1A1.setLedOn(condensate1A.get(0).isActive());
         power1A2.setLedOn(condensate1A.get(1).isActive());
         power1A3.setLedOn(condensate1A.get(2).isActive());
         power2A1.setLedOn(condensate2A.get(0).isActive());
         power2A2.setLedOn(condensate2A.get(1).isActive());
         power2A3.setLedOn(condensate2A.get(2).isActive());
+        power1B1.setLedOn(condensate1B.get(0).isActive());
+        power1B2.setLedOn(condensate1B.get(1).isActive());
+        power1B3.setLedOn(condensate1B.get(2).isActive());
+        power2B1.setLedOn(condensate2B.get(0).isActive());
+        power2B2.setLedOn(condensate2B.get(1).isActive());
+        power2B3.setLedOn(condensate2B.get(2).isActive());
         Ejector currentSelection1 = ejectors.get((int)ejector1Spinner.getValue() - 1);
         if (currentSelection1.getState() == 2) {
             ejector1Start.setSelected(true);
@@ -209,10 +227,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
                                 final float[] totalValvePosition = {0.0f, 0.0f}; 
                                 condensate1A.forEach(pump -> {
                                     hotwellFlows[0] += pump.getFlowRate();
-                                    totalValvePosition[0] += pump.dischargeValve.getPosition();
                                 });
                                 condensate2A.forEach(pump -> {
                                     hotwellFlows[1] += pump.getFlowRate();
+                                });
+                                condensate1B.forEach(pump -> {
+                                    totalValvePosition[0] += pump.dischargeValve.getPosition();
+                                });
+                                condensate2B.forEach(pump -> {
                                     totalValvePosition[1] += pump.dischargeValve.getPosition();
                                 });
                                 totalValvePosition[0] /= 3.0f;
@@ -509,11 +531,12 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         jMenu1 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem10 = new javax.swing.JMenuItem();
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(1366, 768));
 
@@ -2315,6 +2338,22 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
         });
         jMenu1.add(jMenuItem3);
 
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem10, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jMenuItem10.text")); // NOI18N
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem10);
+
+        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem12, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jMenuItem12.text")); // NOI18N
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem12);
+
         org.openide.awt.Mnemonics.setLocalizedText(jMenuItem1, "Turbine-Generators");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2346,14 +2385,6 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
             }
         });
         jMenu1.add(jMenuItem5);
-
-        org.openide.awt.Mnemonics.setLocalizedText(jMenuItem10, org.openide.util.NbBundle.getMessage(CondensateUI.class, "CondensateUI.jMenuItem10.text")); // NOI18N
-        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem10ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem10);
 
         jMenuBar1.add(jMenu1);
 
@@ -2662,7 +2693,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_steamOutVOpen4ItemStateChanged
 
     private void steamOutVOpen4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVOpen4ActionPerformed
-        condensate1A.forEach(pump -> {
+        condensate1B.forEach(pump -> {
             pump.dischargeValve.setAutoState(1);
             pump.dischargeValve.setState(2);
         });
@@ -2673,7 +2704,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_steamOutVStop4ItemStateChanged
 
     private void steamOutVStop4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVStop4ActionPerformed
-        condensate1A.forEach(pump -> {
+        condensate1B.forEach(pump -> {
             pump.dischargeValve.setAutoState(1);
             pump.dischargeValve.setState(1);
         });
@@ -2688,7 +2719,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_steamOutVOpen5ItemStateChanged
 
     private void steamOutVOpen5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVOpen5ActionPerformed
-        condensate2A.forEach(pump -> {
+        condensate2B.forEach(pump -> {
             pump.dischargeValve.setAutoState(1);
             pump.dischargeValve.setState(2);
         });
@@ -2699,7 +2730,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_steamOutVStop5ItemStateChanged
 
     private void steamOutVStop5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVStop5ActionPerformed
-        condensate2A.forEach(pump -> {
+        condensate2B.forEach(pump -> {
             pump.dischargeValve.setAutoState(1);
             pump.dischargeValve.setState(1);
         });
@@ -2710,14 +2741,14 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     }//GEN-LAST:event_steamOutVClose5ItemStateChanged
 
     private void steamOutVClose4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVClose4ActionPerformed
-        condensate1A.forEach(pump -> {
+        condensate1B.forEach(pump -> {
             pump.dischargeValve.setAutoState(1);
             pump.dischargeValve.setState(0);
         });
     }//GEN-LAST:event_steamOutVClose4ActionPerformed
 
     private void steamOutVClose5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_steamOutVClose5ActionPerformed
-        condensate2A.forEach(pump -> {
+        condensate2B.forEach(pump -> {
             pump.dischargeValve.setAutoState(1);
             pump.dischargeValve.setState(0);
         });
@@ -2732,6 +2763,10 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
             autoControl.condenserWaterLevelControl.get(1).setEnabled(false);
         }
     }//GEN-LAST:event_flowControlActionPerformed
+
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        UI.createOrContinue(MCPUI.class, true, false);
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2832,6 +2867,7 @@ public class CondensateUI extends javax.swing.JFrame implements UIUpdateable, Se
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

@@ -131,7 +131,7 @@ class SimplifiedCondensateHeader extends PressureHeader { //greatly simplified f
         double deltaWaterTemp = thermalPower * 50 / (NPPMath.calculateSpecificHeatWater(waterTemperature) * waterMass);
         waterTemperature += Double.isNaN(deltaWaterTemp) || Double.isInfinite(deltaWaterTemp) ? 0.0 : deltaWaterTemp;
         if (waterTemperature > highestSteamTemp && waterTemperature > oldWaterTemp) {
-            waterTemperature = highestSteamTemp * 0.96;
+            waterTemperature = highestSteamTemp * 0.94;
         }
         heatedWaterTemp = waterTemperature;
         thermalPower = 0.0;
@@ -306,7 +306,6 @@ class SimpleSuctionHeader extends WaterSteamComponent implements Connectable, UI
             }
         }
         resetFlows();
-        System.out.println(waterMass + " " + initialWaterMass);
         waterMass = initialWaterMass;
         totalValvePositions = 0.0f;
     }

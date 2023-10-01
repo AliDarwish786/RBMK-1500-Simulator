@@ -118,8 +118,8 @@ public class NPPMath {
     * @param dynamicViscosity Pa.s
     * @return  flow in m3/s
     */
-    public static double calculateVolumeFlowRate(double pressureIn, double pressureOut, double radius, double lenght, double dynamicViscosity) {
-        return Math.PI * Math.pow(radius, 4) * (pressureIn - pressureOut) * 1000000 / (8 * dynamicViscosity * lenght);
+    public static double calculateVolumeFlowRate(double pressureIn, double pressureOut, double radius, double length, double dynamicViscosity) {
+        return Math.PI * Math.pow(radius, 4) * (pressureIn - pressureOut) * 1000000 / (8 * dynamicViscosity * length);
     }
     
     public static String formatChannelNumber(int x, int y) {
@@ -221,5 +221,14 @@ public class NPPMath {
      */
     public static double calculateDecayMultiplierPerUpdate(double halfLife) {
         return Math.pow(0.5, 1 / (72000 * halfLife));
+    }
+    
+    /**
+     * @param depth in m
+     * @param density in kg/m3
+     * @return hydrostatic pressure in MPa
+     */
+    public static double calculateFluidColumn(double depth, double density) {
+        return depth * density * 9.80665 / 1e6;
     }
 }

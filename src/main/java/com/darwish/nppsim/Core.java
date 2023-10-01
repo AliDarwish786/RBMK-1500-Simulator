@@ -84,12 +84,12 @@ public class Core extends Component {
                     if (coreArray.get(x).get(y) instanceof VoidChannel) {
                         continue;
                     }
-                    coreArray.get(x).get(y).setNeutronCount(nextGenerationCount.get(x).get(y));
+                    coreArray.get(x).get(y).setNeutronPopulation(nextGenerationCount.get(x).get(y));
                 }
             }
             for(int x = 0; x < coreArray.size(); x++) {
                 for (int y = 0; y < coreArray.get(x).size(); y++) {
-                    coreArray.get(x).get(y).updateNeutronCount();
+                    coreArray.get(x).get(y).updateNeutronPopulation();
                 }
             }
         }

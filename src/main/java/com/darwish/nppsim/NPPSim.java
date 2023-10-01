@@ -82,7 +82,7 @@ public class NPPSim {
 
         //parse the steam tables
         tables = Loader.tables;
-
+        
         //initialize all components
         atmosphere = new Atmosphere(15);
         core = new Core();
@@ -138,23 +138,23 @@ public class NPPSim {
         condensateHeader1 = new PressureHeader();
         condensateHeader2 = new PressureHeader();
         for (int i = 0; i < 3; i++) {
-            condensate1A.add(new Pump(740, 0.417f, 1.117, 0.022555295, 30, 40, 167, tg1.condenser, condensateHeader1)); //1.766 head is increased to emulate both stages in 1 pump
+            condensate1A.add(new Pump(740, 0.417f, 1.117, 0.022555295, 30, 40, 167, tg1.condenser, condensateHeader1));
         }
         for (int i = 0; i < 3; i++) {
-            condensate2A.add(new Pump(740, 0.417f, 1.117, 0.022555295, 30, 40, 167, tg2.condenser, condensateHeader2)); //1.766
+            condensate2A.add(new Pump(740, 0.417f, 1.117, 0.022555295, 30, 40, 167, tg2.condenser, condensateHeader2));
         }
         for (int i = 0; i < 3; i++) {
-            condensate1B.add(new Pump(2975, 0.417f, 1.766, 0.2157463, 30, 40, 267, condensateHeader1, condensateHeader)); //1.766 head is increased to emulate both stages in 1 pump
+            condensate1B.add(new Pump(2975, 0.417f, 1.766, 0.2157463, 30, 40, 267, condensateHeader1, condensateHeader));
         }
         for (int i = 0; i < 3; i++) {
-            condensate2B.add(new Pump(2975, 0.417f, 1.766, 0.2157463, 30, 40, 267, condensateHeader2, condensateHeader)); //1.766
+            condensate2B.add(new Pump(2975, 0.417f, 1.766, 0.2157463, 30, 40, 267, condensateHeader2, condensateHeader));
         }
         condensateHeader1.setSources(new Pump[] {condensate1A.get(0), condensate1A.get(1), condensate1A.get(2)});
         condensateHeader2.setSources(new Pump[] {condensate2A.get(0), condensate2A.get(1), condensate2A.get(2)});
         condensateHeader.setSources(new Pump[] {condensate1B.get(0), condensate1B.get(1), condensate1B.get(2), condensate2B.get(0), condensate2B.get(1), condensate2B.get(2)});
         for (int i = 0; i < 4; i++) {
             dearators.add(new Dearator());
-            dearatorValves.add(new WaterValve(1667.52, 12, condensateHeader, dearators.get(i))); //1206.3
+            dearatorValves.add(new WaterValve(1667.52, 12, condensateHeader, dearators.get(i))); //1206.3 
         }
         
         //initialize feedwater pumps and piping/valves
@@ -213,9 +213,9 @@ public class NPPSim {
 //        mcc.mcp.get(4).setRPM(1000);
 //        mcc.mcp.get(5).setRPM(1000);
 //        autoControl.automaticRodController.setSetpoint(500);
-        dearators.forEach(dearator -> {
-            dearator.setWaterTemp(190);
-        });
+//        dearators.forEach(dearator -> {
+//            dearator.setWaterTemp(190);
+//        });
         
 
         //initialize UI
@@ -258,25 +258,21 @@ public class NPPSim {
         atmosphere = (Atmosphere)state.get(0);
         core = (Core)state.get(1);
         mcc = (MCC)state.get(2);
-        steamPiping = (OneWaySteamHeader)state.get(19);
-        tg1 = (TG)state.get(22);
-        tg2 = (TG)state.get(25);
-        for (int i = 26; i < 34; i++) {
+        steamPiping = (OneWaySteamHeader)state.get(23);
+        tg1 = (TG)state.get(26);
+        tg2 = (TG)state.get(29);
+        for (int i = 30; i < 38; i++) {
             ejectors.add((Ejector)state.get(i));
         }
-        TG1InletValves.add((SteamValve)state.get(34));
-        TG1InletValves.add((SteamValve)state.get(35));
-        TG2InletValves.add((SteamValve)state.get(36));
-        TG2InletValves.add((SteamValve)state.get(37));
-        for (int i = 38; i < 46; i++) {
+        TG1InletValves.add((SteamValve)state.get(38));
+        TG1InletValves.add((SteamValve)state.get(39));
+        TG2InletValves.add((SteamValve)state.get(40));
+        TG2InletValves.add((SteamValve)state.get(41));
+        for (int i = 42; i < 50; i++) {
             sdv_c.add((SteamValve)state.get(i));
         }
-        sdv_a.add((SteamValve)state.get(46));
-        sdv_a.add((SteamValve)state.get(47));
-        msvLoop1.add((SteamValve)state.get(48));
-        msvLoop2.add((SteamValve)state.get(49));
-        msvLoop1.add((SteamValve)state.get(50));
-        msvLoop2.add((SteamValve)state.get(51));
+        sdv_a.add((SteamValve)state.get(50));
+        sdv_a.add((SteamValve)state.get(51));
         msvLoop1.add((SteamValve)state.get(52));
         msvLoop2.add((SteamValve)state.get(53));
         msvLoop1.add((SteamValve)state.get(54));
@@ -285,57 +281,61 @@ public class NPPSim {
         msvLoop2.add((SteamValve)state.get(57));
         msvLoop1.add((SteamValve)state.get(58));
         msvLoop2.add((SteamValve)state.get(59));
-        condensateHeader = (SimplifiedCondensateHeader)state.get(60);
-        condensateHeader1 = (PressureHeader)state.get(61);
-        condensateHeader2 = (PressureHeader)state.get(62);
-        condensate1A.add((Pump)state.get(63));
-        condensate1A.add((Pump)state.get(65));
+        msvLoop1.add((SteamValve)state.get(60));
+        msvLoop2.add((SteamValve)state.get(61));
+        msvLoop1.add((SteamValve)state.get(62));
+        msvLoop2.add((SteamValve)state.get(63));
+        condensateHeader = (SimplifiedCondensateHeader)state.get(64);
+        condensateHeader1 = (PressureHeader)state.get(65);
+        condensateHeader2 = (PressureHeader)state.get(66);
         condensate1A.add((Pump)state.get(67));
-        condensate2A.add((Pump)state.get(69));
-        condensate2A.add((Pump)state.get(71));
+        condensate1A.add((Pump)state.get(69));
+        condensate1A.add((Pump)state.get(71));
         condensate2A.add((Pump)state.get(73));
-        condensate1B.add((Pump)state.get(75));
-        condensate1B.add((Pump)state.get(77));
+        condensate2A.add((Pump)state.get(75));
+        condensate2A.add((Pump)state.get(77));
         condensate1B.add((Pump)state.get(79));
-        condensate2B.add((Pump)state.get(81));
-        condensate2B.add((Pump)state.get(83));
+        condensate1B.add((Pump)state.get(81));
+        condensate1B.add((Pump)state.get(83));
         condensate2B.add((Pump)state.get(85));
-        dearators.add((Dearator)state.get(87));
+        condensate2B.add((Pump)state.get(87));
+        condensate2B.add((Pump)state.get(89));
         dearators.add((Dearator)state.get(91));
         dearators.add((Dearator)state.get(95));
         dearators.add((Dearator)state.get(99));
-        dearatorValves.add((WaterValve)state.get(90));
+        dearators.add((Dearator)state.get(103));
         dearatorValves.add((WaterValve)state.get(94));
         dearatorValves.add((WaterValve)state.get(98));
         dearatorValves.add((WaterValve)state.get(102));
-        feedwaterMixer1 = (WaterMixer)state.get(103);
-        feedwaterMixer2 = (WaterMixer)state.get(104);
-        fwSuctionHeader = (SimpleSuctionHeader)state.get(105);
-        auxiliaryFWPressureHeader = (PressureHeader)state.get(110);
-        mainFWPressureHeader = (PressureHeader)state.get(111);
-        mainFeedwaterPumps.add((Pump)state.get(112));
-        mainFeedwaterPumps.add((Pump)state.get(114));
+        dearatorValves.add((WaterValve)state.get(106));
+        feedwaterMixer1 = (WaterMixer)state.get(107);
+        feedwaterMixer2 = (WaterMixer)state.get(108);
+        fwSuctionHeader = (SimpleSuctionHeader)state.get(109);
+        auxiliaryFWPressureHeader = (PressureHeader)state.get(114);
+        mainFWPressureHeader = (PressureHeader)state.get(115);
         mainFeedwaterPumps.add((Pump)state.get(116));
         mainFeedwaterPumps.add((Pump)state.get(118));
         mainFeedwaterPumps.add((Pump)state.get(120));
         mainFeedwaterPumps.add((Pump)state.get(122));
         mainFeedwaterPumps.add((Pump)state.get(124));
-        auxFeedwaterPumps.add((Pump)state.get(126));
-        auxFeedwaterPumps.add((Pump)state.get(128));
+        mainFeedwaterPumps.add((Pump)state.get(126));
+        mainFeedwaterPumps.add((Pump)state.get(128));
         auxFeedwaterPumps.add((Pump)state.get(130));
         auxFeedwaterPumps.add((Pump)state.get(132));
         auxFeedwaterPumps.add((Pump)state.get(134));
         auxFeedwaterPumps.add((Pump)state.get(136));
-        mainFeederValves.add((WaterValve)state.get(138));
-        mainFeederValves.add((WaterValve)state.get(139));
-        mainFeederValves.add((WaterValve)state.get(140));
-        mainFeederValves.add((WaterValve)state.get(141));
+        auxFeedwaterPumps.add((Pump)state.get(138));
+        auxFeedwaterPumps.add((Pump)state.get(140));
         mainFeederValves.add((WaterValve)state.get(142));
         mainFeederValves.add((WaterValve)state.get(143));
-        auxFeederValves.add((WaterValve)state.get(144));
-        auxFeederValves.add((WaterValve)state.get(145));
-        pcs = (PCS)state.get(146);
-        autoControl = (AutoControl)state.get(201);
+        mainFeederValves.add((WaterValve)state.get(144));
+        mainFeederValves.add((WaterValve)state.get(145));
+        mainFeederValves.add((WaterValve)state.get(146));
+        mainFeederValves.add((WaterValve)state.get(147));
+        auxFeederValves.add((WaterValve)state.get(148));
+        auxFeederValves.add((WaterValve)state.get(149));
+        pcs = (PCS)state.get(150);
+        autoControl = (AutoControl)state.get(205);
 
         simPaused = false;
         ui = new UI();

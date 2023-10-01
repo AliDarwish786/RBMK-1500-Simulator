@@ -58,10 +58,8 @@ public class AutoControl extends Component {
             dearatorWaterAndMakeupControl.add(new InflowWaterLevelControl(valve.drain, new WaterValve[] {dearatorWaterControl.get(valveIterator[0]).valveArray[0], valve}));
             valveIterator[0]++;
         });
-
-        auxFeederValves.forEach(valve -> {
-            auxFeederControl.add(new InflowWaterLevelControl(((WaterMixer)valve.drain).drain, new WaterValve[] {valve}));
-        });
+        auxFeederControl.add(new InflowWaterLevelControl(mcc.drum1, new WaterValve[] {auxFeederValves.get(0)}));
+        auxFeederControl.add(new InflowWaterLevelControl(mcc.drum2, new WaterValve[] {auxFeederValves.get(1)}));
         mainFeederControl.add(new InflowWaterLevelControl(
             mcc.drum1,
             new WaterValve[] {mainFeederValves.get(0), mainFeederValves.get(1), mainFeederValves.get(2)})

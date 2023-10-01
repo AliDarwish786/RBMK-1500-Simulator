@@ -46,13 +46,13 @@ public class Loader extends javax.swing.JFrame {
             String uriString = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().toString();
             PrintStream logStream = new PrintStream(new BufferedOutputStream(new FileOutputStream(new File(new URI(uriString.substring(0, uriString.lastIndexOf("RBMK-1500-Simulator.jar")) + "/log.txt")))), true);
             System.setErr(logStream);
-            //System.setOut(logStream);
+            System.setOut(logStream);
         } catch (Exception e) {
             e.printStackTrace();
             try {
                 PrintStream logStream = new PrintStream(new BufferedOutputStream(new FileOutputStream("log.txt")), true);
                 System.setErr(logStream);
-                //System.setOut(logStream);
+                System.setOut(logStream);
             } catch (Exception ex) {
                 e.printStackTrace();
                 new ErrorWindow("Warning: Failed to redirect stdout", ExceptionUtils.getStackTrace(ex), false).setVisible(true);
@@ -167,7 +167,7 @@ public class Loader extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Dialog", 2, 12)); // NOI18N
-        jLabel2.setText("Version 1.2.0 TEST");
+        jLabel2.setText("Version 1.2.0 Alpha");
 
         jButton5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jButton5.setText("Load Standard IC");

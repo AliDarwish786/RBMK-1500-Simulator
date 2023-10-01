@@ -432,6 +432,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
@@ -3278,6 +3279,14 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         });
         jMenu1.add(jMenuItem10);
 
+        jMenuItem12.setText("MCP");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem12);
+
         jMenuItem1.setText("Turbine-Generators");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3903,6 +3912,10 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
         NPPSim.ui.toFront();
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        UI.createOrContinue(MCPUI.class, true, false);
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel annunciatorPanel;
     private javax.swing.JRadioButton autoSteamPressure1Off;
@@ -4010,6 +4023,7 @@ public class DearatorUI extends javax.swing.JFrame implements UIUpdateable {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
